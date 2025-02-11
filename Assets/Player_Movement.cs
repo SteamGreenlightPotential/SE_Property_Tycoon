@@ -79,10 +79,10 @@ public class Grid_Movement : MonoBehaviour
         targetPos = origPos + direction;
 
         //Check if the target position is in the boundaries
-        if (targetPos.x < minX) targetPos.x = minX;
-        if (targetPos.x > maxX) targetPos.x = maxX;
-        if (targetPos.y < minY) targetPos.y = minY;
-        if (targetPos.y > maxY) targetPos.y = maxY;
+        //if (targetPos.x < minX) targetPos.x = minX;
+        //if (targetPos.x > maxX) targetPos.x = maxX;
+        //if (targetPos.y < minY) targetPos.y = minY;
+        //if (targetPos.y > maxY) targetPos.y = maxY;
 
         while (elapsedTime < TimeToMove)
         {

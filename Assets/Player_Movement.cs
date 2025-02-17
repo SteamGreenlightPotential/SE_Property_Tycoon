@@ -16,7 +16,7 @@ public class Grid_Movement : MonoBehaviour
 
     void Update()
     {
-        if (TileCount == 40) //Loops the board
+        if (TileCount >= 40) //Loops the board
             TileCount = 0;
 
         if (Input.GetKeyDown(KeyCode.Space) && !isMoving) //Temporary roll with space
@@ -45,18 +45,23 @@ public class Grid_Movement : MonoBehaviour
         if (TileCount >= 0 && TileCount < 10) //Top row (0-9)
         {
             direction = Vector3.right;
+            transform.eulerAngles = new Vector3(180,0,270); //rotate object to face direction
+
         }
         else if (TileCount >= 10 && TileCount < 20) //Right row (10-19)
         {
             direction = Vector3.down;
+            transform.eulerAngles = new Vector3(180,0,0); //rotate object to face direction
         }
         else if (TileCount >= 20 && TileCount < 30) //Bottom row (20-29)
         {
             direction = Vector3.left;
+            transform.eulerAngles = new Vector3(180,0,90); //rotate object to face direction
         }
         else if (TileCount >= 30 && TileCount < 40) //Left row (30-39)
         {
             direction = Vector3.up;
+            transform.eulerAngles = new Vector3(180,0,180); //rotate object to face direction
         }
         else
         {

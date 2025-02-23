@@ -6,10 +6,11 @@ public class Turn_Script : MonoBehaviour
     public Grid_Movement[] players; // Assigned the scripts from each piece in the Inspector
     private int currentPlayerIndex = 0;
     private bool isWaitingForRoll = true; // Wait for player to press space to roll
+    private int round = 1;
 
     void Start()
     {
-        Debug.Log("Game Start!");
+        Debug.Log("Round " + round); // Announce round 1 has started
         StartTurn();
     }
 
@@ -56,6 +57,12 @@ public class Turn_Script : MonoBehaviour
 
         // Move to the next player
         currentPlayerIndex = (currentPlayerIndex + 1) % players.Length;
+
+        if (currentPlayerIndex == 0)
+        {
+            round += 1; // Increment round number if last player finishes their turn
+            Debug.Log("Round " + round); // Prints next round number
+        }
 
         // Start the next player's turn
         StartTurn();

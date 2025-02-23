@@ -7,6 +7,7 @@ public class Turn_Script : MonoBehaviour
     private int currentPlayerIndex = 0;
     private bool isWaitingForRoll = true; // Wait for player to press space to roll
     private int round = 1;
+    private bool turnEnded = false;
 
     void Start()
     {
@@ -25,6 +26,7 @@ public class Turn_Script : MonoBehaviour
 
     void StartTurn()
     {
+        turnEnded = false; // Disable the end turn button
         Debug.Log("Player " + (currentPlayerIndex + 1) + "'s Turn. Press SPACE to roll.");
         isWaitingForRoll = true; // Wait for player to press space before rolling
     }
@@ -46,8 +48,16 @@ public class Turn_Script : MonoBehaviour
         // Wait for the player to press space to continue
         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
 
-        // Begin the EndTurn phase
-        StartCoroutine(EndTurn());
+        turnEnded = true; // Enable the end turn button
+    }
+
+    public void EndTurnButtonClicked()
+    {
+        if (turnEnded == true)
+        {
+            StartCoroutine(EndTurn()); // Detect when the End_Turn_Script is triggered
+        }
+
     }
 
     IEnumerator EndTurn()

@@ -3,91 +3,64 @@ using UnityEngine;
 
 public class Grid_Movement : MonoBehaviour
 {
-    private bool isMoving; //Prevent multiple movements at once
+    private bool isMoving = false;
     private Vector3 origPos, targetPos;
     private float TimeToMove = 0.2f;
-    private int TileCount = 0; //Check which tile the player is on
+    private int TileCount = 0;
 
-    //Board boundaries
-    public float minX = -5f;
-    public float maxX = 5f;
-    public float minY = -5f;
-    public float maxY = 5f;
-
-    void Update()
+    public void Move(int steps)  // Called from Turn_Script
     {
-        if (TileCount >= 40) //Loops the board
-            TileCount = 0;
-
-        if (Input.GetKeyDown(KeyCode.Space) && !isMoving) //Temporary roll with space
-        {
-            int RandNum = RollDice();
-            Debug.Log("Roll: " + RandNum);
-
-            StartCoroutine(ProcessMovements(RandNum)); //Starts the movement function
-        }
+        StartCoroutine(ProcessMovements(steps));
     }
 
-    //Process movement one by one
-    private IEnumerator ProcessMovements(int steps) 
+    private IEnumerator ProcessMovements(int steps)
     {
         for (int i = 0; i < steps; i++)
         {
-            Vector3 direction = NextDir(); 
-            yield return StartCoroutine(MovePlayer(direction)); //Wait for this movement to finish
+            Vector3 direction = NextDir();
+            yield return StartCoroutine(MovePlayer(direction));
         }
     }
-    //Get direction based on TileCount
-    private Vector3 NextDir() 
+
+    private Vector3 NextDir()
     {
         Vector3 direction = Vector3.zero;
-
-        if (TileCount >= 0 && TileCount < 10) //Top row (0-9)
+        if (TileCount >= 0 && TileCount < 10)
         {
             direction = Vector3.right;
-            transform.eulerAngles = new Vector3(180,0,270); //rotate object to face direction
-
+            transform.eulerAngles = new Vector3(180, 0, 270);
         }
-        else if (TileCount >= 10 && TileCount < 20) //Right row (10-19)
+        else if (TileCount >= 10 && TileCount < 20)
         {
             direction = Vector3.down;
-            transform.eulerAngles = new Vector3(180,0,0); //rotate object to face direction
+            transform.eulerAngles = new Vector3(180, 0, 0);
         }
-        else if (TileCount >= 20 && TileCount < 30) //Bottom row (20-29)
+        else if (TileCount >= 20 && TileCount < 30)
         {
             direction = Vector3.left;
-            transform.eulerAngles = new Vector3(180,0,90); //rotate object to face direction
+            transform.eulerAngles = new Vector3(180, 0, 90);
         }
-        else if (TileCount >= 30 && TileCount < 40) //Left row (30-39)
+        else if (TileCount >= 30 && TileCount < 40)
         {
             direction = Vector3.up;
-            transform.eulerAngles = new Vector3(180,0,180); //rotate object to face direction
+            transform.eulerAngles = new Vector3(180, 0, 180);
         }
         else
         {
-            TileCount = 0; //Resets if TileCount exceeds 39
+            TileCount = 0;
             direction = Vector3.right;
         }
 
-        TileCount += 1; //Increment TileCount after getting direction
+        TileCount += 1;
         return direction;
     }
 
-    //Player movement function
-    private IEnumerator MovePlayer(Vector3 direction) 
+    private IEnumerator MovePlayer(Vector3 direction)
     {
-        isMoving = true; //Lets program know a movement is in prograss
-
+        isMoving = true;
         float elapsedTime = 0;
-        
         origPos = transform.position;
         targetPos = origPos + direction;
-
-        //Check if the target position is in the boundaries
-        //if (targetPos.x < minX) targetPos.x = minX;
-        //if (targetPos.x > maxX) targetPos.x = maxX;
-        //if (targetPos.y < minY) targetPos.y = minY;
-        //if (targetPos.y > maxY) targetPos.y = maxY;
 
         while (elapsedTime < TimeToMove)
         {
@@ -97,13 +70,6 @@ public class Grid_Movement : MonoBehaviour
         }
 
         transform.position = targetPos;
-
-        isMoving = false; //Lets program know movement has ended
-    }
-
-    //Function to roll a dice )
-    private int RollDice()
-    {
-        return Random.Range(1, 7); //Rolls 1-6
+        isMoving = false;
     }
 }

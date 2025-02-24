@@ -39,8 +39,8 @@ namespace PropertyTycoon{
         }
         //function to switch owners. If removing an owner, use removeOwner
         public void switchOwner(Player newOwner){
-
             owner = newOwner;
+            owned = true;
         
         }
         

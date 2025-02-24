@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace PropertyTycoon{
     public class GameManager: MonoBehaviour{
-        List<Property> properties = new List<Property>(); //Holds all properties
+        public List<Property> properties = new List<Property>(); //Holds all properties
 
         //Initialises all properties. Hardcoded based on database files given by client
-        void initialiseProperties(){
+        public void initialiseProperties(){
 
         properties.Add(new Property("The Old Creek",60,"Brown",2));
         properties.Add(new Property("Gangsters Paradise",60,"Brown",4));

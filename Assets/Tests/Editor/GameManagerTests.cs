@@ -6,7 +6,7 @@ using PropertyTycoon;
 
 public class GameManagerTests
 {
-    public GameManager gameManager;
+    private GameManager gameManager;
 
     [SetUp]
     public void SetUp()

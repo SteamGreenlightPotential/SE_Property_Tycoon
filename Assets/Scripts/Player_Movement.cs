@@ -2,7 +2,8 @@ using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 
-public class Grid_Movement : MonoBehaviour
+namespace PropertyTycoon{
+public class boardPlayer : MonoBehaviour
 {
     public List<int> OwnedProperties = new List<int>(); // Create a list  to store owned properties
     private Vector3 origPos, targetPos;
@@ -92,6 +93,10 @@ public class Grid_Movement : MonoBehaviour
         }
     }
 
+    public bool monopolyCheck(boardPlayer player){
+        return false;
+    }
+    
     public void BuyTile(int tile, int cost)
     {
         if (balance >= cost)
@@ -106,8 +111,9 @@ public class Grid_Movement : MonoBehaviour
         }
     }
 
-    public void PayRent(Grid_Movement owner, int rent)
+    public void PayRent(boardPlayer owner, int rent)
     {
+        
         if (balance >= rent)
         {
             balance -= rent;
@@ -125,4 +131,5 @@ public class Grid_Movement : MonoBehaviour
         balance += rent;
         Debug.Log("Received £" + rent + " of rent. New balance is " + balance);
     }
+}
 }

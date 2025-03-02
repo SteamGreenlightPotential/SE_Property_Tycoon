@@ -105,6 +105,7 @@ public class Turn_Script : MonoBehaviour
         //temp bank stuff ends        --------------------------------------------------------------------------------------------------
 
         Debug.Log("Press Space to Skip (THIS IS FOR THE BUY PHASE LATER)");
+        Debug.Log("Press End Turn now for next turn");
 
         // Wait for the player to press space to continue
         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));

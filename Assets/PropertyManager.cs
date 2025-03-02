@@ -38,7 +38,7 @@ namespace PropertyTycoon{
         }
         }
         
-        //Initialising all important stuff
+        //Starts wheh 
         void Awake(){
             //Persists between scenes
             DontDestroyOnLoad(gameObject);

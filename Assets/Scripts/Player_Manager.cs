@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 
+namespace PropertyTycoon{
 public class Grid_Movement : MonoBehaviour
 {
     public List<int> OwnedProperties = new List<int>(); // Create a list  to store owned properties
@@ -126,4 +127,4 @@ public class Grid_Movement : MonoBehaviour
         Debug.Log("Received £" + rent + " of rent. New balance is " + balance);
     }
 }
-
+}

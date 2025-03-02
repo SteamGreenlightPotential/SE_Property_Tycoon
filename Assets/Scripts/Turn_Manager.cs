@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
+namespace PropertyTycoon{
 public class Turn_Script : MonoBehaviour
 {
     public Grid_Movement[] players; // Assigned the scripts from each piece in the Inspector
@@ -70,6 +71,7 @@ public class Turn_Script : MonoBehaviour
         {
             if (ownerIndex != currentPlayerIndex)
             {
+                
                 int rent = 50;
                 Debug.Log("Tile " + currentTile + " is owned by Player " + (ownerIndex + 1) + ". Paying rent £" + rent);
                 players[currentPlayerIndex].PayRent(players[ownerIndex], rent);
@@ -139,4 +141,5 @@ public class Turn_Script : MonoBehaviour
     }
 
 
+}
 }

@@ -4,7 +4,7 @@ using System.Collections;
 namespace PropertyTycoon{
 public class Turn_Script : MonoBehaviour
 {
-    public Grid_Movement[] players; // Assigned the scripts from each piece in the Inspector
+    public boardMovement[] players; // Assigned the scripts from each piece in the Inspector
     private int currentPlayerIndex = 0;
     private bool isWaitingForRoll = true; // Wait for player to press space to roll
     private int round = 1;
@@ -34,7 +34,7 @@ public class Turn_Script : MonoBehaviour
         isWaitingForRoll = true; // Wait for player to press space before rolling
     }
 
-    IEnumerator PlayerMovePhase(Grid_Movement player)
+    IEnumerator PlayerMovePhase(boardPlayer player)
     {
         // Wait for player to press space before rolling
         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));

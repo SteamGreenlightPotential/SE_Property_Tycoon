@@ -1,11 +1,13 @@
 using System.Collections;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Grid_Movement : MonoBehaviour
 {
+    public List<int> OwnedProperties = new List<int>(); // Create a list  to store owned properties
     private Vector3 origPos, targetPos;
     private float TimeToMove = 0.2f;
-    private int TileCount = 0;
+    public int TileCount = 0;
 
     public void Move(int steps)  // Called from Turn_Script to trigger movement for 1 turn
     {
@@ -68,5 +70,59 @@ public class Grid_Movement : MonoBehaviour
         }
 
         transform.position = targetPos; // Make sure piece actually reaches destination
+    }
+
+    // temporary wallet example
+
+    private int balance = 1500;
+    //private int amount = 0;
+
+    public void taxCheck()
+    {
+        if (TileCount == 4)
+        {
+            balance -= 100;
+            Debug.Log("Tax tile. New balance is " + balance );
+        }
+
+        if (TileCount == 38)
+        {
+            balance -= 100;
+            Debug.Log("Tax tile. New balance is " + balance );
+        }
+    }
+
+    public void BuyTile(int tile, int cost)
+    {
+        if (balance >= cost)
+        {
+            balance -= cost;
+            OwnedProperties.Add(tile);
+            Debug.Log("Tile " + tile + " purchased. New balance is " + balance);
+        }
+        else
+        {
+            Debug.Log("Not enough money to purchase tile " + tile + ". Balance: " + balance);
+        }
+    }
+
+    public void PayRent(Grid_Movement owner, int rent)
+    {
+        if (balance >= rent)
+        {
+            balance -= rent;
+            owner.ReceiveRent(rent);
+            Debug.Log("Paid rent of £" + rent + ". New balance is " + balance);
+        }
+        else
+        {
+            Debug.Log("Not enough money to pay rent. Current balance: " + balance);
+        }
+    }
+    
+    public void ReceiveRent(int rent)
+    {
+        balance += rent;
+        Debug.Log("Received £" + rent + " of rent. New balance is " + balance);
     }
 }

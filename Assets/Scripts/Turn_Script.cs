@@ -8,6 +8,8 @@ public class Turn_Script : MonoBehaviour
     private bool isWaitingForRoll = true; // Wait for player to press space to roll
     private int round = 1;
     private bool turnEnded = false;
+    private int bankBalance = 50000;
+    private int freeParkingBalance = 0;
 
     void Start()
     {
@@ -43,6 +45,65 @@ public class Turn_Script : MonoBehaviour
         player.Move(roll); // Move the player
         yield return new WaitForSeconds(roll * 0.2f + 0.5f); // Wait for movement to finish
 
+        //temp bank stuff           -----------------------------------------------------------------------------------------------
+        int currentTile = player.TileCount;
+        bool tileOwned = false;
+        int ownerIndex = -1;
+        if (currentTile == 4 || currentTile == 38)
+        {
+            player.taxCheck();
+            freeParkingBalance += 100;
+        }
+
+        for (int i = 0; i < players.Length; i++)  // Loop through all players to see if any own the current tile
+        {
+            if (players[i].OwnedProperties.Contains(currentTile))
+            {
+                Debug.Log("Tile " + currentTile + " is owned by Player " + (i + 1));
+                tileOwned = true;
+                ownerIndex = i;
+                break; // Terminate loop immediately
+            }
+        }
+
+        if (tileOwned) // If tile is owned makes player pay rent unlesss they own it
+        {
+            if (ownerIndex != currentPlayerIndex)
+            {
+                
+                int rent = 50;
+                Debug.Log("Tile " + currentTile + " is owned by Player " + (ownerIndex + 1) + ". Paying rent £" + rent);
+                players[currentPlayerIndex].PayRent(players[ownerIndex], rent);
+            }
+            else
+            {
+                Debug.Log("Tile " + currentTile + " is owned by you.");
+            }
+        }
+        else // Allows player to buy an unowned tile
+        {
+            Debug.Log("Tile " + currentTile + " is not owned by anyone and is available.");
+            Debug.Log("Press B to buy or Space to skip.");
+            bool decisionMade = false;
+            while (!decisionMade)
+            {
+                if (Input.GetKeyDown(KeyCode.B))
+                {
+                    player.BuyTile(currentTile, 200);
+                    decisionMade = true;
+                    bankBalance += 200;
+                }
+                else if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    Debug.Log("Purchase skipped.");
+                    decisionMade = true;
+                }
+                yield return null; // Pauses coroutine until next frame
+            }
+        }
+
+        //temp bank stuff ends        --------------------------------------------------------------------------------------------------
+
         Debug.Log("Press Space to Skip (THIS IS FOR THE BUY PHASE LATER)");
 
         // Wait for the player to press space to continue
@@ -77,4 +138,6 @@ public class Turn_Script : MonoBehaviour
         // Start the next player's turn
         StartTurn();
     }
+
+
 }

@@ -4,7 +4,7 @@ using System.Collections;
 namespace PropertyTycoon{
 public class Turn_Script : MonoBehaviour
 {
-    public boardMovement[] players; // Assigned the scripts from each piece in the Inspector
+    public boardPlayer[] players; // Assigned the scripts from each piece in the Inspector
     private int currentPlayerIndex = 0;
     private bool isWaitingForRoll = true; // Wait for player to press space to roll
     private int round = 1;
@@ -71,8 +71,7 @@ public class Turn_Script : MonoBehaviour
         {
             if (ownerIndex != currentPlayerIndex)
             {
-                
-                int rent = 50;
+                int rent = 50; //Temp value
                 Debug.Log("Tile " + currentTile + " is owned by Player " + (ownerIndex + 1) + ". Paying rent £" + rent);
                 players[currentPlayerIndex].PayRent(players[ownerIndex], rent);
             }

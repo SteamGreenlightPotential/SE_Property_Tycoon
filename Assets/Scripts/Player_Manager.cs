@@ -93,6 +93,10 @@ public class boardPlayer : MonoBehaviour
         }
     }
 
+    public bool monopolyCheck(boardPlayer player){
+        return false;
+    }
+    
     public void BuyTile(int tile, int cost)
     {
         if (balance >= cost)
@@ -109,6 +113,7 @@ public class boardPlayer : MonoBehaviour
 
     public void PayRent(boardPlayer owner, int rent)
     {
+        
         if (balance >= rent)
         {
             balance -= rent;

@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 namespace PropertyTycoon{
-public class Grid_Movement : MonoBehaviour
+public class boardPlayer : MonoBehaviour
 {
     public List<int> OwnedProperties = new List<int>(); // Create a list  to store owned properties
     private Vector3 origPos, targetPos;
@@ -107,7 +107,7 @@ public class Grid_Movement : MonoBehaviour
         }
     }
 
-    public void PayRent(Grid_Movement owner, int rent)
+    public void PayRent(boardPlayer owner, int rent)
     {
         if (balance >= rent)
         {

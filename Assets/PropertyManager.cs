@@ -38,7 +38,7 @@ namespace PropertyTycoon{
         }
         }
         
-        //Starts wheh 
+        //Initialises script when game starts 
         void Awake(){
             //Persists between scenes
             DontDestroyOnLoad(gameObject);

@@ -3,15 +3,18 @@
 
 using NUnit.Framework;
 using PropertyTycoon;
+using UnityEngine;
 
 public class PropertyTests
 {
     public Property property;
-
+    public boardPlayer bplayer;
     [SetUp]
     public void SetUp()
     {
         property = new Property("Test Property", 100, "Brown", 10);
+        GameObject gameObject = new GameObject();
+        bplayer = gameObject.AddComponent<boardPlayer>();
     }
 
     [Test]
@@ -69,7 +72,7 @@ public class PropertyTests
     [Test]
     public void SwitchOwner_Test()
     {
-        Player player = new Player("Test Player");
+        Player player = new Player("Test Player",bplayer);
         property.switchOwner(player);
         Assert.AreEqual(player, property.owner);
         Assert.IsTrue(property.owned);
@@ -78,7 +81,7 @@ public class PropertyTests
     [Test]
     public void RemoveOwner_Test()
     {
-        Player player = new Player("Test Player");
+        Player player = new Player("Test Player",bplayer);
         property.switchOwner(player);
         property.removeOwner();
         Assert.IsNull(property.owner);

@@ -94,7 +94,8 @@ public class boardPlayer : MonoBehaviour
     }
 
     public bool monopolyCheck(boardPlayer player){
-        return false;
+        return false
+        }
     }
     
     public void BuyTile(int tile, int cost)

@@ -47,6 +47,7 @@ namespace PropertyTycoon{
         //removes owner. Used when selling property
         public void removeOwner(){
             owner = null;
+            owned = false;
             houses = 0;
             hotel = false;
         }

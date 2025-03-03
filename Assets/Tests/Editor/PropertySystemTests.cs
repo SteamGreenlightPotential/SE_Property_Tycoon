@@ -15,7 +15,8 @@ public class SystemTests
     {
         GameObject gameManagerObject = new GameObject();
         gameManager = gameManagerObject.AddComponent<GameManager>();
-        player = new Player("Test Player");
+        boardPlayer bplayer = new boardPlayer();
+        player = new Player("Test Player",bplayer);
     }
 
     [Test]

@@ -92,7 +92,7 @@ namespace PropertyTycoon{
                 {
                     int rent = 50; //Temp value
                     Debug.Log("Tile " + currentTile + " is owned by Player " + (ownerIndex + 1) + ". Paying rent £" + rent);
-                    players[currentPlayerIndex].PayRent(players[ownerIndex], rent);
+                    players[currentPlayerIndex].PayRent(getPlayerFromBoard(players[ownerIndex]),players[ownerIndex], rent,pmanager.getTileProperty(currentTile));
                 }
                 else
                 {

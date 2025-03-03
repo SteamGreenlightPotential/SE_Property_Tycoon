@@ -95,14 +95,29 @@ namespace PropertyTycoon
             }
         }
 
-        public bool monopolyCheck(boardPlayer player)
+
+        //Checks the given property against the properties owned by the player to see if they have a monopoly
+        public bool monopolyCheck(Player player, Property property)
         {
-            //colours<string, int> = new Dictionary<string, int>();
-            //foreach (
-            return false;
+            Dictionary<string, int> colours = new Dictionary<string, int>();
+            foreach (Property p in OwnedProperties){
+                if (colours.ContainsKey(p.colour)==false){
+                    colours.Add(p.colour,1);
+                }
+                else{
+                    colours[p.colour]++;
+                }
+            }
+            if (property.colour == "Brown" || property.colour == "DBlue"){
+                return colours[property.colour] >1;
+            } 
+            else{
+                return colours[property.colour] >2;
+            }
+            
 
         }
-    
+        
     
     public void BuyTile(Property property)
         {
@@ -119,13 +134,16 @@ namespace PropertyTycoon
             }
         }
 
-        public void PayRent(boardPlayer owner, int rent)
+        public void PayRent(Player owner,boardPlayer bplayer ,int rent,Property p)
         {
-
+            //checks for a monopoly for passed property. If true, double rent if there aren't any houses
+            if (monopolyCheck(owner,p)==true && p.houses == 0 && p.hotel == false){
+                rent = rent * 2;}
+            
             if (balance >= rent)
             {
                 balance -= rent;
-                owner.ReceiveRent(rent);
+                bplayer.ReceiveRent(rent);
                 Debug.Log("Paid rent of £" + rent + ". New balance is " + balance);
             }
             else

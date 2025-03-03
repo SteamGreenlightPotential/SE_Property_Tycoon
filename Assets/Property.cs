@@ -12,6 +12,7 @@ namespace PropertyTycoon{
         public int baseRent; //initial rent
         public int houses; //Max of 4
         public bool hotel; //If hotel is true, there must be no houses
+        public int tileno {get; set;}
         public Property(string newname, int newprice, string newcolour, int newbaseRent){
             name = newname;
 

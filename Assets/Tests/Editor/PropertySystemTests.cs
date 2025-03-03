@@ -1,20 +1,20 @@
 //System test cases generated with Deepseek AI 
-//Prompt: Give me unit and system tests for these unity project files in their current state (Property.cs and GameManager.cs attached)
+//Prompt: Give me unit and system tests for these unity project files in their current state (Property.cs and PropertyManager.cs attached)
 using NUnit.Framework;
 using UnityEngine;
 using PropertyTycoon;
 
-//Ensures Property and GameManager classes are interacting properly
+//Ensures Property and PropertyManager classes are interacting properly
 public class SystemTests
 {
-    private GameManager gameManager;
+    private PropertyManager PropertyManager;
     private Player player;
 
     [SetUp]
     public void SetUp()
     {
-        GameObject gameManagerObject = new GameObject();
-        gameManager = gameManagerObject.AddComponent<GameManager>();
+        GameObject PropertyManagerObject = new GameObject();
+        PropertyManager = PropertyManagerObject.AddComponent<PropertyManager>();
         boardPlayer bplayer = new boardPlayer();
         player = new Player("Test Player",bplayer);
     }
@@ -22,8 +22,8 @@ public class SystemTests
     [Test]
     public void PropertyPurchase()
     {
-        gameManager.initialiseProperties();
-        Property property = gameManager.properties[0];
+        PropertyManager.initialiseProperties();
+        Property property = PropertyManager.properties[0];
 
         // Player buys the property
         property.switchOwner(player);
@@ -35,8 +35,8 @@ public class SystemTests
     [Test]
     public void PlayerSellsProperty_Test()
     {
-        gameManager.initialiseProperties();
-        Property property = gameManager.properties[0];
+        PropertyManager.initialiseProperties();
+        Property property = PropertyManager.properties[0];
 
         // Player buys the property
         property.switchOwner(player);
@@ -53,8 +53,8 @@ public class SystemTests
     [Test]
     public void PlayerAddsHousesAndHotel_Test()
     {
-        gameManager.initialiseProperties();
-        Property property = gameManager.properties[0];
+        PropertyManager.initialiseProperties();
+        Property property = PropertyManager.properties[0];
 
         // Player buys the property
         property.switchOwner(player);

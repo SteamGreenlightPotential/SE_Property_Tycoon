@@ -6,6 +6,8 @@ using PropertyTycoon;
 namespace PropertyTycoon{
     public class Turn_Script : MonoBehaviour{
         public boardPlayer[] players; // Assigned the scripts from each piece in the Inspector
+
+        public PropertyManager pmanager; //Assigned PropertyManager in Unity Inspector
         private int currentPlayerIndex = 0;
         private bool isWaitingForRoll = true; // Wait for player to press space to roll
         private int round = 1;
@@ -63,6 +65,8 @@ namespace PropertyTycoon{
             int currentTile = player.TileCount;
             bool tileOwned = false;
             int ownerIndex = -1;
+            
+            //Checks whether current tile is tax
             if (currentTile == 4 || currentTile == 38)
             {
                 player.taxCheck();
@@ -71,7 +75,7 @@ namespace PropertyTycoon{
 
             for (int i = 0; i < players.Length; i++)  // Loop through all players to see if any own the current tile
             {
-                if (players[i].OwnedProperties.Contains(currentTile))
+                if (players[i].OwnedProperties.tileno.Contains(currentTile))
                 {
                     Debug.Log("Tile " + currentTile + " is owned by Player " + (i + 1));
                     tileOwned = true;
@@ -102,7 +106,9 @@ namespace PropertyTycoon{
                 {
                     if (Input.GetKeyDown(KeyCode.B))
                     {
-                        player.BuyTile(currentTile, 200);
+                        //Fetches property using current tile 
+                        Property property = pmanager.getTileProperty(currentTile);
+                        player.BuyTile(property);
                         decisionMade = true;
                         bankBalance += 200;
                     }

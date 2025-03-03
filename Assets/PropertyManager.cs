@@ -43,12 +43,11 @@ namespace PropertyTycoon
             }
 
         //Check all imported properly
-        foreach (Property item in properties)
-            {
+        Property item = properties[5];
                 Debug.Log(item.name);
                 Debug.Log(item.price);
                 Debug.Log(item.tileno);
-            }
+        
         }
 
         //Method to get property object from tile

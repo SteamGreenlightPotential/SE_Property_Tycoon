@@ -72,16 +72,18 @@ namespace PropertyTycoon{
                 player.taxCheck();
                 freeParkingBalance += 100;
             }
-
-            for (int i = 0; i < players.Length; i++)  // Loop through all players to see if any own the current tile
+            int i = 0;
+            foreach (boardPlayer p in players)  // Loop through all players to see if any own the current tile
             {
-                if (players[i].OwnedProperties.tileno.Contains(currentTile))
+                Player realplayer = getPlayerFromBoard(p);
+                if (pmanager.getTileProperty(currentTile).owner == realplayer)
                 {
-                    Debug.Log("Tile " + currentTile + " is owned by Player " + (i + 1));
+                    Debug.Log("Tile " + currentTile + " is owned by " + (p.name));
                     tileOwned = true;
                     ownerIndex = i;
                     break; // Terminate loop immediately
                 }
+                i += 1;
             }
 
             if (tileOwned) // If tile is owned makes player pay rent unlesss they own it
@@ -157,6 +159,17 @@ namespace PropertyTycoon{
 
             // Start the next player's turn
             StartTurn();
+        }
+
+        //Get the player object corresponding to a player's board object
+        Player getPlayerFromBoard(boardPlayer player){
+            foreach (Player p in playerlist){
+                if (p.bPlayer == player){
+                    return p;
+                }
+
+            }
+            return null;
         }
 
 

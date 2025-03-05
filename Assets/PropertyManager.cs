@@ -54,6 +54,7 @@ namespace PropertyTycoon
         public Property getTileProperty(int tileno){
             foreach (Property p in properties){
                 if (p.tileno == tileno){
+                    Debug.Log("Returned property "+ p.name);
                     return p;
                 }
             }

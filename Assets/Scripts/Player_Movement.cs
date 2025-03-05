@@ -17,7 +17,7 @@ namespace PropertyTycoon
             StartCoroutine(ProcessMovements(steps));
         }
 
-        private IEnumerator ProcessMovements(int steps)
+        IEnumerator ProcessMovements(int steps)
         {
             for (int i = 0; i < steps; i++) // For each tile crossed check direction and move player
             {
@@ -26,7 +26,7 @@ namespace PropertyTycoon
             }
         }
 
-        private Vector3 NextDir()
+        public Vector3 NextDir()
         {
             Vector3 direction = Vector3.zero;
             if (TileCount >= 0 && TileCount < 10)
@@ -77,7 +77,7 @@ namespace PropertyTycoon
 
         // temporary wallet example
 
-        private int balance = 1500;
+        public int balance = 1500;
         //private int amount = 0;
 
         public void taxCheck()

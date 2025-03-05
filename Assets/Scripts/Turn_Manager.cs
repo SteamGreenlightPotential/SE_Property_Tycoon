@@ -8,16 +8,16 @@ namespace PropertyTycoon{
         public boardPlayer[] players; // Assigned the scripts from each piece in the Inspector
 
         public PropertyManager pmanager; //Assigned PropertyManager in Unity Inspector
-        private int currentPlayerIndex = 0;
-        private bool isWaitingForRoll = true; // Wait for player to press space to roll
-        private int round = 1;
-        private bool turnEnded = false;
-        private int bankBalance = 50000;
+        public int currentPlayerIndex = 0;
+        public bool isWaitingForRoll = true; // Wait for player to press space to roll
+        public int round = 1;
+        public bool turnEnded = false;
+        public int bankBalance = 50000;
         private int freeParkingBalance = 0;
         public List<Player> playerlist; //Create an array of player objects corresponding to board players
 
 
-        void Start(){
+        public void Start(){
             Debug.Log("Round " + round); // Announce round 1 has started
             //add each board player to a player object
             int i = 1;
@@ -49,7 +49,7 @@ namespace PropertyTycoon{
             isWaitingForRoll = true; // Wait for player to press space before rolling
         }
 
-        IEnumerator PlayerMovePhase(boardPlayer player)
+        public IEnumerator PlayerMovePhase(boardPlayer player)
         {
             // Wait for player to press space before rolling
             yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
@@ -76,6 +76,11 @@ namespace PropertyTycoon{
             foreach (boardPlayer p in players)  // Loop through all players to see if any own the current tile
             {
                 Player realplayer = getPlayerFromBoard(p);
+                
+                if (pmanager.getTileProperty(currentTile)==null){
+                    //Avoids crashing from a null
+                    continue;
+                } 
                 if (pmanager.getTileProperty(currentTile).owner == realplayer)
                 {
                     Debug.Log("Tile " + currentTile + " is owned by " + (p.name));
@@ -165,7 +170,9 @@ namespace PropertyTycoon{
         Player getPlayerFromBoard(boardPlayer player){
             foreach (Player p in playerlist){
                 if (p.bPlayer == player){
+                    Debug.Log("Fetched player "+ p.Name);
                     return p;
+                    
                 }
 
             }

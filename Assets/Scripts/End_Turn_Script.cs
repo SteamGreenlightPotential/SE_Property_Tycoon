@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
+namespace PropertyTycoon{
 public class End_Turn_Script : MonoBehaviour
 {
     public Turn_Script turnScript; // Reference to Turn_Script
@@ -17,4 +18,5 @@ public class End_Turn_Script : MonoBehaviour
         yield return new WaitForSeconds(0.5f); // Wait for 0.5 seconds
         transform.localScale = new Vector3(1f, 1f, 0.1f); // Restore button size
     }
+}
 }

@@ -2,16 +2,21 @@ using System;
 
 namespace PropertyTycoon
 {
+        [System.Serializable] 
     public class Player 
     {
         public string Name { get; set; }
         public int Balance { get; set; }
 
-        public Player(string name)
+        public boardPlayer bPlayer; //Associated piece on board
+
+
+        public Player(string name, boardPlayer bplayer)
         {
             // Set Player's Name and Handle null exception
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Balance = 1500; // Player starts with £1500
+            bPlayer =  bplayer; 
         }
 
         // Adding money to the Player's Account

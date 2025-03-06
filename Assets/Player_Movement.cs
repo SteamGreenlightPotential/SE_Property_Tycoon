@@ -6,7 +6,7 @@ public class Grid_Movement : MonoBehaviour
     private bool isMoving; //Prevent multiple movements at once
     private Vector3 origPos, targetPos;
     private float TimeToMove = 0.2f;
-    private int TileCount = 0; //Check which tile the player is on
+    public int TileCount = 0; //Check which tile the player is on
 
     //Board boundaries
     public float minX = -5f;
@@ -38,7 +38,7 @@ public class Grid_Movement : MonoBehaviour
         }
     }
     //Get direction based on TileCount
-    private Vector3 NextDir() 
+    public Vector3 NextDir() 
     {
         Vector3 direction = Vector3.zero;
 
@@ -69,7 +69,7 @@ public class Grid_Movement : MonoBehaviour
     }
 
     //Player movement function
-    private IEnumerator MovePlayer(Vector3 direction) 
+    public IEnumerator MovePlayer(Vector3 direction) 
     {
         isMoving = true; //Lets program know a movement is in prograss
 

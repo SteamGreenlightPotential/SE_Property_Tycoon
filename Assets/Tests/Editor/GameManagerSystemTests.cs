@@ -15,7 +15,9 @@ public class PropertyManagerSystemTests
     {
         gameObject = new GameObject();
         propertyManager = gameObject.AddComponent<PropertyManager>();
-        yield return null; // Allow Awake() to be called naturally
+        // Manually call Awake() to ensure initialization
+        propertyManager.Awake(); // <-- Explicitly trigger Awake
+        yield return null; 
     }
 
     [TearDown]
@@ -25,16 +27,19 @@ public class PropertyManagerSystemTests
     }
 
     // System Test: Verify properties are initialized during Awake()
-    [Test]
-    public void Test_Awake_InitializesProperties()
+    [UnityTest]
+    public IEnumerator Test_Awake_InitializesProperties()
     {
+        // Wait for Awake() to complete
+        yield return null;
         Assert.AreEqual(22, propertyManager.properties.Count);
     }
 
     // System Test: Verify tile-based property retrieval works after initialization
-    [Test]
-    public void Test_GetTileProperty_AfterInitialization()
+    [UnityTest]
+    public IEnumerator Test_GetTileProperty_AfterInitialization()
     {
+        yield return null; // Ensure Awake() completes
         Property prop = propertyManager.getTileProperty(40);
         Assert.IsNotNull(prop);
         Assert.AreEqual("Turing Heights", prop.name);
@@ -42,9 +47,10 @@ public class PropertyManagerSystemTests
     }
 
     // System Test: Verify last property has correct attributes
-    [Test]
-    public void Test_LastPropertyDetailsCorrect()
+    [UnityTest]
+    public IEnumerator Test_LastPropertyDetailsCorrect()
     {
+        yield return null; // Ensure Awake() completes
         Property lastProp = propertyManager.properties[21];
         Assert.AreEqual("Turing Heights", lastProp.name);
         Assert.AreEqual(400, lastProp.price);

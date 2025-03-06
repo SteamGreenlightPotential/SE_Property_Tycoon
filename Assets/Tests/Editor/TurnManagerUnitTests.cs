@@ -10,7 +10,7 @@ public class TurnManagerUnitTests
     private Turn_Script turnManager;
     private GameObject turnManagerObject;
     private boardPlayer[] mockPlayers;
-
+    private GameObject pmObject;
     [SetUp]
     public void SetUp()
     {
@@ -37,6 +37,7 @@ public class TurnManagerUnitTests
     {
         Object.DestroyImmediate(turnManagerObject);
         foreach (var player in mockPlayers) Object.DestroyImmediate(player.gameObject);
+        Object.DestroyImmediate(pmObject);
     }
 
     // Unit Test: Verify playerlist initializes correctly in Start()

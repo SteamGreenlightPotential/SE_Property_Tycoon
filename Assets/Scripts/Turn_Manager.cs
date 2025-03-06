@@ -14,7 +14,7 @@ namespace PropertyTycoon{
         public bool turnEnded = false;
         public int bankBalance = 50000;
         private int freeParkingBalance = 0;
-        public List<Player> playerlist; //Create an array of player objects corresponding to board players
+        public List<Player> playerlist=new List<Player>(); //Create an array of player objects corresponding to board players
 
 
         public void Start(){
@@ -49,11 +49,13 @@ namespace PropertyTycoon{
             isWaitingForRoll = true; // Wait for player to press space before rolling
         }
 
-        public IEnumerator PlayerMovePhase(boardPlayer player)
+        public IEnumerator PlayerMovePhase(boardPlayer player,bool testCase=false)
         {
-            // Wait for player to press space before rolling
-            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
-
+            //Lets me skip input, because this isnt modular i gotta do this
+            if (testCase==false){
+                // Wait for player to press space before rolling
+                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+            }
             // Roll the dice
             int roll = Random.Range(1, 7); // Roll dice for movement
             Debug.Log("Player " + (currentPlayerIndex + 1) + " rolled: " + roll);

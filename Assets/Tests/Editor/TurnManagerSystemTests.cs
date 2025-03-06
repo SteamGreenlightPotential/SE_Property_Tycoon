@@ -4,28 +4,35 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using System.Collections;
 using PropertyTycoon;
+using System.Reflection;
 
 public class TurnManagerSystemTests
 {
     private GameObject turnManagerObject;
+    private GameObject propertyManagerObject;
+
     private Turn_Script turnManager;
 
+    private PropertyManager pmanager;
     [UnitySetUp]
     public IEnumerator SetUp()
     {
         turnManagerObject = new GameObject();
         turnManager = turnManagerObject.AddComponent<Turn_Script>();
         
+        propertyManagerObject = new GameObject();
+        pmanager = propertyManagerObject.AddComponent<PropertyManager>();
+
         // Initialize players and dependencies
         turnManager.players = new boardPlayer[2];
         for (int i = 0; i < 2; i++)
         {
             GameObject playerObj = new GameObject();
             turnManager.players[i] = playerObj.AddComponent<boardPlayer>();
+            turnManager.players[i].name="player "+i.ToString();
         }
         
-        GameObject pmObject = new GameObject();
-        turnManager.pmanager = pmObject.AddComponent<PropertyManager>();
+        turnManager.Start();
         yield return null; // Allow Awake() to initialize
     }
 
@@ -37,36 +44,42 @@ public class TurnManagerSystemTests
     }
 
     // System Test: Verify full turn cycle advances rounds
-    [UnityTest]
-    public IEnumerator Test_FullTurnCycle_IncrementsRound()
+   [UnityTest]
+    public IEnumerator Test_RoundIncrementsAfterFullCycle()
     {
-        turnManager.Start();
-        int initialRound = turnManager.round;
+        // Save original time scale and speed up time
+        // this worked apparently???????
+        float originalTimeScale = Time.timeScale;
+        Time.timeScale = 100f; // Makes 0.5s delay ~0.005s
         
-        // Simulate two turns to complete a full cycle
-        for (int i = 0; i < 2; i++)
-        {
-            turnManager.turnEnded = true;
-            turnManager.EndTurnButtonClicked();
-            yield return new WaitForSeconds(0.6f);
+        turnManager.currentPlayerIndex = 1; // Last player in a 2-player game
+        turnManager.turnEnded = true; // Enable ending the turn
+        for (int i=0;i<2;i++){
+        turnManager.EndTurnButtonClicked();
+        yield return new WaitUntil(() => turnManager.currentPlayerIndex == 0); // Wait for index 
         }
-        
-        Assert.AreEqual(initialRound + 1, turnManager.round);
+        Time.timeScale = originalTimeScale; //fix timescale after
+        Assert.AreEqual(2, turnManager.round); // Round should increment after all players
     }
-
+    
     // System Test: Verify player movement updates TileCount
     [UnityTest]
     public IEnumerator Test_PlayerMovePhase_UpdatesTilePosition()
     {
-        turnManager.Start();
+        turnManager.pmanager=pmanager;
+         // Save original time scale and speed up time
+        // this worked apparently???????
+        float originalTimeScale = Time.timeScale;
+        Time.timeScale = 100f; // Makes 0.5s delay ~0.005s
+        
         boardPlayer currentPlayer = turnManager.players[0];
         int initialTile = currentPlayer.TileCount;
         
         // Simulate dice roll
         turnManager.isWaitingForRoll = false;
-        turnManager.StartCoroutine(turnManager.PlayerMovePhase(currentPlayer));
-        yield return new WaitForSeconds(2f); // Wait for movement
-        
+        turnManager.StartCoroutine(turnManager.PlayerMovePhase(currentPlayer,true));
+        yield return new WaitUntil(() => currentPlayer.TileCount > initialTile);
+        Time.timeScale = originalTimeScale; //fix timescale after
         Assert.Greater(currentPlayer.TileCount, initialTile);
     }
 }

@@ -10,40 +10,46 @@ public class TurnManagerUnitTests
     private Turn_Script turnManager;
     private GameObject turnManagerObject;
     private boardPlayer[] mockPlayers;
-    private GameObject pmObject;
-    [SetUp]
-    public void SetUp()
+    private GameObject propertyManagerObject;
+
+    private PropertyManager pmanager;
+
+    [UnitySetUp]
+    public IEnumerator SetUp()
     {
         turnManagerObject = new GameObject();
         turnManager = turnManagerObject.AddComponent<Turn_Script>();
         
-        // Initialize mock players
-        mockPlayers = new boardPlayer[2];
+        propertyManagerObject = new GameObject();
+        pmanager = propertyManagerObject.AddComponent<PropertyManager>();
+
+        // Initialize players and dependencies
+        turnManager.players = new boardPlayer[2];
         for (int i = 0; i < 2; i++)
         {
             GameObject playerObj = new GameObject();
-            mockPlayers[i] = playerObj.AddComponent<boardPlayer>();
+            turnManager.players[i] = playerObj.AddComponent<boardPlayer>();
+            turnManager.players[i].name="player "+i.ToString();
         }
-        turnManager.players = mockPlayers;
         
-        // Initialize PropertyManager
-        GameObject pmObject = new GameObject();
-        turnManager.pmanager = pmObject.AddComponent<PropertyManager>();
-        turnManager.pmanager.initialiseProperties();
+        turnManager.Start();
+        yield return null; // Allow Awake() to initialize
     }
+
 
     [TearDown]
     public void TearDown()
     {
         Object.DestroyImmediate(turnManagerObject);
-        foreach (var player in mockPlayers) Object.DestroyImmediate(player.gameObject);
-        Object.DestroyImmediate(pmObject);
+        foreach (var player in turnManager.players) Object.DestroyImmediate(player.gameObject);
+        Object.DestroyImmediate(propertyManagerObject);
     }
 
     // Unit Test: Verify playerlist initializes correctly in Start()
     [Test]
     public void Test_Start_InitializesPlayerList()
     {
+       
         turnManager.Start();
         Assert.AreEqual(2, turnManager.playerlist.Count);
         Assert.AreEqual("player 1", turnManager.playerlist[0].Name);
@@ -53,12 +59,19 @@ public class TurnManagerUnitTests
     [UnityTest]
     public IEnumerator Test_EndTurn_CyclesPlayerIndex()
     {
-        turnManager.Start();
+         // Save original time scale and speed up time
+        // this worked apparently???????
+        float originalTimeScale = Time.timeScale;
+        Time.timeScale = 100f; // Makes 0.5s delay ~0.005s
+        
         turnManager.turnEnded = true; // Force allow turn end
         
         turnManager.EndTurnButtonClicked();
-        yield return new WaitForSeconds(0.6f); // Wait for coroutine
+        yield return new WaitUntil(() => turnManager.currentPlayerIndex == 1); // Wait for index 
+
         
+        Time.timeScale = originalTimeScale; //fix timescale after
+
         Assert.AreEqual(1, turnManager.currentPlayerIndex);
     }
 

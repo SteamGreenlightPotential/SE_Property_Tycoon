@@ -7,15 +7,18 @@ using System.Collections.Generic;
 
 public class PlayerMovementUnitTests
 {
-    private boardPlayer player;
+    private boardPlayer bplayer;
     private GameObject testGameObject;
 
+    private Player player;
     [SetUp]
     public void SetUp()
     {
         testGameObject = new GameObject();
-        player = testGameObject.AddComponent<boardPlayer>();
-        player.OwnedProperties = new List<Property>();
+        bplayer = testGameObject.AddComponent<boardPlayer>();
+        bplayer.OwnedProperties = new List<Property>();
+        player = new Player("test",bplayer);
+
     }
 
     [TearDown]
@@ -28,17 +31,17 @@ public class PlayerMovementUnitTests
     [Test]
     public void Test_NextDir_UpdatesTileCount()
     {
-        player.TileCount = 0;
-        Vector3 dir = player.NextDir(); // Requires internal access
-        Assert.AreEqual(1, player.TileCount);
+        bplayer.TileCount = 0;
+        Vector3 dir = bplayer.NextDir(); // Requires internal access
+        Assert.AreEqual(1, bplayer.TileCount);
     }
 
     // Unit Test: Validate direction calculation for corner tiles
     [Test]
     public void Test_NextDir_ReturnsCorrectDirection()
     {
-        player.TileCount = 9; // Edge of top-right corner
-        Vector3 dir = player.NextDir();
+        bplayer.TileCount = 9; // Edge of top-right corner
+        Vector3 dir = bplayer.NextDir();
         Assert.AreEqual(Vector3.down, dir);
     }
 
@@ -47,8 +50,8 @@ public class PlayerMovementUnitTests
     public void Test_BuyTile_SufficientBalance()
     {
         Property testProp = new Property("Test", 100, "Brown", 10);
-        player.BuyTile(testProp);
-        Assert.Contains(testProp, player.OwnedProperties);
+        bplayer.BuyTile(testProp,player);
+        Assert.Contains(testProp, bplayer.OwnedProperties);
     }
 
     // Unit Test: Failed tile purchase due to low balance
@@ -56,7 +59,7 @@ public class PlayerMovementUnitTests
     public void Test_BuyTile_InsufficientBalance()
     {
         Property expensiveProp = new Property("Luxury", 9999, "DBlue", 50);
-        player.BuyTile(expensiveProp);
-        Assert.IsEmpty(player.OwnedProperties);
+        bplayer.BuyTile(expensiveProp,player);
+        Assert.IsEmpty(bplayer.OwnedProperties);
     }
 }

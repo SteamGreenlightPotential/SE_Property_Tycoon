@@ -15,8 +15,6 @@ public class PropertyManagerSystemTests
     {
         gameObject = new GameObject();
         propertyManager = gameObject.AddComponent<PropertyManager>();
-        // Manually call Awake() to ensure initialization
-        propertyManager.Awake(); // <-- Explicitly trigger Awake
         yield return null; 
     }
 

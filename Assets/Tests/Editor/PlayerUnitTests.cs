@@ -3,15 +3,14 @@ using NUnit.Framework;
 using PropertyTycoon;
 using UnityEngine;
 
-public class PlayerUnitTests
-{
+public class PlayerUnitTests{
     // Unit Test: Verify player initialization
     [Test]
     public void Test_PlayerInitialization_ValuesCorrect()
     {
         var playerObj = new GameObject();
-    var mockBoardPlayer = playerObj.AddComponent<boardPlayer>();
-    Player player = new Player("Test Player", mockBoardPlayer);
+        var mockBoardPlayer = playerObj.AddComponent<boardPlayer>();
+        Player player = new Player("Test Player", mockBoardPlayer);
         Assert.AreEqual("Test Player", player.Name);
         Assert.AreEqual(1500, player.Balance);
         Assert.AreEqual(mockBoardPlayer, player.bPlayer);
@@ -35,7 +34,6 @@ public class PlayerUnitTests
         Assert.AreEqual(1200, player.Balance);
     }
 
-    // Unit Test: Prevent negative balance
-    [Test]
+    
     
 }

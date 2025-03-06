@@ -61,14 +61,16 @@ namespace PropertyTycoon
 
         private IEnumerator MovePlayer(Vector3 direction)
         {
-            float elapsedTime = 0;
             origPos = transform.position; // Store current position
             targetPos = origPos + direction; // Store target position
 
-            while (elapsedTime < TimeToMove)
+            float startTime = Time.realtimeSinceStartup;
+            float elapsed = 0;
+            while (elapsed < TimeToMove)
             {
-                transform.position = Vector3.Lerp(origPos, targetPos, (elapsedTime / TimeToMove)); // Move piece to target position over time
-                elapsedTime += Time.deltaTime;
+                elapsed = Time.realtimeSinceStartup - startTime;
+                float t = Mathf.Clamp01(elapsed / TimeToMove);
+                transform.position = Vector3.Lerp(origPos, targetPos, t);
                 yield return null;
             }
 
@@ -100,7 +102,7 @@ namespace PropertyTycoon
         public bool monopolyCheck(Player player, Property property)
         {
             Dictionary<string, int> colours = new Dictionary<string, int>();
-            foreach (Property p in OwnedProperties){
+            foreach (Property p in player.bPlayer.OwnedProperties){
                 if (colours.ContainsKey(p.colour)==false){
                     colours.Add(p.colour,1);
                 }
@@ -119,13 +121,16 @@ namespace PropertyTycoon
         }
         
     
-    public void BuyTile(Property property)
+
+    public void BuyTile(Property property, Player owner) //Buys property, assigns it to owner
         {
             int cost = property.price;
             if (balance >= cost)
             {
                 balance -= cost;
                 OwnedProperties.Add(property);
+                property.owner = owner;
+                property.owned = true;
                 Debug.Log("Tile " + property.name + " purchased. New balance is " + balance);
             }
             else
@@ -134,8 +139,11 @@ namespace PropertyTycoon
             }
         }
 
-        public void PayRent(Player owner,boardPlayer bplayer ,int rent,Property p)
+        public void PayRent(int rent,Property p)
         {
+            //Get owner of property
+            Player owner = p.owner;
+            boardPlayer bplayer = owner.bPlayer;
             //checks for a monopoly for passed property. If true, double rent if there aren't any houses
             if (monopolyCheck(owner,p)==true && p.houses == 0 && p.hotel == false){
                 rent = rent * 2;}

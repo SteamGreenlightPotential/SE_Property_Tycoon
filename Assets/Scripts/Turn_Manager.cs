@@ -97,7 +97,7 @@ namespace PropertyTycoon{
                 {
                     int rent = 50; //Temp value
                     Debug.Log("Tile " + currentTile + " is owned by Player " + (ownerIndex + 1) + ". Paying rent £" + rent);
-                    players[currentPlayerIndex].PayRent(getPlayerFromBoard(players[ownerIndex]),players[ownerIndex], rent,pmanager.getTileProperty(currentTile));
+                    players[currentPlayerIndex].PayRent(rent,pmanager.getTileProperty(currentTile));
                 }
                 else
                 {
@@ -115,7 +115,7 @@ namespace PropertyTycoon{
                     {
                         //Fetches property using current tile 
                         Property property = pmanager.getTileProperty(currentTile);
-                        player.BuyTile(property);
+                        player.BuyTile(property,getPlayerFromBoard(players[currentPlayerIndex]));
                         decisionMade = true;
                         bankBalance += 200;
                     }

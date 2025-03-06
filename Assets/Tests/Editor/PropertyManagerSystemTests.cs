@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using System.Collections;
 using PropertyTycoon;
+using System.Reflection;
 
 public class PropertyManagerSystemTests
 {
@@ -28,7 +29,7 @@ public class PropertyManagerSystemTests
     [UnityTest]
     public IEnumerator Test_Awake_InitializesProperties()
     {
-        // Wait for Awake() to complete
+        propertyManager.initialiseProperties();
         yield return null;
         Assert.AreEqual(22, propertyManager.properties.Count);
     }
@@ -37,6 +38,7 @@ public class PropertyManagerSystemTests
     [UnityTest]
     public IEnumerator Test_GetTileProperty_AfterInitialization()
     {
+        propertyManager.initialiseProperties();
         yield return null; // Ensure Awake() completes
         Property prop = propertyManager.getTileProperty(40);
         Assert.IsNotNull(prop);
@@ -48,6 +50,7 @@ public class PropertyManagerSystemTests
     [UnityTest]
     public IEnumerator Test_LastPropertyDetailsCorrect()
     {
+        propertyManager.initialiseProperties();
         yield return null; // Ensure Awake() completes
         Property lastProp = propertyManager.properties[21];
         Assert.AreEqual("Turing Heights", lastProp.name);

@@ -1,56 +1,92 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace PropertyTycoon{
-    public class GameManager: MonoBehaviour{
-        public List<Property> properties = new List<Property>(); //Holds all properties
+namespace PropertyTycoon
+{
+    public class GameManager : MonoBehaviour
+    {
+        public List<Property> properties; // Lists all properties
+        public Bank bank; // Bank instance
+        public List<Player> players; // List of players
 
-        //Initialises all properties. Hardcoded based on database files given by client
-        public void initialiseProperties(){
-
-        properties.Add(new Property("The Old Creek",60,"Brown",2));
-        properties.Add(new Property("Gangsters Paradise",60,"Brown",4));
-        properties.Add(new Property("The Angels Delight",100,"Blue",6));
-        properties.Add(new Property("Potters Avenue",100,"Blue",6));
-        properties.Add(new Property("Granger Drive",120,"Blue",8));
-        properties.Add(new Property("Skywalker Drive",140,"Purple",10));
-        properties.Add(new Property("Wookie Hole",140,"Purple",10));
-        properties.Add(new Property("Rey Lane",160,"Purple",12));
-        properties.Add(new Property("Bishop Drive",180,"Orange",14));
-        properties.Add(new Property("Dunham Street",180,"Orange",14));
-        properties.Add(new Property("Broyles Lane",200,"Orange",16));
-        properties.Add(new Property("Yue Fei Square",220,"Red",18));
-        properties.Add(new Property("Mulan Rouge",220,"Red",18));
-        properties.Add(new Property("Han Xin Gardens",240,"Red",20));
-        properties.Add(new Property("Shatner Close",260,"Yellow",22));
-        properties.Add(new Property("Picard Avenue",260,"Yellow",22));
-        properties.Add(new Property("Crusher Creek",280,"Yellow",22));
-        properties.Add(new Property("Sirat Mews",300,"Green",26));
-        properties.Add(new Property("Ghengis Crecent",300,"Green",26));
-        properties.Add(new Property("Ibis Close",320,"Green",28));
-        properties.Add(new Property("James Webb Way",350,"DBlue",35));
-        properties.Add(new Property("Turing Heights",400,"DBlue",50));
-
-        //Check all imported properly
-        foreach (Property item in properties){
-            Debug.Log(item.name);
-            Debug.Log(item.price);
-        }
-        }
-        
-        //Initialising all important stuff
-        void Awake(){
-            //Persists between scenes
-            DontDestroyOnLoad(gameObject);
-            //make sure they woke up
-            Debug.Log("Game Manager Online"); 
-
-            //Initialises all properties
-            initialiseProperties(); 
+        private void Awake()
+        {
+            DontDestroyOnLoad(gameObject);       // Makes GameManager persistent between scenes
+            bank = new Bank();                   // Initialize the bank
+            players = new List<Player>();        // Initialize the player list
+            InitialiseProperties();              // Load all properties
+            Debug.Log("Game Manager Online");    // Debug message to confirm initialization
         }
 
+        private void Start()
+        {
+            Debug.Log("Game Started");  // Debug message for confirmation
+            DisplayBalances();          // Show initial balances in the debug console
+        }
 
+        // Method to initialise properties
+        public void InitialiseProperties()
+        {
+            PropertyList propertyList = new PropertyList();
+            propertyList.initialiseProperties(); // Loads properties form Property.cs
+            properties = propertyList.properties; // Assign to the GameManager's list
+        }
 
+        // Method to add a player to the game
+        public void AddPlayer(string name)
+        {
+            players.Add(new Player(name)); // Adds a new player to the game
+            Debug.Log($"Player {name} has been added."); // Debug message for confirmation
+        }
 
+        // Player to Player transaction
+        public void PerformTransaction(Player payer, Player payee, int amount)
+        {
+            payer.Debit(amount); // Deducts amount from payer
+            payee.Credit(amount); // Adds amount to payee
+            bank.RecordTransaction(new Transaction(payer.Name, payee.Name, amount)); // Records the transaction in the bank
+            Debug.Log($"{payer.Name} paid {payee.Name} £{amount}"); // Debug message for confirmation
+        }
+
+        // Bank to Player transaction
+        public void PerformBankTransaction(Player player, int amount)
+        {
+            if (amount > 0)
+            {
+                bank.MakePayment(player, amount); // Bank pays the player
+                Debug.Log($"Bank paid {player.Name} £{amount}");
+            }
+            else
+            {
+                player.Debit(-amount); // Player pays the bank
+                bank.ReceivePayment(-amount);
+                Debug.Log($"{player.Name} paid Bank £{-amount}");
+            }
+        }
+
+        // Method to display all balances
+        public void DisplayBalances()
+        {
+            foreach (var player in players)
+            {
+                Debug.Log($"Player {player.Name}: £{player.Balance}");
+            }
+            Debug.Log($"Bank Funds: £{bank.TotalFunds}");
+            Debug.Log($"Free Parking: £{bank.FreeParking}");
+        }
+
+        // Method to draw and exicute Pot Luck card
+        public void DrawPotLuckCard(Player player)
+        {
+            Card potLuckCard = Cards.DrawTopCard(Cards.PotLuck);
+            Cards.ExecuteCardAction(potLuckCard, player, bank, players); // Executes card action
+        }
+
+        // Method to draw and execute Opportunity Knocks card
+        public void DrawOpportunityKnocksCard(Player player)
+        {
+            Card opportunityKnocksCard = Cards.DrawTopCard(Cards.OpportunityKnocks);
+            Cards.ExecuteCardAction(opportunityKnocksCard, player, bank, players); // Executes card action
+        }
     }
 }

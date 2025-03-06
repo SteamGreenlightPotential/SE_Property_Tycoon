@@ -40,7 +40,7 @@ public class PlayerMovementUnitTests
     [Test]
     public void Test_NextDir_ReturnsCorrectDirection()
     {
-        bplayer.TileCount = 9; // Edge of top-right corner
+        bplayer.TileCount = 10; // Edge of top-right corner
         Vector3 dir = bplayer.NextDir();
         Assert.AreEqual(Vector3.down, dir);
     }

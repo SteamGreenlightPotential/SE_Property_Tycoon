@@ -49,8 +49,6 @@ public class TurnManagerUnitTests
     [Test]
     public void Test_Start_InitializesPlayerList()
     {
-       
-        turnManager.Start();
         Assert.AreEqual(2, turnManager.playerlist.Count);
         Assert.AreEqual("player 1", turnManager.playerlist[0].Name);
     }

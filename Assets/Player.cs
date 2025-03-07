@@ -9,7 +9,10 @@ namespace PropertyTycoon
         public int Balance { get; set; }
         public List<Property> Properties { get; set; }
 
-        public Player(string name)
+        public boardPlayer bPlayer; //Associated piece on board
+
+
+        public Player(string name, boardPlayer bplayer)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name)); // Preventing Null Error
             Balance = 1500; // Player starts with £1500

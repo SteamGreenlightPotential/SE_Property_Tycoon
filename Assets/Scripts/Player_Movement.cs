@@ -68,6 +68,7 @@ namespace PropertyTycoon
             {
                 TileCount = 1; // Reset TileCount to loop board
                 direction = Vector3.right; // Reset direction to right
+                goPassed = true; // Player has passed Go
             }
 
             TileCount += 1; // Increment TileCount for each tile moved across

@@ -93,6 +93,13 @@ namespace PropertyTycoon{
                 i += 1;
             }
 
+            //If player passed GO, give them their money. 
+            if (player.goPassed == true){
+                player.balance += 200;
+                player.goPassed = false;
+                Debug.Log("PASSED GO");
+            }
+            
             //Check if tile is a wildcard
             if (pmanager.getTileProperty(currentTile) == null){
                 
@@ -119,6 +126,10 @@ namespace PropertyTycoon{
                     yield return player.toJail();
                     player.TileCount =11;
                     Debug.Log("GO TO JAIL");
+                    player.inJail = true;
+
+                    //Prevent go money coming in next turn from "passing go"
+                    player.goPassed = false;
                 }
 
             }

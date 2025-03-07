@@ -81,4 +81,16 @@ public class TurnManagerUnitTests
         turnManager.EndTurnButtonClicked();
         Assert.AreEqual(1, turnManager.round);
     }
+
+    //Unit Test: Test taxCheck
+    [Test]
+    public void Test_TaxCheck()
+    {
+        boardPlayer player = turnManager.players[0];
+        player.balance = 1500;
+        player.TileCount = 5;
+        player.taxCheck();
+        Assert.AreEqual(1400, player.balance);
+    }
+
 }

@@ -6,7 +6,6 @@ using PropertyTycoon;
 namespace PropertyTycoon{
     public class Turn_Script : MonoBehaviour{
         public boardPlayer[] players; // Assigned the scripts from each piece in the Inspector
-
         public PropertyManager pmanager; //Assigned PropertyManager in Unity Inspector
         public int currentPlayerIndex = 0;
         public bool isWaitingForRoll = true; // Wait for player to press space to roll
@@ -15,6 +14,8 @@ namespace PropertyTycoon{
         public int bankBalance = 50000;
         private int freeParkingBalance = 0;
         public List<Player> playerlist=new List<Player>(); //Create an array of player objects corresponding to board players
+
+        public bool testMode = true; //"Test Mode" allows for hard coded dice rolls for testing purposes
 
 
         public void Start(){
@@ -25,10 +26,6 @@ namespace PropertyTycoon{
                 string name = ("player " + i.ToString());
                 playerlist.Add(new Player(name,bplayer));
                 i += 1;
-            }
-            //Checking they were made properly
-            foreach (Player player in playerlist){
-                Debug.Log(player.Name);
             }
             StartTurn();
         }
@@ -51,15 +48,24 @@ namespace PropertyTycoon{
 
         public IEnumerator PlayerMovePhase(boardPlayer player,bool testCase=false)
         {
+            int roll = 0;
             //Lets me skip input, because this isnt modular i gotta do this
             if (testCase==false){
                 // Wait for player to press space before rolling
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
             }
-            // Roll the dice
-            int roll = Random.Range(1, 7); // Roll dice for movement
-            Debug.Log("Player " + (currentPlayerIndex + 1) + " rolled: " + roll);
-
+            
+            //If test mode is on, roll hard coded number for test reasons 
+            if (testMode==true){
+                roll = 5;
+            }
+            else{
+                
+                // Roll the dice
+                roll = Random.Range(1, 7); // Roll dice for movement
+                Debug.Log("Player " + (currentPlayerIndex + 1) + " rolled: " + roll);
+            }
+            
             player.Move(roll); // Move the player
             yield return new WaitForSeconds(roll * 0.2f + 0.5f); // Wait for movement to finish
 
@@ -68,12 +74,6 @@ namespace PropertyTycoon{
             bool tileOwned = false;
             int ownerIndex = -1;
             
-            //Checks whether current tile is tax
-            if (currentTile == 4 || currentTile == 38)
-            {
-                player.taxCheck();
-                freeParkingBalance += 100;
-            }
             int i = 0;
             foreach (boardPlayer p in players)  // Loop through all players to see if any own the current tile
             {
@@ -93,7 +93,19 @@ namespace PropertyTycoon{
                 i += 1;
             }
 
-            if (tileOwned) // If tile is owned makes player pay rent unlesss they own it
+            //Check if tile is a wildcard
+            if (pmanager.getTileProperty(currentTile) == null){
+                
+                //Checks whether current tile is tax
+                if (currentTile == 5 || currentTile == 39){
+                //TAX THEM
+                player.taxCheck();
+                freeParkingBalance += 100;
+                }
+
+            
+            }
+            else if (tileOwned) // If tile is owned makes player pay rent unlesss they own it
             {
                 if (ownerIndex != currentPlayerIndex)
                 {

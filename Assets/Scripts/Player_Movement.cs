@@ -10,7 +10,8 @@ namespace PropertyTycoon
         public List<Property> OwnedProperties = new List<Property>(); // Create a list  to store owned properties
         private Vector3 origPos, targetPos;
         private float TimeToMove = 0.2f;
-        public int TileCount = 0;
+        public int TileCount = 1;
+        public bool goPassed = false;
 
         public void Move(int steps)  // Called from Turn_Script to trigger movement for 1 turn
         {
@@ -51,7 +52,7 @@ namespace PropertyTycoon
             }
             else
             {
-                TileCount = 0; // Reset TileCount to loop board
+                TileCount = 1; // Reset TileCount to loop board
                 direction = Vector3.right; // Reset direction to right
             }
 
@@ -84,13 +85,13 @@ namespace PropertyTycoon
 
         public void taxCheck()
         {
-            if (TileCount == 4)
+            if (TileCount == 5)
             {
                 balance -= 100;
                 Debug.Log("Tax tile. New balance is " + balance);
             }
 
-            if (TileCount == 38)
+            if (TileCount == 39)
             {
                 balance -= 100;
                 Debug.Log("Tax tile. New balance is " + balance);

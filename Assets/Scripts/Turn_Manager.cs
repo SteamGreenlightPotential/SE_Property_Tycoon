@@ -57,7 +57,7 @@ namespace PropertyTycoon{
             
             //If test mode is on, roll hard coded number for test reasons 
             if (testMode==true){
-                roll = 5;
+                roll = 10;
             }
             else{
                 
@@ -101,9 +101,26 @@ namespace PropertyTycoon{
                 //TAX THEM
                 player.taxCheck();
                 freeParkingBalance += 100;
+                Debug.Log("GET TAXED");
                 }
 
-            
+                //Checks whether current tile is pot luck or opportunity knocks
+                //if (currentTile == )
+
+                //Checks whether current tile is free parking
+                if (currentTile == 21){
+                    player.balance += freeParkingBalance;
+                    freeParkingBalance = 0;
+                    Debug.Log("FREE PARKING :D");
+                }
+                
+                //checks whether current tile is on go to jail. If they are, send them to jail
+                if (currentTile == 31){
+                    yield return player.toJail();
+                    player.TileCount =11;
+                    Debug.Log("GO TO JAIL");
+                }
+
             }
             else if (tileOwned) // If tile is owned makes player pay rent unlesss they own it
             {

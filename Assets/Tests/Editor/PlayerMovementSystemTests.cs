@@ -39,7 +39,7 @@ using System.Reflection;
 
             // Use reflection to invoke private coroutine
             var method = typeof(boardPlayer).GetMethod("ProcessMovements", BindingFlags.NonPublic | BindingFlags.Instance);
-            IEnumerator coroutine = (IEnumerator)method.Invoke(player, new object[] { 7 });
+            IEnumerator coroutine = (IEnumerator)method.Invoke(player, new object[] { 6 });
 
             // Manually execute the coroutine
             while (coroutine.MoveNext())

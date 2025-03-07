@@ -58,7 +58,6 @@ namespace PropertyTycoon
                     return p;
                 }
             }
-            Debug.Log("No property with tile number " + tileno + "!");
             return null;
         } 
 

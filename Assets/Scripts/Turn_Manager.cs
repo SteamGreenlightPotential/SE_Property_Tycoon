@@ -49,6 +49,7 @@ namespace PropertyTycoon{
         public IEnumerator PlayerMovePhase(boardPlayer player,bool testCase=false)
         {
             int roll = 0;
+            int roll2 =0;//Second dice roll for double roll
             //Lets me skip input, because this isnt modular i gotta do this
             if (testCase==false){
                 // Wait for player to press space before rolling
@@ -63,121 +64,145 @@ namespace PropertyTycoon{
                 
                 // Roll the dice
                 roll = Random.Range(1, 7); // Roll dice for movement
+                roll2 = Random.Range(1, 7); // Roll dice for double roll
+                //implement double roll here ig
+                
                 Debug.Log("Player " + (currentPlayerIndex + 1) + " rolled: " + roll);
             }
             
-            player.Move(roll); // Move the player
+            
+            //Jail implementation
+           if (player.inJail==true){
+                player.jailTurns += 1;
+                if (player.jailTurns == 3){
+                    player.jailTurns=0;
+                    player.inJail = false;
+                    player.Move(roll+roll2);
+                    yield return new WaitForSeconds(roll * 0.2f + 0.5f);
+                }
+                else{
+                    Debug.Log("Player is in jail. Press 'End turn' to end turn");
+                }
+           }
+            else{
+            player.Move(roll+roll2); // Move the player
             yield return new WaitForSeconds(roll * 0.2f + 0.5f); // Wait for movement to finish
-
-            //temp bank stuff           -----------------------------------------------------------------------------------------------
-            int currentTile = player.TileCount;
-            bool tileOwned = false;
-            int ownerIndex = -1;
+            }
             
-            int i = 0;
-            foreach (boardPlayer p in players)  // Loop through all players to see if any own the current tile
-            {
-                Player realplayer = getPlayerFromBoard(p);
+            
+            //All of this only applies if NOT in jail
+
+
+            if (player.inJail==false){
+                //temp bank stuff           -----------------------------------------------------------------------------------------------
+                int currentTile = player.TileCount;
+                bool tileOwned = false;
+                int ownerIndex = -1;
                 
-                if (pmanager.getTileProperty(currentTile)==null){
-                    //Avoids crashing from a null
-                    continue;
-                } 
-                if (pmanager.getTileProperty(currentTile).owner == realplayer)
+                int i = 0;
+                foreach (boardPlayer p in players)  // Loop through all players to see if any own the current tile
                 {
-                    Debug.Log("Tile " + currentTile + " is owned by " + (p.name));
-                    tileOwned = true;
-                    ownerIndex = i;
-                    break; // Terminate loop immediately
-                }
-                i += 1;
-            }
-
-            //If player passed GO, give them their money. 
-            if (player.goPassed == true){
-                player.balance += 200;
-                player.goPassed = false;
-                Debug.Log("PASSED GO");
-            }
-            
-            //Check if tile is a wildcard
-            if (pmanager.getTileProperty(currentTile) == null){
-                
-                //Checks whether current tile is tax
-                if (currentTile == 5 || currentTile == 39){
-                //TAX THEM
-                player.taxCheck();
-                freeParkingBalance += 100;
-                Debug.Log("GET TAXED");
+                    Player realplayer = getPlayerFromBoard(p);
+                    
+                    if (pmanager.getTileProperty(currentTile)==null){
+                        //Avoids crashing from a null
+                        continue;
+                    } 
+                    if (pmanager.getTileProperty(currentTile).owner == realplayer)
+                    {
+                        Debug.Log("Tile " + currentTile + " is owned by " + (p.name));
+                        tileOwned = true;
+                        ownerIndex = i;
+                        break; // Terminate loop immediately
+                    }
+                    i += 1;
                 }
 
-                //Checks whether current tile is pot luck or opportunity knocks
-                //if (currentTile == )
-
-                //Checks whether current tile is free parking
-                if (currentTile == 21){
-                    player.balance += freeParkingBalance;
-                    freeParkingBalance = 0;
-                    Debug.Log("FREE PARKING :D");
-                }
-                
-                //checks whether current tile is on go to jail. If they are, send them to jail
-                if (currentTile == 31){
-                    yield return player.toJail();
-                    player.TileCount =11;
-                    Debug.Log("GO TO JAIL");
-                    player.inJail = true;
-
-                    //Prevent go money coming in next turn from "passing go"
+                //If player passed GO, give them their money. 
+                if (player.goPassed == true){
+                    player.balance += 200;
                     player.goPassed = false;
+                    Debug.Log("PASSED GO");
                 }
-
-            }
-            else if (tileOwned) // If tile is owned makes player pay rent unlesss they own it
-            {
-                if (ownerIndex != currentPlayerIndex)
-                {
-                    int rent = 50; //Temp value
-                    Debug.Log("Tile " + currentTile + " is owned by Player " + (ownerIndex + 1) + ". Paying rent £" + rent);
-                    players[currentPlayerIndex].PayRent(rent,pmanager.getTileProperty(currentTile));
-                }
-                else
-                {
-                    Debug.Log("Tile " + currentTile + " is owned by you.");
-                }
-            }
-            else // Allows player to buy an unowned tile
-            {
-                Debug.Log("Tile " + currentTile + " is not owned by anyone and is available.");
-                Debug.Log("Press B to buy or Space to skip.");
-                bool decisionMade = false;
-                while (!decisionMade)
-                {
-                    if (Input.GetKeyDown(KeyCode.B))
-                    {
-                        //Fetches property using current tile 
-                        Property property = pmanager.getTileProperty(currentTile);
-                        player.BuyTile(property,getPlayerFromBoard(players[currentPlayerIndex]));
-                        decisionMade = true;
-                        bankBalance += 200;
+                
+                //Check if tile is a wildcard
+                if (pmanager.getTileProperty(currentTile) == null){
+                    
+                    //Checks whether current tile is tax
+                    if (currentTile == 5 || currentTile == 39){
+                    //TAX THEM
+                    player.taxCheck();
+                    freeParkingBalance += 100;
+                    Debug.Log("GET TAXED");
                     }
-                    else if (Input.GetKeyDown(KeyCode.Space))
-                    {
-                        Debug.Log("Purchase skipped.");
-                        decisionMade = true;
+
+                    //Checks whether current tile is pot luck or opportunity knocks
+                    //if (currentTile == )
+
+                    //Checks whether current tile is free parking
+                    if (currentTile == 21){
+                        player.balance += freeParkingBalance;
+                        freeParkingBalance = 0;
+                        Debug.Log("FREE PARKING :D");
                     }
-                    yield return null; // Pauses coroutine until next frame
+                    
+                    //checks whether current tile is on go to jail. If they are, send them to jail
+                    if (currentTile == 31){
+                        yield return player.toJail();
+                        player.TileCount =11;
+                        Debug.Log("GO TO JAIL");
+                        player.inJail = true;
+
+                        //Prevent go money coming in next turn from "passing go"
+                        player.goPassed = false;
+                    }
+
                 }
+                else if (tileOwned) // If tile is owned makes player pay rent unlesss they own it AND if the other isn't in jail
+                {
+                    if (ownerIndex != currentPlayerIndex && players[ownerIndex].inJail==false)
+                    {
+                        int rent = 50; //Temp value
+                        Debug.Log("Tile " + currentTile + " is owned by Player " + (ownerIndex + 1) + ". Paying rent £" + rent);
+                        players[currentPlayerIndex].PayRent(rent,pmanager.getTileProperty(currentTile));
+                    }
+                    else
+                    {
+                        Debug.Log("Tile " + currentTile + " is owned by you.");
+                    }
+                }
+                else // Allows player to buy an unowned tile
+                {
+                    Debug.Log("Tile " + currentTile + " is not owned by anyone and is available.");
+                    Debug.Log("Press B to buy or Space to skip.");
+                    bool decisionMade = false;
+                    while (!decisionMade)
+                    {
+                        if (Input.GetKeyDown(KeyCode.B))
+                        {
+                            //Fetches property using current tile 
+                            Property property = pmanager.getTileProperty(currentTile);
+                            player.BuyTile(property,getPlayerFromBoard(players[currentPlayerIndex]));
+                            decisionMade = true;
+                            bankBalance += 200;
+                        }
+                        else if (Input.GetKeyDown(KeyCode.Space))
+                        {
+                            Debug.Log("Purchase skipped.");
+                            decisionMade = true;
+                        }
+                        yield return null; // Pauses coroutine until next frame
+                    }
+                }
+
+                //temp bank stuff ends        --------------------------------------------------------------------------------------------------
             }
-
-            //temp bank stuff ends        --------------------------------------------------------------------------------------------------
-
             Debug.Log("Press Space to Skip (THIS IS FOR THE BUY PHASE LATER)");
-            Debug.Log("Press End Turn now for next turn");
+            
 
             // Wait for the player to press space to continue
             yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
-
+            Debug.Log("Press End Turn now for next turn");
             turnEnded = true; // Enable the end turn button
         }
 

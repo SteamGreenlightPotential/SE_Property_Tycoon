@@ -34,10 +34,11 @@ namespace PropertyTycoon
             properties.Add(new Property("James Webb Way", 350, "DBlue", 35));
             properties.Add(new Property("Turing Heights", 400, "DBlue", 50));
 
-            //this is a hacky fix but i'm really lazy
+            //this is a hacky fix but i'm really lazy  (*-*)
             int[] tileList = {2,4,7,9,10,12,14,15,17,19,20,22,24,25,27,28,30,32,33,35,38,40};
             int i = 0;
-            foreach(Property p in properties){
+            foreach(Property p in properties)
+            {
                 p.tileno = tileList[i];
                 i+= 1;
             }
@@ -52,8 +53,10 @@ namespace PropertyTycoon
 
         //Method to get property object from tile
         public Property getTileProperty(int tileno){
-            foreach (Property p in properties){
-                if (p.tileno == tileno){
+            foreach (Property p in properties)
+            {
+                if (p.tileno == tileno)
+                {
                     Debug.Log("Returned property "+ p.name);
                     return p;
                 }
@@ -73,9 +76,5 @@ namespace PropertyTycoon
             //Initialises all properties
             initialiseProperties();
         }
-
-
-
-
     }
 }

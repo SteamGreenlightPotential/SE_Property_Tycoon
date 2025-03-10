@@ -30,7 +30,8 @@ namespace PropertyTycoon
             }
         }
 
-        IEnumerator ProcessTeleport(int steps)
+        //like moving but FASTER. Assumes the timescale has been set to 100 before being initiated
+        IEnumerator ProcessTeleport(int steps,float originalTimeScale)
         {
             for (int i = 0; i < steps; i++) // For each tile crossed check direction and move player
             {
@@ -38,6 +39,7 @@ namespace PropertyTycoon
                 yield return StartCoroutine(TeleportPlayer(direction));
 
             }
+            Time.timeScale = originalTimeScale; //reset timescale
             yield return null;
         }
 
@@ -206,11 +208,8 @@ namespace PropertyTycoon
         // set timescale to 100 to save me time making a player teleport
         float originalTimeScale = Time.timeScale;
         Time.timeScale = 100f; //make piece "teleport" to jail
-        
         int jailDistance = 40 - TileCount + 11; // distance to jail
-        
-        yield return StartCoroutine(ProcessTeleport(jailDistance)); // move player to jail
-        
+        yield return StartCoroutine(ProcessTeleport(jailDistance,originalTimeScale)); // move player to jail
         Time.timeScale = originalTimeScale; //reset timescale
         }
     }

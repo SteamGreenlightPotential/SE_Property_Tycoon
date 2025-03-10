@@ -78,7 +78,7 @@ public class TurnManagerSystemTests
         // Simulate dice roll
         turnManager.isWaitingForRoll = false;
         turnManager.StartCoroutine(turnManager.PlayerMovePhase(currentPlayer,true));
-        yield return new WaitUntil(() => currentPlayer.TileCount > initialTile);
+        yield return new WaitForSeconds(0.1f);
         Time.timeScale = originalTimeScale; //fix timescale after
         Assert.Greater(currentPlayer.TileCount, initialTile);
     }
@@ -121,7 +121,7 @@ public class TurnManagerSystemTests
 
         // Execute roll
         turnManager.StartCoroutine(turnManager.PlayerMovePhase(currentPlayer));
-        yield return new WaitUntil(() => currentPlayer.TileCount > initialTile);
+        yield return new WaitForSeconds(0.1f);
         
 
         // Verify valid movement range

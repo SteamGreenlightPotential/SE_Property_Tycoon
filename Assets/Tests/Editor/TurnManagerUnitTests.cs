@@ -65,7 +65,7 @@ public class TurnManagerUnitTests
         turnManager.turnEnded = true; // Force allow turn end
         
         turnManager.EndTurnButtonClicked();
-        yield return new WaitUntil(() => turnManager.currentPlayerIndex == 1); // Wait for index 
+        yield return new WaitForSeconds (0.1f); 
 
         
         Time.timeScale = originalTimeScale; //fix timescale after

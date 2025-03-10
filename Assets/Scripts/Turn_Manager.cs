@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using PropertyTycoon;
 
+
+
 namespace PropertyTycoon{
     public class Turn_Script : MonoBehaviour{
         public boardPlayer[] players; // Assigned the scripts from each piece in the Inspector
@@ -46,7 +48,7 @@ namespace PropertyTycoon{
             isWaitingForRoll = true; // Wait for player to press space before rolling
         }
 
-        public IEnumerator PlayerMovePhase(boardPlayer player,bool testCase=false)
+        public IEnumerator PlayerMovePhase(boardPlayer player,bool testCase=false, int testRoll=0,int testRoll2=0)
         {
             int roll = 0;
             int roll2 =0;//Second dice roll for double roll
@@ -58,7 +60,8 @@ namespace PropertyTycoon{
             
             //If test mode is on, roll hard coded number for test reasons 
             if (testMode==true){
-                roll = 10;
+                roll = testRoll;
+                roll2 = testRoll2;
             }
             else{
                 
@@ -200,10 +203,15 @@ namespace PropertyTycoon{
             Debug.Log("Press Space to Skip (THIS IS FOR THE BUY PHASE LATER)");
             
 
-            // Wait for the player to press space to continue
+            // Wait for the player to press space to continue. Skip input in testmode
+            if (testCase==false){
             yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+            }
             Debug.Log("Press End Turn now for next turn");
-            turnEnded = true; // Enable the end turn button
+            turnEnded = true; // Enable the end turn button2
+
+            //apparently i have to return :(
+            if(testCase==true){yield return null;}
         }
 
         public void EndTurnButtonClicked()

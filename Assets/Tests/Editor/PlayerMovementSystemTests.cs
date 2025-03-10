@@ -12,15 +12,21 @@ using System.Reflection;
         private GameObject playerObj;
         private boardPlayer player;
         private PropertyManager propManager;
+        private Turn_Script turnManager;
 
         [UnitySetUp]
         public IEnumerator SetUp()
         {
+            //initialises the player, property manager and turn manager
             playerObj = new GameObject();
             playerObj.SetActive(true); //critical for coroutines apparently
+            turnManager = new GameObject().AddComponent<Turn_Script>();
             player = playerObj.AddComponent<boardPlayer>();
+            turnManager.players=new boardPlayer[1];
+            turnManager.players[0]=player; //adds player to turn manager
             propManager = new GameObject().AddComponent<PropertyManager>();
             propManager.initialiseProperties();
+            turnManager.pmanager=propManager; //adds property manager to turn manager
             yield return null;
         }
 
@@ -100,9 +106,13 @@ using System.Reflection;
         // Setup
         player.TileCount = 30;
         int initialTile = player.TileCount;
+        //this badness is still the most consistent way to get movements to work
+        float originalTimeScale = Time.timeScale;
+        Time.timeScale = 100f; 
         
         // Execute jail teleport
-        yield return player.toJail();
+        player.StartCoroutine(player.toJail());
+        yield return new WaitForSeconds(0.1f);
         
         // Verify
         Assert.AreEqual(11, player.TileCount);
@@ -113,18 +123,37 @@ using System.Reflection;
     [UnityTest]
     public IEnumerator Test_FreeParkingPayout()
     {
-        // Setup
-        Turn_Script turnManager = new GameObject().AddComponent<Turn_Script>();
         turnManager.freeParkingBalance = 500;
-        player.TileCount = 21;
+        player.TileCount = 20;
+        //this badness is still the most consistent way to get movements to work
+        float originalTimeScale = Time.timeScale;
+        Time.timeScale = 100f; 
 
-        // Execute tile landing
-        var method = typeof(Turn_Script).GetMethod("PlayerMovePhase", BindingFlags.Public | BindingFlags.Instance);
-        yield return method.Invoke(turnManager, new object[] { player, true });
+
+        // Start the coroutine and wait for it to finish
+        yield return turnManager.PlayerMovePhase(player, true, 1, 0);
+
+        // Add a timeout to prevent infinite waiting
+        float timeout = 5f; // Adjust based on expected duration
+        float startTime = Time.realtimeSinceStartup;
+
+        // Poll for the expected state or timeout
+        while (player.balance != 2000 || turnManager.freeParkingBalance != 0)
+        {
+            if (Time.realtimeSinceStartup - startTime > timeout)
+            {
+                Assert.Fail("Test timed out. Balance: " + player.balance + ", Free Parking: " + turnManager.freeParkingBalance);
+            }
+            yield return null; // Wait one frame
+        }
+
 
         // Verify
-        Assert.AreEqual(500, player.balance);
+        Assert.AreEqual(2000, player.balance);
         Assert.AreEqual(0, turnManager.freeParkingBalance);
+
+        //reset time
+        Time.timeScale = originalTimeScale;
     }
             
     }

@@ -8,7 +8,7 @@ namespace PropertyTycoon
         public string Name { get; set; }
         public int Balance { get; set; }
         public List<Property> OwnedProperties { get; private set; }
-        public boardPlayer PlayerBoard { get; private set; } // Reference to Player on Board
+        public boardPlayer bPlayer { get; private set; } // Reference to Player on Board
 
 
         public Player(string name, boardPlayer boardPlayer)
@@ -16,7 +16,7 @@ namespace PropertyTycoon
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Balance = 1500; // Player starts with £1500
             OwnedProperties = new List<Property>();
-            PlayerBoard = boardPlayer ?? throw new ArgumentNullException(nameof(boardPlayer));
+            bPlayer = boardPlayer ?? throw new ArgumentNullException(nameof(boardPlayer));
         }
 
         public void Credit(int amount)

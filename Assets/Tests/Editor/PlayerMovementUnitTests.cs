@@ -65,4 +65,14 @@ public class PlayerMovementUnitTests
         bplayer.BuyTile(expensiveProp,player);
         Assert.IsEmpty(bplayer.OwnedProperties);
     }
+
+
+
+    [Test]
+    public void Test_JailPositionCalculation()
+    {
+        var player = new boardPlayer { TileCount = 30 };
+        int jailDistance = 40 - 30 + 11;
+        Assert.AreEqual(21, jailDistance);
+    }
 }

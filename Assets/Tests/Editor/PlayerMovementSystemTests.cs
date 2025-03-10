@@ -92,6 +92,39 @@ using System.Reflection;
             Object.DestroyImmediate(ownerBoardPlayer.gameObject);
             yield return null;
         }
-
+    
+    // PlayerMovementSystemTests.cs
+    [UnityTest]
+    public IEnumerator Test_JailTeleportation()
+    {
+        // Setup
+        player.TileCount = 30;
+        int initialTile = player.TileCount;
         
+        // Execute jail teleport
+        yield return player.toJail();
+        
+        // Verify
+        Assert.AreEqual(11, player.TileCount);
+        Assert.IsTrue(player.inJail);
+        Assert.AreEqual(0, player.jailTurns);
+    }
+
+    [UnityTest]
+    public IEnumerator Test_FreeParkingPayout()
+    {
+        // Setup
+        Turn_Script turnManager = new GameObject().AddComponent<Turn_Script>();
+        turnManager.freeParkingBalance = 500;
+        player.TileCount = 21;
+
+        // Execute tile landing
+        var method = typeof(Turn_Script).GetMethod("PlayerMovePhase", BindingFlags.Public | BindingFlags.Instance);
+        yield return method.Invoke(turnManager, new object[] { player, true });
+
+        // Verify
+        Assert.AreEqual(500, player.balance);
+        Assert.AreEqual(0, turnManager.freeParkingBalance);
+    }
+            
     }

@@ -92,5 +92,23 @@ public class TurnManagerUnitTests
         player.taxCheck();
         Assert.AreEqual(1400, player.balance);
     }
+    
+    // TurnManagerUnitTests.cs
+    [Test]
+    public void Test_JailTurnCounter()
+    {
+        var player = new boardPlayer { inJail = true };
+        
+        // Simulate 3 jail turns
+        for (int i = 0; i < 3; i++)
+        {
+            player.jailTurns = i;
+            turnManager.PlayerMovePhase(player, true);
+        }
+        
+        Assert.IsFalse(player.inJail);
+        Assert.AreEqual(0, player.jailTurns);
+    }
+
 
 }

@@ -12,7 +12,7 @@ namespace PropertyTycoon{
         public int round = 1;
         public bool turnEnded = false;
         public int bankBalance = 50000;
-        private int freeParkingBalance = 0;
+        public int freeParkingBalance = 0;
         public List<Player> playerlist=new List<Player>(); //Create an array of player objects corresponding to board players
 
         public bool testMode = true; //"Test Mode" allows for hard coded dice rolls for testing purposes

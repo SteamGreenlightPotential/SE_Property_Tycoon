@@ -3,42 +3,50 @@ using System.Collections;
 using System.Collections.Generic;
 using PropertyTycoon;
 
-namespace PropertyTycoon{
-    public class Turn_Script : MonoBehaviour{
+namespace PropertyTycoon
+{
+    public class Turn_Script : MonoBehaviour
+    {
         public boardPlayer[] players; // Assigned the scripts from each piece in the Inspector
 
-        public PropertyManager pmanager; //Assigned PropertyManager in Unity Inspector
-        public int currentPlayerIndex = 0;
+        public PropertyManager pmanager; // Assigned PropertyManager in Unity Inspector
+        public int currentPlayerIndex = 0; // Tracks the current player
         public bool isWaitingForRoll = true; // Wait for player to press space to roll
-        public int round = 1;
-        public bool turnEnded = false;
-        public int bankBalance = 50000;
-        private int freeParkingBalance = 0;
-        public List<Player> playerlist=new List<Player>(); //Create an array of player objects corresponding to board players
+        public int round = 1; // Tracks the current round of the game
+        public bool turnEnded = false; // Tracks whether the player's turn has ended
+        public int bankBalance = 50000; // Total funds in the bank
+        private int freeParkingBalance = 0; // Funds in Free Parking
+        public List<Player> playerlist = new List<Player>(); // Creates an array of player objects corresponding to board players
 
-
-        public void Start(){
+        public void Start()
+        {
             Debug.Log("Round " + round); // Announce round 1 has started
-            //add each board player to a player object
+
+            // Initialize player objects for each boardPlayer
             int i = 1;
-            foreach (boardPlayer bplayer in players){
+            foreach (boardPlayer bplayer in players)
+            {
                 string name = ("player " + i.ToString());
-                playerlist.Add(new Player(name,bplayer));
+                playerlist.Add(new Player(name, bplayer)); // Add each player to the player list
                 i += 1;
             }
-            //Checking they were made properly
-            foreach (Player player in playerlist){
+
+            // Check if players were created properly
+            foreach (Player player in playerlist)
+            {
                 Debug.Log(player.Name);
             }
-            StartTurn();
+
+            StartTurn(); // Start the first turn
         }
 
         void Update()
         {
+            // Wait for the player to press SPACE to roll the dice
             if (isWaitingForRoll && Input.GetKeyDown(KeyCode.Space))
             {
                 isWaitingForRoll = false; // Prevent multiple rolls
-                StartCoroutine(PlayerMovePhase(players[currentPlayerIndex]));
+                StartCoroutine(PlayerMovePhase(players[currentPlayerIndex])); // Begin the player's movement phase
             }
         }
 
@@ -49,138 +57,121 @@ namespace PropertyTycoon{
             isWaitingForRoll = true; // Wait for player to press space before rolling
         }
 
-        public IEnumerator PlayerMovePhase(boardPlayer player,bool testCase=false)
+        public IEnumerator PlayerMovePhase(boardPlayer player, bool testCase = false)
         {
-            //Lets me skip input, because this isnt modular i gotta do this
-            if (testCase==false){
-                // Wait for player to press space before rolling
-                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+            // Allow skipping input during test cases
+            if (!testCase)
+            {
+                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space)); // Wait for space input
             }
-            // Roll the dice
-            int roll = Random.Range(1, 7); // Roll dice for movement
+
+            // Roll the dice for player movement
+            int roll = Random.Range(1, 7);
             Debug.Log("Player " + (currentPlayerIndex + 1) + " rolled: " + roll);
 
-            player.Move(roll); // Move the player
-            yield return new WaitForSeconds(roll * 0.2f + 0.5f); // Wait for movement to finish
+            player.Move(roll); // Move the player piece
+            yield return new WaitForSeconds(roll * 0.2f + 0.5f); // Wait for the movement animation to complete
 
-            //temp bank stuff           -----------------------------------------------------------------------------------------------
-            int currentTile = player.TileCount;
-            bool tileOwned = false;
-            int ownerIndex = -1;
-            
-            //Checks whether current tile is tax
+            int currentTile = player.TileCount; // Get the player's current tile
+            bool tileOwned = false; // Tracks whether the tile is owned
+            int ownerIndex = -1; // Tracks the owner of the tile
+
+            // Check if the player has landed on a tax tile
             if (currentTile == 4 || currentTile == 38)
             {
-                player.taxCheck();
-                freeParkingBalance += 100;
+                player.taxCheck(); // Deduct tax from the player's balance
+                freeParkingBalance += 100; // Add the tax to Free Parking
             }
-            int i = 0;
-            foreach (boardPlayer p in players)  // Loop through all players to see if any own the current tile
+
+            // Loop through all players to check if the current tile is owned
+            foreach (boardPlayer p in players)
             {
-                Player realplayer = getPlayerFromBoard(p);
-                
-                if (pmanager.getTileProperty(currentTile)==null){
-                    //Avoids crashing from a null
+                Player realPlayer = getPlayerFromBoard(p);
+
+                // Skip null properties
+                if (pmanager.getTileProperty(currentTile) == null)
+                {
                     continue;
-                } 
-                if (pmanager.getTileProperty(currentTile).owner == realplayer)
+                }
+
+                // Check ownership
+                if (pmanager.getTileProperty(currentTile).owner == realPlayer)
                 {
                     Debug.Log("Tile " + currentTile + " is owned by " + (p.name));
                     tileOwned = true;
-                    ownerIndex = i;
-                    break; // Terminate loop immediately
+                    ownerIndex = System.Array.IndexOf(players, p); // Get the owner index
+                    break;
                 }
-                i += 1;
             }
 
-            if (tileOwned) // If tile is owned makes player pay rent unlesss they own it
+            // When Property Not Owned (Added by Anik)
+            if (!tileOwned)
+            {
+                Debug.Log("Tile " + currentTile + " is not owned by anyone and is available.");
+
+                // Fetch the property from the current tile
+                Property property = pmanager.getTileProperty(currentTile);
+
+                // Show the property purchase screen for the current player
+                FindFirstObjectByType<PropertyPurchaseScrn>().Show(property, getPlayerFromBoard(players[currentPlayerIndex]));
+            }
+            else // Handle owned tiles (e.g., paying rent)
             {
                 if (ownerIndex != currentPlayerIndex)
                 {
-                    int rent = 50; //Temp value
+                    int rent = 50; // Temporary rent value
                     Debug.Log("Tile " + currentTile + " is owned by Player " + (ownerIndex + 1) + ". Paying rent £" + rent);
-                    players[currentPlayerIndex].PayRent(rent,pmanager.getTileProperty(currentTile));
+                    players[currentPlayerIndex].PayRent(rent, pmanager.getTileProperty(currentTile));
                 }
                 else
                 {
                     Debug.Log("Tile " + currentTile + " is owned by you.");
                 }
             }
-            else // Allows player to buy an unowned tile
-            {
-                Debug.Log("Tile " + currentTile + " is not owned by anyone and is available.");
-                Debug.Log("Press B to buy or Space to skip.");
-                bool decisionMade = false;
-                while (!decisionMade)
-                {
-                    if (Input.GetKeyDown(KeyCode.B))
-                    {
-                        //Fetches property using current tile 
-                        Property property = pmanager.getTileProperty(currentTile);
-                        player.BuyTile(property,getPlayerFromBoard(players[currentPlayerIndex]));
-                        decisionMade = true;
-                        bankBalance += 200;
-                    }
-                    else if (Input.GetKeyDown(KeyCode.Space))
-                    {
-                        Debug.Log("Purchase skipped.");
-                        decisionMade = true;
-                    }
-                    yield return null; // Pauses coroutine until next frame
-                }
-            }
 
-            //temp bank stuff ends        --------------------------------------------------------------------------------------------------
-
-            Debug.Log("Press Space to Skip (THIS IS FOR THE BUY PHASE LATER)");
-            Debug.Log("Press End Turn now for next turn");
-
-            // Wait for the player to press space to continue
-            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
-
-            turnEnded = true; // Enable the end turn button
+            // End the turn after handling all tile logic
+            turnEnded = true;
+            Debug.Log("Press End Turn now for the next turn.");
         }
 
         public void EndTurnButtonClicked()
         {
-            if (turnEnded == true)
+            if (turnEnded)
             {
-                StartCoroutine(EndTurn()); // Detect when the End_Turn_Script is triggered
+                StartCoroutine(EndTurn()); // Trigger the end turn coroutine
             }
-
         }
 
         IEnumerator EndTurn()
         {
             Debug.Log("Ending Player " + (currentPlayerIndex + 1) + "'s Turn...");
-            yield return new WaitForSeconds(0.5f); // Wait before moving to the next turn
+            yield return new WaitForSeconds(0.5f); // Small delay before moving to the next player
 
-            // Move to the next player
+            // Move to the next player's turn
             currentPlayerIndex = (currentPlayerIndex + 1) % players.Length;
 
+            // Increment the round if all players have taken their turn
             if (currentPlayerIndex == 0)
             {
-                round += 1; // Increment round number if last player finishes their turn
-                Debug.Log("Round " + round); // Prints next round number
+                round += 1;
+                Debug.Log("Round " + round);
             }
 
-            // Start the next player's turn
-            StartTurn();
+            StartTurn(); // Start the next player's turn
         }
 
-        //Get the player object corresponding to a player's board object
-        Player getPlayerFromBoard(boardPlayer player){
-            foreach (Player p in playerlist){
-                if (p.bPlayer == player){
-                    Debug.Log("Fetched player "+ p.Name);
+        // Get the Player object corresponding to a boardPlayer object
+        Player getPlayerFromBoard(boardPlayer player)
+        {
+            foreach (Player p in playerlist)
+            {
+                if (p.bPlayer == player)
+                {
+                    Debug.Log("Fetched player " + p.Name);
                     return p;
-                    
                 }
-
             }
             return null;
         }
-
-
     }
 }

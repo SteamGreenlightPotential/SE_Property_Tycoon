@@ -61,7 +61,7 @@ namespace PropertyTycoon{
             Debug.Log("Player " + (currentPlayerIndex + 1) + " rolled: " + roll);
 
             player.Move(roll); // Move the player
-            yield return new WaitForSeconds(roll * 0.2f + 0.5f); // Wait for movement to finish
+            yield return new WaitForSeconds(roll * 0.2f + 0.8f); // Wait for movement to finish
 
             //temp bank stuff           -----------------------------------------------------------------------------------------------
             int currentTile = player.TileCount;

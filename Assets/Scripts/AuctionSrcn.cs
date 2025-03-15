@@ -1,0 +1,124 @@
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
+
+namespace PropertyTycoon
+{
+    public class AuctionScrn : MonoBehaviour
+    {
+        // Singleton instance for global access
+        public static AuctionScrn Instance { get; private set; }
+
+        public TextMeshProUGUI PropertyNameText;  // Text to display the property name
+        public TextMeshProUGUI HighestBidText;    // Text to display the highest bid
+        public TextMeshProUGUI PlayerTurnText;    // Text to display the current player's turn
+        public Button BidButton;                 // Button to place a bid
+        public Button PassButton;                // Button to pass the turn
+        public TMP_InputField BidAmountInput;    // Input field for entering a bid amount
+
+        private Property propertyBeingAuctioned;  // The property being auctioned
+        private List<Player> players;            // List of players participating in the auction
+        private int currentBid;                  // The current highest bid
+        private int currentPlayerIndex;          // Index of the current player in the auction
+        private Player highestBidder;            // Player who placed the highest bid
+
+        private void Awake()
+        {
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject); // Makes AuctionScrn persist across scenes
+            }
+            else
+            {
+                Destroy(gameObject); // Ensure only one instance of AuctionScrn exists
+            }
+        }
+
+        public void StartAuction(Property property, List<Player> playerList)
+        {
+            // Initialize auction variables
+            propertyBeingAuctioned = property;
+            players = new List<Player>(playerList);
+            currentBid = property.price; // Starting bid is the property price
+            currentPlayerIndex = 0;
+            highestBidder = null;
+
+            UpdateUI();
+            gameObject.SetActive(true); // Show the auction screen
+        }
+
+        private void UpdateUI()
+        {
+            // Update auction UI elements
+            PropertyNameText.text = $"Auctioning: {propertyBeingAuctioned.name}";
+            HighestBidText.text = $"Highest Bid: £{currentBid} by {(highestBidder != null ? highestBidder.Name : "None")}";
+            PlayerTurnText.text = $"Current Turn: {players[currentPlayerIndex].Name}";
+        }
+
+        public void PlaceBid()
+        {
+            // Get the player's inputted bid amount
+            if (int.TryParse(BidAmountInput.text, out int bidAmount))
+            {
+                Player currentPlayer = players[currentPlayerIndex];
+
+                if (bidAmount > currentBid && bidAmount <= currentPlayer.Balance)
+                {
+                    currentBid = bidAmount;
+                    highestBidder = currentPlayer;
+
+                    Debug.Log($"{currentPlayer.Name} placed a bid of £{currentBid}");
+                    NextTurn(); // Move to the next player's turn
+                }
+                else
+                {
+                    Debug.Log("Invalid bid. Either the bid is too low or the player doesn't have enough balance.");
+                }
+            }
+            else
+            {
+                Debug.Log("Invalid bid amount entered.");
+            }
+        }
+
+        public void PassTurn()
+        {
+            Debug.Log($"{players[currentPlayerIndex].Name} passed their turn.");
+            players.RemoveAt(currentPlayerIndex); // Remove the player who passed their turn
+
+            if (players.Count == 1) // If only one player is left, they win the auction
+            {
+                EndAuction();
+                return;
+            }
+
+            currentPlayerIndex %= players.Count; // Loop back to the first player if needed
+            UpdateUI();
+        }
+
+        private void NextTurn()
+        {
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.Count;
+            UpdateUI();
+        }
+
+        private void EndAuction()
+        {
+            if (highestBidder != null)
+            {
+                highestBidder.Debit(currentBid);
+                propertyBeingAuctioned.switchOwner(highestBidder);
+
+                Debug.Log($"{highestBidder.Name} won the auction for {propertyBeingAuctioned.name} at £{currentBid}.");
+            }
+            else
+            {
+                Debug.Log($"No bids were placed. The property remains unsold.");
+            }
+
+            gameObject.SetActive(false); // Hide the auction screen
+        }
+    }
+}

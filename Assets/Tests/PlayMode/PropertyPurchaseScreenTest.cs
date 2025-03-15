@@ -7,7 +7,7 @@ using PropertyTycoon;
 public class PropertyPurchaseScrnTest
 {
     private GameObject testObject; // Mock object for the PropertyPurchaseScrn
-    private PropertyPurchaseScrn purchaseScreen; // Referencing to the script being tested
+    private PropertyPurchaseScrn purchaseScreen; // Referencing the script being tested
     private Player testPlayer;
     private Property testProperty;
 
@@ -18,7 +18,7 @@ public class PropertyPurchaseScrnTest
         testObject = new GameObject("PropertyPurchaseScrn");
         purchaseScreen = testObject.AddComponent<PropertyPurchaseScrn>();
 
-        // Creates and attachs TextMeshProUGUI components
+        // Creates and attaches TextMeshProUGUI components
         purchaseScreen.PropertyName = CreateTextElement("PropertyName");
         purchaseScreen.PropertyPrice = CreateTextElement("PropertyPrice");
         purchaseScreen.PropertyColor = CreateTextElement("PropertyColor");
@@ -26,7 +26,6 @@ public class PropertyPurchaseScrnTest
 
         // Create and attach Button components
         purchaseScreen.BuyButton = CreateButtonElement("BuyButton");
-        purchaseScreen.CancelButton = CreateButtonElement("CancelButton");
 
         // Create mock player and property
         testPlayer = new Player("Test Player", null)
@@ -91,19 +90,6 @@ public class PropertyPurchaseScrnTest
         Assert.IsFalse(testPlayer.OwnedProperties.Contains(testProperty)); // Property should not be added
         Assert.IsNull(testProperty.owner); // Property owner should remain null
         Assert.IsFalse(testObject.activeSelf); // Screen should still close
-    }
-
-    [Test]
-    public void OnCancelButtonClicked_ClosesScreen()
-    {
-        // Arrange
-        purchaseScreen.Show(testProperty, testPlayer);
-
-        // Act
-        purchaseScreen.OnCancelButtonClicked();
-
-        // Assert
-        Assert.IsFalse(testObject.activeSelf); // Check that screen is hidden
     }
 
     // Helper method to create TextMeshProUGUI components

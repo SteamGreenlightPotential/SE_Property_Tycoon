@@ -5,6 +5,8 @@ namespace PropertyTycoon
 {
     public class GameManager : MonoBehaviour
     {
+        public static GameManager Instance { get; private set; }  // GameManager instance 
+
         public List<Property> properties;       // Lists all properties
         public Bank bank;                       // Bank instance
         public List<Player> players;            // List of players
@@ -12,11 +14,24 @@ namespace PropertyTycoon
 
         private void Awake()
         {
-            DontDestroyOnLoad(gameObject);           // Makes GameManager persistent between scenes
+            // Singleton implementation
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject); // Makes GameManager persistent between scenes
+            }
+            else
+            {
+                Destroy(gameObject); // Ensures there's only one GameManager instance
+                return;
+            }
+
+            // Initialize core game components
             bank = new Bank();                       // Initialize the bank
             players = new List<Player>();            // Initialize the players list
             propertyManager = new PropertyManager(); // Initialize PropertyManager
             InitialiseProperties();                  // Load all properties
+
             Debug.Log("Game Manager Online");        // Debug message for confirmation
         }
 
@@ -40,7 +55,6 @@ namespace PropertyTycoon
             Debug.Log($"Player {name} has been added to the game.");
         }
 
-
         // Player to Player transaction
         public void PerformTransaction(Player payer, Player payee, int amount)
         {
@@ -53,6 +67,7 @@ namespace PropertyTycoon
             payer.Debit(amount);        // Deducts amount from the payer
             payee.Credit(amount);       // Adds amount to the payee
             bank.RecordTransaction(new Transaction(payer.Name, payee.Name, amount)); // Records the transaction in the bank
+
             Debug.Log($"{payer.Name} paid {payee.Name} £{amount}."); // Debug message for confirmation
         }
 
@@ -95,6 +110,20 @@ namespace PropertyTycoon
         {
             Card opportunityKnocksCard = Cards.DrawTopCard(Cards.OpportunityKnocks);
             Cards.ExecuteCardAction(opportunityKnocksCard, player, bank, players); // Executes card action
+        }
+
+        // Start of Auction
+        public void StartAuction(Property property)
+        {
+            if (property != null && AuctionScrn.Instance != null) // Check if AuctionScrn is properly initialized
+            {
+                AuctionScrn.Instance.StartAuction(property, players); // Start the auction
+                Debug.Log($"Auction started for {property.name}");
+            }
+            else
+            {
+                Debug.LogError("Failed to start auction. Either the property or AuctionScrn is null.");
+            }
         }
     }
 }

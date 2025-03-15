@@ -10,13 +10,12 @@ namespace PropertyTycoon
         public TextMeshProUGUI PropertyPrice;       // Displays the property price
         public TextMeshProUGUI PropertyColor;       // Displays the property color
         public TextMeshProUGUI PlayerBalance;       // Displays the player's balance
-        public Button BuyButton;                        // Button to purchase the property
-        public Button CancelButton;                     // Button to cancel the purchase
+        public Button BuyButton;                   // Button to purchase the property
+        public Button AuctionButton;               // Button to start an auction
+        public AuctionScrn AuctionUI;              // Reference to the Auction UI
 
-        // Mortgage button to be added later //
-
-        private Property CurrentProperty;            // Property currently being displayed
-        private Player CurrentPlayer;                // Player currently viewing the screen
+        private Property CurrentProperty;          // Property currently being displayed
+        private Player CurrentPlayer;              // Player currently viewing the screen
 
         // Show the property purchase screen
         public void Show(Property property, Player player)
@@ -24,13 +23,13 @@ namespace PropertyTycoon
             CurrentProperty = property;
             CurrentPlayer = player;
 
-            // Updateing the UI with property and player details
+            // Update the UI with property and player details
             PropertyName.text = "Property: " + CurrentProperty.name;
             PropertyColor.text = "Color: " + CurrentProperty.colour;
             PropertyPrice.text = "Price: £" + CurrentProperty.price.ToString();
             PlayerBalance.text = "Balance: £" + CurrentPlayer.Balance.ToString();
 
-            gameObject.SetActive(true); // Makeing the UI visible
+            gameObject.SetActive(true); // Make the UI visible
         }
 
         // When "Buy" button is clicked
@@ -53,10 +52,22 @@ namespace PropertyTycoon
             }
         }
 
-        // Called when the "Cancel" button is clicked
-        public void OnCancelButtonClicked()
+        // Auction button implemented insted of cancel.
+        // Called when the "Auction" button is clicked
+        public void OnAuctionButtonClicked()
         {
-            Close(); // Close the purchase screen
+            if (AuctionUI != null)
+            {
+                AuctionUI.gameObject.SetActive(true); // Activate the AuctionScrn GameObject
+                AuctionUI.StartAuction(CurrentProperty, GameManager.Instance.players); // Start the auction
+                Debug.Log($"Auction started for {CurrentProperty.name}.");
+            }
+            else
+            {
+                Debug.LogError("AuctionScrn is not assigned in the PropertyPurchaseScrn script!");
+            }
+
+            Close(); // Close the property purchase screen
         }
 
         // Hide the property purchase screen

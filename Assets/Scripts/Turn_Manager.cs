@@ -48,7 +48,7 @@ namespace PropertyTycoon{
             isWaitingForRoll = true; // Wait for player to press space before rolling
         }
 
-        public IEnumerator PlayerMovePhase(boardPlayer player,bool testCase=false, int testRoll=0,int testRoll2=0)
+        public IEnumerator PlayerMovePhase(boardPlayer player,bool testCase=false, int testRoll=1,int testRoll2=1)
         {
             int roll = 0;
             int roll2 =0;//Second dice roll for double roll
@@ -179,6 +179,7 @@ namespace PropertyTycoon{
                     Debug.Log("Tile " + currentTile + " is not owned by anyone and is available.");
                     Debug.Log("Press B to buy or Space to skip.");
                     bool decisionMade = false;
+                    if (testCase==true){decisionMade=true;}//cheeky test case to stop input buffering
                     while (!decisionMade)
                     {
                         if (Input.GetKeyDown(KeyCode.B))
@@ -196,6 +197,7 @@ namespace PropertyTycoon{
                         }
                         yield return null; // Pauses coroutine until next frame
                     }
+                    
                 }
 
                 //temp bank stuff ends        --------------------------------------------------------------------------------------------------
@@ -211,7 +213,7 @@ namespace PropertyTycoon{
             turnEnded = true; // Enable the end turn button2
 
             //apparently i have to return :(
-            if(testCase==true){yield return null;}
+            //if(testCase==true){yield break;}
         }
 
         public void EndTurnButtonClicked()
@@ -223,7 +225,7 @@ namespace PropertyTycoon{
 
         }
 
-        IEnumerator EndTurn()
+        public IEnumerator EndTurn()
         {
             Debug.Log("Ending Player " + (currentPlayerIndex + 1) + "'s Turn...");
             yield return new WaitForSeconds(0.5f); // Wait before moving to the next turn

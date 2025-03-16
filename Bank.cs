@@ -1,10 +1,8 @@
-using System;
+using system;
 using System.Collections.Generic;
 
 namespace PropertyTycoon
 {
-    public class Bank
-    {
         public int TotalFunds { get; private set; }
         public List<Transaction> TransactionLog { get; private set; }
         public int FreeParking { get; private set; }
@@ -35,6 +33,6 @@ namespace PropertyTycoon
         public void RecordTransaction(Transaction transaction)
         {
             TransactionLog.Add(transaction); // Logs the transaction
-        }
-    }
+        }    
+
 }

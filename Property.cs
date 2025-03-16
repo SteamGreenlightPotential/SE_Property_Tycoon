@@ -1,15 +1,27 @@
-using UnityEngine;
+using System;
 using System.Collections.Generic;
 
-namespace PropertyTycoon
-{
-    public class PropertyManager : MonoBehaviour
-    {
-        public List<Property> properties = new List<Property>(); //Holds all properties
+namespace PropertyTycoon {
 
-        //Initialises all properties. Hardcoded based on database files given by client
-        public void initialiseProperties()
-        {
+    public class Property {
+        public string Name { get; private set; }
+        public int Price { get; private set; }
+        public string Color { get; private set; }
+        public int Rent { get; private set; }
+
+        public Property(string name, int price, string color, int rent) {
+            Name = name;
+            Price = price;
+            Color = color;
+            Rent = rent;
+        }
+    }
+
+    public class PropertyList {
+        public List<Property> properties = new List<Property>(); // Holds all properties
+
+        // Initialises all properties. Hardcoded based on database files given by client
+        public void initialiseProperties() {
 
             properties.Add(new Property("The Old Creek", 60, "Brown", 2));
             properties.Add(new Property("Gangsters Paradise", 60, "Brown", 4));
@@ -34,47 +46,11 @@ namespace PropertyTycoon
             properties.Add(new Property("James Webb Way", 350, "DBlue", 35));
             properties.Add(new Property("Turing Heights", 400, "DBlue", 50));
 
-            //this is a hacky fix but i'm really lazy
-            int[] tileList = {2,4,7,9,10,12,14,15,17,19,20,22,24,25,27,28,30,32,33,35,38,40};
-            int i = 0;
-            foreach(Property p in properties){
-                p.tileno = tileList[i];
-                i+= 1;
-            }
-
-        //Check all imported properly
-        Property item = properties[5];
-                Debug.Log(item.name);
-                Debug.Log(item.price);
-                Debug.Log(item.tileno);
-        
         }
 
-        //Method to get property object from tile
-        public Property getTileProperty(int tileno){
-            foreach (Property p in properties){
-                if (p.tileno == tileno){
-                    Debug.Log("Returned property "+ p.name);
-                    return p;
-                }
-            }
-            return null;
-        } 
-
-        //Initialises script when game starts 
-        void Awake()
+        public Property? GetPropertyByName(string name)
         {
-            //Persists between scenes
-            DontDestroyOnLoad(gameObject);
-            //make sure they woke up
-            Debug.Log("Game Manager Online");
-
-            //Initialises all properties
-            initialiseProperties();
+            return properties.Find(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
-
-
-
-
     }
 }

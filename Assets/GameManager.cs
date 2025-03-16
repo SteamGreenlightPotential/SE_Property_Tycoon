@@ -5,17 +5,19 @@ namespace PropertyTycoon
 {
     public class GameManager : MonoBehaviour
     {
-        public List<Property> properties; // Lists all properties
-        public Bank bank; // Bank instance
-        public List<Player> players; // List of players
+        public List<Property> properties;       // Lists all properties
+        public Bank bank;                       // Bank instance
+        public List<Player> players;            // List of players
+        public PropertyManager propertyManager; // Manages property initialization
 
         private void Awake()
         {
-            DontDestroyOnLoad(gameObject);       // Makes GameManager persistent between scenes
-            bank = new Bank();                   // Initialize the bank
-            players = new List<Player>();        // Initialize the player list
-            InitialiseProperties();              // Load all properties
-            Debug.Log("Game Manager Online");    // Debug message to confirm initialization
+            DontDestroyOnLoad(gameObject);           // Makes GameManager persistent between scenes
+            bank = new Bank();                       // Initialize the bank
+            players = new List<Player>();            // Initialize the players list
+            propertyManager = new PropertyManager(); // Initialize PropertyManager
+            InitialiseProperties();                  // Load all properties
+            Debug.Log("Game Manager Online");        // Debug message for confirmation
         }
 
         private void Start()
@@ -27,25 +29,31 @@ namespace PropertyTycoon
         // Method to initialise properties
         public void InitialiseProperties()
         {
-            PropertyList propertyList = new PropertyList();
-            propertyList.initialiseProperties(); // Loads properties form Property.cs
-            properties = propertyList.properties; // Assign to the GameManager's list
+            propertyManager.initialiseProperties();  // Load properties from PropertyManager
+            properties = propertyManager.properties; // Assign properties list
         }
 
         // Method to add a player to the game
-        public void AddPlayer(string name)
+        public void AddPlayer(string name, boardPlayer playerBoard)
         {
-            players.Add(new Player(name)); // Adds a new player to the game
-            Debug.Log($"Player {name} has been added."); // Debug message for confirmation
+            players.Add(new Player(name, playerBoard));
+            Debug.Log($"Player {name} has been added to the game.");
         }
+
 
         // Player to Player transaction
         public void PerformTransaction(Player payer, Player payee, int amount)
         {
-            payer.Debit(amount); // Deducts amount from payer
-            payee.Credit(amount); // Adds amount to payee
+            if (payer.Balance < amount)
+            {
+                Debug.Log($"{payer.Name} does not have enough balance to pay {payee.Name} £{amount}.");
+                return;
+            }
+
+            payer.Debit(amount);        // Deducts amount from the payer
+            payee.Credit(amount);       // Adds amount to the payee
             bank.RecordTransaction(new Transaction(payer.Name, payee.Name, amount)); // Records the transaction in the bank
-            Debug.Log($"{payer.Name} paid {payee.Name} £{amount}"); // Debug message for confirmation
+            Debug.Log($"{payer.Name} paid {payee.Name} £{amount}."); // Debug message for confirmation
         }
 
         // Bank to Player transaction
@@ -54,13 +62,13 @@ namespace PropertyTycoon
             if (amount > 0)
             {
                 bank.MakePayment(player, amount); // Bank pays the player
-                Debug.Log($"Bank paid {player.Name} £{amount}");
+                Debug.Log($"Bank paid {player.Name} £{amount}.");
             }
             else
             {
                 player.Debit(-amount); // Player pays the bank
                 bank.ReceivePayment(-amount);
-                Debug.Log($"{player.Name} paid Bank £{-amount}");
+                Debug.Log($"{player.Name} paid Bank £{-amount}.");
             }
         }
 
@@ -75,7 +83,7 @@ namespace PropertyTycoon
             Debug.Log($"Free Parking: £{bank.FreeParking}");
         }
 
-        // Method to draw and exicute Pot Luck card
+        // Method to draw and execute Pot Luck card
         public void DrawPotLuckCard(Player player)
         {
             Card potLuckCard = Cards.DrawTopCard(Cards.PotLuck);

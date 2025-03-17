@@ -25,7 +25,7 @@ using System.Reflection;
             turnManager.players=new boardPlayer[1];
             turnManager.players[0]=player; //adds player to turn manager
             propManager = new GameObject().AddComponent<PropertyManager>();
-            propManager.initialiseProperties();
+            //propManager.initialiseProperties();
             turnManager.pmanager=propManager; //adds property manager to turn manager
             yield return null;
         }
@@ -110,9 +110,9 @@ using System.Reflection;
         float originalTimeScale = Time.timeScale;
         Time.timeScale = 100f; 
         
-        // Execute jail teleport
-        player.StartCoroutine(player.toJail());
-        yield return new WaitForSeconds(0.1f);
+        // Execute jail turn
+        
+        yield return turnManager.PlayerMovePhase(player,true,1,0);
         
         // Verify
         Assert.AreEqual(11, player.TileCount);

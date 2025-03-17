@@ -127,6 +127,10 @@ namespace PropertyTycoon{
 
 
             if (player.inJail==false){
+                //Not totally sure what this does but we need it apparently
+                currentTile = player.TileCount;
+                tileOwned = false;
+                ownerIndex = -1;
                 
                 int i = 0;
                 foreach (boardPlayer p in players)  // Loop through all players to see if any own the current tile

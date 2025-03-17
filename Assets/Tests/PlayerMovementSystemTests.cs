@@ -122,6 +122,7 @@ using System.Reflection;
     {
         turnManager.freeParkingBalance = 500;
         player.TileCount = 20;
+        player.balance=1500;
 
 
         // Start the coroutine and wait for it to finish

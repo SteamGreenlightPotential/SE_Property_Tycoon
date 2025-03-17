@@ -467,12 +467,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   players:
   - {fileID: 1299728806}
+  - {fileID: 686520156}
+  - {fileID: 490123317}
+  - {fileID: 1694829279}
+  - {fileID: 1681988983}
+  - {fileID: 1766556774}
   pmanager: {fileID: 1907366489}
   currentPlayerIndex: 0
   isWaitingForRoll: 1
   round: 1
   turnEnded: 0
   bankBalance: 50000
+  freeParkingBalance: 0
   playerlist: []
   testMode: 1
 --- !u!1001 &1133506728

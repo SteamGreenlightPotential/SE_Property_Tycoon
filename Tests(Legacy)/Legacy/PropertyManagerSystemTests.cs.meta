@@ -1,2 +1,10 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: b4ea3f64ef3a255469ee86cb3306d413
+=======
+<<<<<<< HEAD:Tests(Legacy)/Legacy/PropertyManagerSystemTests.cs.meta
+guid: b4ea3f64ef3a255469ee86cb3306d413
+=======
+guid: 0a4cfa54740786648a60fac8bb68872f
+>>>>>>> main:Assets/Tests/Editor/PropertyManagerSystemTests.cs.meta
+>>>>>>> stupid-tests

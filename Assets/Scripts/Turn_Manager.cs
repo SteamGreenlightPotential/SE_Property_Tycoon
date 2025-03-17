@@ -57,6 +57,36 @@ namespace PropertyTycoon{
                 // Wait for player to press space before rolling
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
             }
+           
+            //temp bank stuff           -----------------------------------------------------------------------------------------------
+            int currentTile = player.TileCount;
+            bool tileOwned = false;
+            int ownerIndex = -1;
+            
+            //Checks whether current tile is tax
+            if (currentTile == 4 || currentTile == 38)
+            {
+                player.taxCheck();
+                freeParkingBalance += 100;
+            }
+            int j = 0;
+            foreach (boardPlayer p in players)  // Loop through all players to see if any own the current tile
+            {
+                Player realplayer = getPlayerFromBoard(p);
+                
+                if (pmanager.getTileProperty(currentTile)==null){
+                    //Avoids crashing from a null
+                    continue;
+                } 
+                if (pmanager.getTileProperty(currentTile).owner == realplayer)
+                {
+                    Debug.Log("Tile " + currentTile + " is owned by " + (p.name));
+                    tileOwned = true;
+                    ownerIndex = j;
+                    break; // Terminate loop immediately
+                }
+                j += 1;
+            }
             
             //If test mode is on, roll hard coded number for test reasons 
             if (testMode==true){
@@ -88,8 +118,8 @@ namespace PropertyTycoon{
                 }
            }
             else{
-            player.Move(roll+roll2); // Move the player
-            yield return new WaitForSeconds(roll * 0.2f + 0.5f); // Wait for movement to finish
+            
+            yield return player.Move(roll+roll2); // Move the player; // Wait for movement to finish
             }
             
             
@@ -97,10 +127,10 @@ namespace PropertyTycoon{
 
 
             if (player.inJail==false){
-                //temp bank stuff           -----------------------------------------------------------------------------------------------
-                int currentTile = player.TileCount;
-                bool tileOwned = false;
-                int ownerIndex = -1;
+                //Not totally sure what this does but we need it apparently
+                currentTile = player.TileCount;
+                tileOwned = false;
+                ownerIndex = -1;
                 
                 int i = 0;
                 foreach (boardPlayer p in players)  // Loop through all players to see if any own the current tile

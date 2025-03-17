@@ -16,9 +16,9 @@ namespace PropertyTycoon
         public bool inJail = false; //Player is in jail
         public int jailTurns = 0; //Number of turns player has been in jail
 
-        public void Move(int steps)  // Called from Turn_Script to trigger movement for 1 turn
+        public IEnumerator Move(int steps)  // Called from Turn_Script to trigger movement for 1 turn
         {
-            StartCoroutine(ProcessMovements(steps));
+            yield return StartCoroutine(ProcessMovements(steps));
         }
 
         IEnumerator ProcessMovements(int steps)

@@ -89,7 +89,6 @@ public class TurnManagerSystemTests
         {
             yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(jailedPlayer, true));
             Assert.AreEqual(11, jailedPlayer.TileCount);
-            i+=1;
         } 
 
 

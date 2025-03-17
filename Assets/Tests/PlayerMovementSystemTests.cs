@@ -106,13 +106,10 @@ using System.Reflection;
         // Setup
         player.TileCount = 30;
         int initialTile = player.TileCount;
-        //this badness is still the most consistent way to get movements to work
-        float originalTimeScale = Time.timeScale;
-        Time.timeScale = 100f; 
         
         // Execute jail turn
         
-        yield return turnManager.PlayerMovePhase(player,true,1,0);
+        yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(player,true,1,0));
         
         // Verify
         Assert.AreEqual(11, player.TileCount);
@@ -125,35 +122,18 @@ using System.Reflection;
     {
         turnManager.freeParkingBalance = 500;
         player.TileCount = 20;
-        //this badness is still the most consistent way to get movements to work
-        float originalTimeScale = Time.timeScale;
-        Time.timeScale = 100f; 
+        player.balance=1500;
 
 
         // Start the coroutine and wait for it to finish
-        yield return turnManager.PlayerMovePhase(player, true, 1, 0);
+        yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(player, true, 1, 0));
 
-        // Add a timeout to prevent infinite waiting
-        float timeout = 5f; // Adjust based on expected duration
-        float startTime = Time.realtimeSinceStartup;
-
-        // Poll for the expected state or timeout
-        while (player.balance != 2000 || turnManager.freeParkingBalance != 0)
-        {
-            if (Time.realtimeSinceStartup - startTime > timeout)
-            {
-                Assert.Fail("Test timed out. Balance: " + player.balance + ", Free Parking: " + turnManager.freeParkingBalance);
-            }
-            yield return null; // Wait one frame
-        }
-
-
+        
         // Verify
         Assert.AreEqual(2000, player.balance);
         Assert.AreEqual(0, turnManager.freeParkingBalance);
 
-        //reset time
-        Time.timeScale = originalTimeScale;
+       
     }
             
     }

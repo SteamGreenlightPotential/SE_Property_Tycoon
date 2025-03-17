@@ -472,6 +472,11 @@ MonoBehaviour:
   - {fileID: 1694829279}
   - {fileID: 1681988983}
   - {fileID: 1766556774}
+  - {fileID: 1681988983}
+  - {fileID: 1694829279}
+  - {fileID: 1766556774}
+  - {fileID: 490123317}
+  - {fileID: 686520156}
   pmanager: {fileID: 1907366489}
   currentPlayerIndex: 0
   isWaitingForRoll: 1
@@ -479,8 +484,7 @@ MonoBehaviour:
   turnEnded: 0
   bankBalance: 50000
   freeParkingBalance: 0
-  playerlist: []
-  testMode: 1
+  testMode: 0
 --- !u!1001 &1133506728
 PrefabInstance:
   m_ObjectHideFlags: 0

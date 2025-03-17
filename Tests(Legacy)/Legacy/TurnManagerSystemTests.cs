@@ -78,11 +78,69 @@ public class TurnManagerSystemTests
         // Simulate dice roll
         turnManager.isWaitingForRoll = false;
         turnManager.StartCoroutine(turnManager.PlayerMovePhase(currentPlayer,true));
-        yield return new WaitUntil(() => currentPlayer.TileCount > initialTile);
+        yield return new WaitForSeconds(0.1f);
         Time.timeScale = originalTimeScale; //fix timescale after
         Assert.Greater(currentPlayer.TileCount, initialTile);
     }
-    
+    // TurnManagerSystemTests.cs
+    [UnityTest]
+    public IEnumerator Test_JailMechanics()
+    {
+        // Setup
+        var jailedPlayer = turnManager.players[0];
+        jailedPlayer.inJail = true;
+        jailedPlayer.TileCount = 11;
+
+        // Test 3 turns in jail
+        for (int i = 0; i < 3; i++)
+        {
+            turnManager.StartCoroutine(turnManager.PlayerMovePhase(jailedPlayer, true));
+            yield return new WaitForSeconds(0.1f);
+            Assert.AreEqual(11, jailedPlayer.TileCount);
+        }
+
+        // Verify release after 3 turns
+        turnManager.StartCoroutine(turnManager.PlayerMovePhase(jailedPlayer, true));
+        yield return new WaitForSeconds(0.1f);
+        Assert.IsFalse(jailedPlayer.inJail);
+        Assert.AreNotEqual(11, jailedPlayer.TileCount);
+    }
+
+    [UnityTest]
+    public IEnumerator Test_DoubleDiceMovement()
+    {
+        // Setup
+        turnManager.testMode = false;
+        var currentPlayer = turnManager.players[0];
+        int initialTile = currentPlayer.TileCount;
+        // Save original time scale and speed up time
+        // this worked apparently???????
+        float originalTimeScale = Time.timeScale;
+        Time.timeScale = 100f; // Makes 0.5s delay ~0.005s
+
+
+        // Execute roll
+        turnManager.StartCoroutine(turnManager.PlayerMovePhase(currentPlayer));
+        yield return new WaitForSeconds(0.1f);
+        
+
+        // Verify valid movement range
+        int movedTiles = currentPlayer.TileCount - initialTile;
+        Assert.IsTrue(movedTiles >= 2 && movedTiles <= 12);
+        Time.timeScale = originalTimeScale; //fix timescale after
+
+    }
+
+    [Test]
+    public void Test_RentSkipWhenOwnerJailed()
+    {
+        var owner = new boardPlayer { inJail = true };
+        var payer = new boardPlayer { balance = 1000 };
+        var property = new Property ("Test property",50,"brown", 10);
+
+        payer.PayRent(100, property);
+        Assert.AreEqual(1000, payer.balance);
+    }
 
 }
 

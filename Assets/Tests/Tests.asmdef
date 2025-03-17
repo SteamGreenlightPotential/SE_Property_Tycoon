@@ -1,0 +1,13 @@
+{
+    "name": "Tests",
+    "optionalUnityReferences": [
+        "TestAssemblies"
+        
+
+    ],
+    "references": [
+        "GameCode",
+        "nunit.framework.dll"
+        
+    ]
+}

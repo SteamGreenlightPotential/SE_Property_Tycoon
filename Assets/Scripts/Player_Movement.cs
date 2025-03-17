@@ -10,7 +10,11 @@ namespace PropertyTycoon
         public List<Property> OwnedProperties = new List<Property>(); // Create a list  to store owned properties
         private Vector3 origPos, targetPos;
         private float TimeToMove = 0.2f;
-        public int TileCount = 0;
+        
+        public int TileCount = 1; //Starts at 1 to match the excel spreadsheet tile counts (makes life easier i promise)
+        public bool goPassed = false;
+        public bool inJail = false; //Player is in jail
+        public int jailTurns = 0; //Number of turns player has been in jail
 
         public void Move(int steps)  // Called from Turn_Script to trigger movement for 1 turn
         {
@@ -26,25 +30,38 @@ namespace PropertyTycoon
             }
         }
 
+        //like moving but FASTER. Assumes the timescale has been set to 100 before being initiated
+        IEnumerator ProcessTeleport(int steps,float originalTimeScale)
+        {
+            for (int i = 0; i < steps; i++) // For each tile crossed check direction and move player
+            {
+                Vector3 direction = NextDir();
+                yield return StartCoroutine(TeleportPlayer(direction));
+
+            }
+            Time.timeScale = originalTimeScale; //reset timescale
+            yield return null;
+        }
+
         public Vector3 NextDir()
         {
             Vector3 direction = Vector3.zero;
-            if (TileCount >= 0 && TileCount < 10)
+            if (TileCount >= 1 && TileCount < 11)
             {
                 direction = Vector3.right; // Move price right
                 transform.eulerAngles = new Vector3(180, 0, 270); // Rotate to face right
             }
-            else if (TileCount >= 10 && TileCount < 20)
+            else if (TileCount >= 11 && TileCount < 21)
             {
                 direction = Vector3.down; // Move price down 
                 transform.eulerAngles = new Vector3(180, 0, 0); // Rotate to face down
             }
-            else if (TileCount >= 20 && TileCount < 30)
+            else if (TileCount >= 21 && TileCount < 31)
             {
                 direction = Vector3.left; // Move price left
                 transform.eulerAngles = new Vector3(180, 0, 90); // Rotate to face left
             }
-            else if (TileCount >= 30 && TileCount < 40)
+            else if (TileCount >= 31 && TileCount < 41)
             {
                 direction = Vector3.up; // Move price up
                 transform.eulerAngles = new Vector3(180, 0, 180); // Rotate to face up
@@ -53,6 +70,7 @@ namespace PropertyTycoon
             {
                 TileCount = 0; // Reset TileCount to loop board
                 direction = Vector3.right; // Reset direction to right
+                goPassed = true; // Player has passed Go
             }
 
             TileCount += 1; // Increment TileCount for each tile moved across
@@ -76,6 +94,25 @@ namespace PropertyTycoon
 
             transform.position = targetPos; // Make sure piece actually reaches destination
         }
+        private IEnumerator TeleportPlayer(Vector3 direction)
+        {
+            origPos = transform.position; // Store current position
+            targetPos = origPos + direction; // Store target position
+
+            float startTime = Time.time;
+            float elapsed = 0;
+            while (elapsed < TimeToMove)
+            {
+            elapsed = Time.time - startTime;
+            float t = Mathf.Clamp01(elapsed / TimeToMove);
+            transform.position = Vector3.Lerp(origPos, targetPos, t);
+            yield return null;
+            }
+
+            transform.position = targetPos; // Make sure piece actually reaches destination
+        }
+
+        
 
         // temporary wallet example
 
@@ -84,13 +121,13 @@ namespace PropertyTycoon
 
         public void taxCheck()
         {
-            if (TileCount == 4)
+            if (TileCount == 5)
             {
                 balance -= 100;
                 Debug.Log("Tax tile. New balance is " + balance);
             }
 
-            if (TileCount == 38)
+            if (TileCount == 39)
             {
                 balance -= 100;
                 Debug.Log("Tax tile. New balance is " + balance);
@@ -165,5 +202,17 @@ namespace PropertyTycoon
             balance += rent;
             Debug.Log("Received £" + rent + " of rent. New balance is " + balance);
         }
+    
+        public IEnumerator toJail(){
+        
+        // set timescale to 100 to save me time making a player teleport
+        float originalTimeScale = Time.timeScale;
+        Time.timeScale = 100f; //make piece "teleport" to jail
+        int jailDistance = 40 - TileCount + 11; // distance to jail
+        yield return StartCoroutine(ProcessTeleport(jailDistance,originalTimeScale)); // move player to jail
+        Time.timeScale = originalTimeScale; //reset timescale
+        }
     }
+
+
 }

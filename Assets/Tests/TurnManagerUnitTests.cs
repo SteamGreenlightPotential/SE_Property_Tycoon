@@ -31,8 +31,7 @@ public class TurnManagerUnitTests
             turnManager.players[i] = playerObj.AddComponent<boardPlayer>();
             turnManager.players[i].name="player "+i.ToString();
         }
-        
-        turnManager.Start();
+        turnManager.pmanager=pmanager; //assign propertymanager to turnmanager
         yield return null; // Allow Awake() to initialize
     }
 
@@ -56,29 +55,52 @@ public class TurnManagerUnitTests
     // Unit Test: Verify currentPlayerIndex wraps after last player
     [UnityTest]
     public IEnumerator Test_EndTurn_CyclesPlayerIndex()
-    {
-         // Save original time scale and speed up time
-        // this worked apparently???????
-        float originalTimeScale = Time.timeScale;
-        Time.timeScale = 100f; // Makes 0.5s delay ~0.005s
-        
+    {   
         turnManager.turnEnded = true; // Force allow turn end
         
-        turnManager.EndTurnButtonClicked();
-        yield return new WaitUntil(() => turnManager.currentPlayerIndex == 1); // Wait for index 
-
-        
-        Time.timeScale = originalTimeScale; //fix timescale after
+        yield return turnManager.EndTurn();
+       
 
         Assert.AreEqual(1, turnManager.currentPlayerIndex);
     }
 
     // Unit Test: Verify round increments after all players take turns
-    [Test]
-    public void Test_RoundIncrementsAfterFullCycle()
+    [UnityTest]
+    public IEnumerator Test_RoundIncrementsAfterFullCycle()
     {
         turnManager.currentPlayerIndex = 1; // Last player
-        turnManager.EndTurnButtonClicked();
-        Assert.AreEqual(1, turnManager.round);
+        yield return turnManager.StartCoroutine(turnManager.EndTurn());
+        Assert.AreEqual(2, turnManager.round);
     }
+
+    //Unit Test: Test taxCheck
+    [Test]
+    public void Test_TaxCheck()
+    {
+        boardPlayer player = turnManager.players[0];
+        player.balance = 1500;
+        player.TileCount = 5;
+        player.taxCheck();
+        Assert.AreEqual(1400, player.balance);
+    }
+    
+    // Test that jail counter resets properly 
+    [UnityTest]
+    public IEnumerator Test_JailTurnCounter()
+    {
+        boardPlayer player = turnManager.players[0];
+        player.inJail=true;
+        player.TileCount=11;
+        
+        // Simulate 3 jail turns and then a normal turn
+        for (int i = 0; i < 4; i++)
+        {
+            yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(player, true));
+        }
+        
+        Assert.IsFalse(player.inJail);
+        Assert.AreEqual(0, player.jailTurns);
+    }
+
+
 }

@@ -466,14 +466,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   players:
+  - {fileID: 1299728806}
   - {fileID: 686520156}
   - {fileID: 490123317}
   - {fileID: 1694829279}
   - {fileID: 1681988983}
   - {fileID: 1766556774}
-  - {fileID: 1299728806}
   pmanager: {fileID: 1907366489}
+  currentPlayerIndex: 0
+  isWaitingForRoll: 1
+  round: 1
+  turnEnded: 0
+  bankBalance: 50000
+  freeParkingBalance: 0
   playerlist: []
+  testMode: 1
 --- !u!1001 &1133506728
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -683,7 +690,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9519210ae39f4924f922ac6b53389f17, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.6991167
+      value: -4.7
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9519210ae39f4924f922ac6b53389f17, type: 3}
       propertyPath: m_LocalPosition.y
@@ -755,6 +762,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OwnedProperties: []
   TileCount: 0
+  goPassed: 0
+  inJail: 0
+  jailTurns: 0
+  balance: 1500
 --- !u!114 &1299728807
 MonoBehaviour:
   m_ObjectHideFlags: 0

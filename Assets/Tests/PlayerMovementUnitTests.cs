@@ -5,6 +5,7 @@ using System.Collections;
 using PropertyTycoon;
 using System.Collections.Generic; 
 
+
 public class PlayerMovementUnitTests
 {
     private boardPlayer bplayer;
@@ -31,16 +32,18 @@ public class PlayerMovementUnitTests
     [Test]
     public void Test_NextDir_UpdatesTileCount()
     {
-        bplayer.TileCount = 0;
-        Vector3 dir = bplayer.NextDir(); // Requires internal access
-        Assert.AreEqual(1, bplayer.TileCount);
+        bplayer.TileCount = 1;
+        Vector3 dir = bplayer.NextDir(); 
+        Assert.AreEqual(2, bplayer.TileCount);
     }
+
+
 
     // Unit Test: Validate direction calculation for corner tiles
     [Test]
     public void Test_NextDir_ReturnsCorrectDirection()
     {
-        bplayer.TileCount = 10; // Edge of top-right corner
+        bplayer.TileCount = 11; // Edge of top-right corner
         Vector3 dir = bplayer.NextDir();
         Assert.AreEqual(Vector3.down, dir);
     }
@@ -62,4 +65,8 @@ public class PlayerMovementUnitTests
         bplayer.BuyTile(expensiveProp,player);
         Assert.IsEmpty(bplayer.OwnedProperties);
     }
+
+
+
+    
 }

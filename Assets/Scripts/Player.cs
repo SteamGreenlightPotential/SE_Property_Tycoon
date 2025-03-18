@@ -5,6 +5,8 @@ namespace PropertyTycoon
 {
     public class Player
     {
+        private string v; // added for test class
+
         public string Name { get; set; }
         public int Balance { get; set; }
         public List<Property> OwnedProperties { get; private set; }
@@ -17,6 +19,11 @@ namespace PropertyTycoon
             Balance = 1500; // Player starts with £1500
             OwnedProperties = new List<Property>();
             bPlayer = boardPlayer ?? throw new ArgumentNullException(nameof(boardPlayer));
+        }
+
+        public Player(string v)
+        {
+            this.v = v;
         }
 
         public void Credit(int amount)

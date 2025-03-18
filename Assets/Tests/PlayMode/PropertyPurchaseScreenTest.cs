@@ -1,111 +1,108 @@
-/*using NUnit.Framework; // For unit testing
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using PropertyTycoon;
 
-public class PropertyPurchaseScrnTest
+namespace PropertyTycoon.Tests
 {
-    private GameObject testObject; // Mock object for the PropertyPurchaseScrn
-    private PropertyPurchaseScrn purchaseScreen; // Referencing the script being tested
-    private Player testPlayer;
-    private Property testProperty;
-
-    [SetUp]
-    public void Setup()
+    public class PropertyPurchaseScrnTests
     {
-        // Creates a mock GameObject for the PropertyPurchaseScrn
-        testObject = new GameObject("PropertyPurchaseScrn");
-        purchaseScreen = testObject.AddComponent<PropertyPurchaseScrn>();
+        private GameObject testObject;
+        private PropertyPurchaseScrn purchaseScrn;
+        private Text propertyNameText;
+        private Text propertyPriceText;
+        private Text propertyColorText;
+        private Text playerBalanceText;
+        private Button buyButton;
 
-        // Creates and attaches TextMeshProUGUI components
-        purchaseScreen.PropertyName = CreateTextElement("PropertyName");
-        purchaseScreen.PropertyPrice = CreateTextElement("PropertyPrice");
-        purchaseScreen.PropertyColor = CreateTextElement("PropertyColor");
-        purchaseScreen.PlayerBalance = CreateTextElement("PlayerBalance");
+        private Property testProperty;
+        private Player testPlayer;
 
-        // Create and attach Button components
-        purchaseScreen.BuyButton = CreateButtonElement("BuyButton");
-
-        // Create mock player and property
-        testPlayer = new Player("Test Player", null)
+        [SetUp]
+        public void Setup()
         {
-            Balance = 1000 // Starting balance for testing
-        };
+            // Create a GameObject to attach the PropertyPurchaseScrn script
+            testObject = new GameObject();
+            purchaseScrn = testObject.AddComponent<PropertyPurchaseScrn>();
 
-        testProperty = new Property("Test Property", 200, "Red", 20);
-    }
+            // Create Text objects (mocking them for now)
+            propertyNameText = new GameObject().AddComponent<Text>();
+            propertyPriceText = new GameObject().AddComponent<Text>();
+            propertyColorText = new GameObject().AddComponent<Text>();
+            playerBalanceText = new GameObject().AddComponent<Text>();
 
-    [TearDown]
-    public void Teardown()
-    {
-        // Clean up after each test
-        Object.DestroyImmediate(testObject);
-    }
+            // Assign the Text components to the script
+            purchaseScrn.PropertyName = propertyNameText;
+            purchaseScrn.PropertyPrice = propertyPriceText;
+            purchaseScrn.PropertyColor = propertyColorText;
+            purchaseScrn.PlayerBalance = playerBalanceText;
 
-    [Test]
-    public void Show_UpdatesUITextCorrectly()
-    {
-        // Act
-        purchaseScreen.Show(testProperty, testPlayer);
+            // Create the Button object
+            buyButton = new GameObject().AddComponent<Button>();
+            purchaseScrn.BuyButton = buyButton;
 
-        // Assert
-        Assert.AreEqual("Property: Test Property", purchaseScreen.PropertyName.text);
-        Assert.AreEqual("Color: Red", purchaseScreen.PropertyColor.text);
-        Assert.AreEqual("Price: £200", purchaseScreen.PropertyPrice.text);
-        Assert.AreEqual("Balance: £1000", purchaseScreen.PlayerBalance.text);
+            // Create a mock property and player
+            testProperty = new Property("Test Property", 100, "Red", 0);  // Mock Property
+            testPlayer = new Player("Test Player") { Balance = 200 };      // Mock Player with balance
+        }
 
-        // Ensure the purchase screen becomes visible
-        Assert.IsTrue(testObject.activeSelf);
-    }
+        [TearDown]
+        public void Teardown()
+        {
+            // Clean up after each test
+            Object.Destroy(testObject);
+        }
 
-    [Test]
-    public void OnBuyButtonClicked_PlayerPurchasesProperty()
-    {
-        // Arrange
-        purchaseScreen.Show(testProperty, testPlayer);
+        [Test]
+        public void Show_UpdatesUIWithPropertyAndPlayerDetails()
+        {
+            // Act
+            purchaseScrn.Show(testProperty, testPlayer);
 
-        // Act
-        purchaseScreen.OnBuyButtonClicked();
+            // Assert: Check if the UI is updated with the expected information
+            Assert.AreEqual("Property: Test Property", propertyNameText.text);
+            Assert.AreEqual("Color: Red", propertyColorText.text);
+            Assert.AreEqual("Price: £100", propertyPriceText.text);
+            Assert.AreEqual("Balance: £200", playerBalanceText.text);
+        }
 
-        // Assert
-        Assert.AreEqual(800, testPlayer.Balance); // Check that balance is reduced
-        Assert.Contains(testProperty, testPlayer.OwnedProperties); // Check that property is added
-        Assert.AreEqual(testPlayer, testProperty.owner); // Check that property owner is updated
-        Assert.IsFalse(testObject.activeSelf); // Check that screen is hidden
-    }
+        [Test]
+        public void OnBuyButtonClicked_BuysPropertyWhenPlayerHasSufficientFunds()
+        {
+            // Arrange: Player has enough money
+            purchaseScrn.Show(testProperty, testPlayer);
 
-    [Test]
-    public void OnBuyButtonClicked_NotEnoughBalance_ShowsError()
-    {
-        // Arrange
-        testPlayer.Balance = 100; // Set insufficient balance
-        purchaseScreen.Show(testProperty, testPlayer);
+            // Act: Trigger buy action
+            purchaseScrn.OnBuyButtonClicked();
 
-        // Act
-        purchaseScreen.OnBuyButtonClicked();
+            // Assert: Check if player balance is reduced correctly and the property is added
+            Assert.AreEqual(100, testPlayer.Balance); // Balance should be reduced by property price
+            // Check if property was added to player (we simulate this using available property name)
+            Assert.IsTrue(testPlayer.OwnedProperties.Exists(p => p.name == testProperty.name));
+        }
 
-        // Assert
-        Assert.AreEqual(100, testPlayer.Balance); // Balance should remain unchanged
-        Assert.IsFalse(testPlayer.OwnedProperties.Contains(testProperty)); // Property should not be added
-        Assert.IsNull(testProperty.owner); // Property owner should remain null
-        Assert.IsFalse(testObject.activeSelf); // Screen should still close
-    }
+        [Test]
+        public void OnBuyButtonClicked_DoesNotBuyPropertyWhenPlayerHasInsufficientFunds()
+        {
+            // Arrange: Set the player's balance to less than the property price
+            testPlayer.Balance = 50;
+            purchaseScrn.Show(testProperty, testPlayer);
 
-    // Helper method to create TextMeshProUGUI components
-    private TextMeshProUGUI CreateTextElement(string name)
-    {
-        var textObject = new GameObject(name);
-        textObject.transform.parent = testObject.transform;
-        return textObject.AddComponent<TextMeshProUGUI>();
-    }
+            // Act: Try to buy the property
+            purchaseScrn.OnBuyButtonClicked();
 
-    // Helper method to create Button components
-    private Button CreateButtonElement(string name)
-    {
-        var buttonObject = new GameObject(name);
-        buttonObject.transform.parent = testObject.transform;
-        return buttonObject.AddComponent<Button>();
+            // Assert: Balance should remain the same and property should not be added
+            Assert.AreEqual(50, testPlayer.Balance); // Balance should remain unchanged
+            Assert.IsFalse(testPlayer.OwnedProperties.Exists(p => p.name == testProperty.name)); // Property should not be added
+        }
+
+        [Test]
+        public void Close_HidesThePropertyPurchaseScreen()
+        {
+            // Act: Show the screen and then close it
+            purchaseScrn.Show(testProperty, testPlayer);
+            // Assert: Verify if the GameObject is deactivated (the UI is hidden)
+            Assert.IsFalse(testObject.activeSelf); // The GameObject should be inactive
+        }
     }
 }
-*/

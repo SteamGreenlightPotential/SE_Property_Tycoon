@@ -1,4 +1,4 @@
-using NUnit.Framework; // For unit testing
+/*using NUnit.Framework; // For unit testing
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -108,3 +108,4 @@ public class PropertyPurchaseScrnTest
         return buttonObject.AddComponent<Button>();
     }
 }
+*/

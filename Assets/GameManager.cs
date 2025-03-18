@@ -5,7 +5,7 @@ namespace PropertyTycoon
 {
     public class GameManager : MonoBehaviour
     {
-        public static GameManager Instance { get; private set; }  // GameManager instance 
+        public static GameManager Instance { get; private set; }  // GameManager instance
 
         public List<Property> properties;       // Lists all properties
         public Bank bank;                       // Bank instance
@@ -32,7 +32,7 @@ namespace PropertyTycoon
             propertyManager = new PropertyManager(); // Initialize PropertyManager
             InitialiseProperties();                  // Load all properties
 
-            Debug.Log("Game Manager Online");        // Debug message for confirmation
+            Debug.Log("GameManager Online");         // Debug message for confirmation
         }
 
         private void Start()
@@ -41,7 +41,7 @@ namespace PropertyTycoon
             DisplayBalances();          // Show initial balances in the debug console
         }
 
-        // Method to initialise properties
+        // Method to initialize properties
         public void InitialiseProperties()
         {
             propertyManager.initialiseProperties();  // Load properties from PropertyManager

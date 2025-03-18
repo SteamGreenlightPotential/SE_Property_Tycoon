@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using UnityEngine.UI;
 
 namespace PropertyTycoon
@@ -10,12 +9,12 @@ namespace PropertyTycoon
         // Singleton instance for global access
         public static AuctionScrn Instance { get; private set; }
 
-        public TextMeshProUGUI PropertyNameText;  // Text to display the property name
-        public TextMeshProUGUI HighestBidText;    // Text to display the highest bid
-        public TextMeshProUGUI PlayerTurnText;    // Text to display the current player's turn
-        public Button BidButton;                 // Button to place a bid
-        public Button PassButton;                // Button to pass the turn
-        public TMP_InputField BidAmountInput;    // Input field for entering a bid amount
+        public Text PropertyNameText;  // Text to display the property name
+        public Text HighestBidText;    // Text to display the highest bid
+        public Text PlayerTurnText;    // Text to display the current player's turn
+        public Button BidButton;       // Button to place a bid
+        public Button PassButton;      // Button to pass the turn
+        public InputField BidAmountInput; // Input field for entering a bid amount
 
         private Property propertyBeingAuctioned;  // The property being auctioned
         private List<Player> players;            // List of players participating in the auction

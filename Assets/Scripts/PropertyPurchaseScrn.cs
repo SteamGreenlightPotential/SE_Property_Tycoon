@@ -1,21 +1,20 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro; // TextMeshPro namespace
 
 namespace PropertyTycoon
 {
     public class PropertyPurchaseScrn : MonoBehaviour
     {
-        public TextMeshProUGUI PropertyName;        // Displays the property name
-        public TextMeshProUGUI PropertyPrice;       // Displays the property price
-        public TextMeshProUGUI PropertyColor;       // Displays the property color
-        public TextMeshProUGUI PlayerBalance;       // Displays the player's balance
-        public Button BuyButton;                   // Button to purchase the property
-        public Button AuctionButton;               // Button to start an auction
-        public AuctionScrn AuctionUI;              // Reference to the Auction UI
+        public Text PropertyName;        // Displays the property name
+        public Text PropertyPrice;       // Displays the property price
+        public Text PropertyColor;       // Displays the property color
+        public Text PlayerBalance;       // Displays the player's balance
+        public Button BuyButton;         // Button to purchase the property
+        public Button AuctionButton;     // Button to start an auction
+        public AuctionScrn AuctionUI;    // Reference to the Auction UI
 
-        private Property CurrentProperty;          // Property currently being displayed
-        private Player CurrentPlayer;              // Player currently viewing the screen
+        private Property CurrentProperty; // Property currently being displayed
+        private Player CurrentPlayer;     // Player currently viewing the screen
 
         // Show the property purchase screen
         public void Show(Property property, Player player)
@@ -52,9 +51,9 @@ namespace PropertyTycoon
             }
         }
 
-        // Auction button implemented insted of cancel.
+        // Auction button implemented instead of cancel.
         // Called when the "Auction" button is clicked
-        public void OnAuctionButtonClicked()
+        /*public void OnAuctionButtonClicked()
         {
             if (AuctionUI != null)
             {
@@ -68,7 +67,7 @@ namespace PropertyTycoon
             }
 
             Close(); // Close the property purchase screen
-        }
+        }*/
 
         // Hide the property purchase screen
         private void Close()

@@ -16,6 +16,12 @@ namespace PropertyTycoon
         private Property CurrentProperty; // Property currently being displayed
         private Player CurrentPlayer;     // Player currently viewing the screen
 
+
+        public void Start()
+        {
+            gameObject.SetActive(false);
+        }
+
         // Show the property purchase screen
         public void Show(Property property, Player player)
         {
@@ -71,6 +77,11 @@ namespace PropertyTycoon
 
         // Hide the property purchase screen
         private void Close()
+        {
+            gameObject.SetActive(false);
+        }
+
+        private void OnDestroy()
         {
             gameObject.SetActive(false);
         }

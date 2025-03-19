@@ -1056,7 +1056,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &520291268
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1095,8 +1095,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96da109e54314fe4291d84f7007d6ddd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PropertyNameText: {fileID: 0}
+  HighestBidText: {fileID: 0}
+  PlayerTurnText: {fileID: 0}
   BidButton: {fileID: 736073337}
   PassButton: {fileID: 156894589}
+  BidAmountInput: {fileID: 0}
 --- !u!114 &520291270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2914,7 +2918,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1440843551
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2953,6 +2957,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e43d84425c9e69046ae9c2f778f849b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PropertyName: {fileID: 0}
+  PropertyPrice: {fileID: 0}
+  PropertyColor: {fileID: 0}
+  PlayerBalance: {fileID: 0}
   BuyButton: {fileID: 8401470}
   AuctionButton: {fileID: 694154003}
   AuctionUI: {fileID: 0}

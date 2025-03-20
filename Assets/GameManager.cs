@@ -26,6 +26,16 @@ namespace PropertyTycoon
                 return;
             }
 
+            if (propertyManager != null)
+            {
+                propertyManager.initialiseProperties();  // Load properties from PropertyManager
+                properties = propertyManager.properties; // Assign properties list
+            }
+            else
+            {
+                Debug.LogError("PropertyManager is not assigned in GameManager!");
+            }
+
             // Initialize core game components
             bank = new Bank();                       // Initialize the bank
             players = new List<Player>();            // Initialize the players list

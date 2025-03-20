@@ -7,57 +7,62 @@ namespace PropertyTycoon
 {
     public class Turn_Script : MonoBehaviour
     {
-        public boardPlayer[] players; // Assigned the scripts from each piece in the Inspector
-        public PropertyManager pmanager; // Assigned PropertyManager in Unity Inspector
-        public int currentPlayerIndex = 0; // Tracks the current player
-        public bool isWaitingForRoll = true; // Wait for player to press space to roll
-        public int round = 1; // Tracks the current round of the game
-        public bool turnEnded = false; // Tracks whether the player's turn has ended
-        public int bankBalance = 50000; // Total funds in the bank
-        public int freeParkingBalance = 0; // Funds in Free Parking
-        public List<Player> playerlist = new List<Player>(); // Creates an array of player objects corresponding to board players
+        // References set in the Inspector
+        public boardPlayer[] players; // Array of board players (assigned in the Unity Inspector)
+        public PropertyManager pmanager; // Reference to the PropertyManager (manages properties)
+        public PropertyPurchaseScrn propertyPurchaseScrn; // UI for property purchase
 
-        public bool testMode = true; // "Test Mode" allows for hard-coded dice rolls for testing purposes
+        // Game state variables
+        public int currentPlayerIndex = 0; // Tracks the current player's turn
+        public bool isWaitingForRoll = true; // True when waiting for the player to press SPACE to roll dice
+        public int round = 1; // Tracks the current game round
+        public bool turnEnded = false; // True when the player's turn ends
+        public int bankBalance = 50000; // Total money in the bank
+        public int freeParkingBalance = 0; // Funds available on Free Parking
+        public List<Player> playerlist = new List<Player>(); // List of Player objects corresponding to board players
+
+        public bool testMode = true; // Enables test mode (for hard-coded dice rolls)
 
         public void Start()
         {
             Debug.Log("Round " + round); // Announce round 1 has started
 
-            // Initialize player objects for each boardPlayer
+            // Initialize Player objects for each board player
             int i = 1;
             foreach (boardPlayer bplayer in players)
             {
-                string name = ("player " + i.ToString());
-                playerlist.Add(new Player(name, bplayer)); // Add each player to the player list
-                i += 1;
+                string name = "Player " + i;
+                playerlist.Add(new Player(name, bplayer)); // Link board player to player logic
+                Debug.Log($"Added {name} to player list.");
+                i++;
             }
 
-            StartTurn(); // Start the first turn
+            StartTurn(); // Begin the first turn
         }
 
         void Update()
         {
-            // Wait for the player to press SPACE to roll the dice
+            // Listen for SPACE key to roll dice
             if (isWaitingForRoll && Input.GetKeyDown(KeyCode.Space))
             {
                 isWaitingForRoll = false; // Prevent multiple rolls
-                StartCoroutine(PlayerMovePhase(players[currentPlayerIndex]));
+                StartCoroutine(PlayerMovePhase(players[currentPlayerIndex])); // Start the move phase
             }
         }
 
         void StartTurn()
         {
-            turnEnded = false; // Disable the end turn button
-            Debug.Log("Player " + (currentPlayerIndex + 1) + "'s Turn. Press SPACE to roll.");
-            isWaitingForRoll = true; // Wait for player to press space before rolling
+            turnEnded = false; // Reset end turn state
+            Debug.Log($"Player {currentPlayerIndex + 1}'s Turn. Press SPACE to roll.");
+            isWaitingForRoll = true; // Wait for player input to roll dice
         }
 
         public IEnumerator PlayerMovePhase(boardPlayer player, bool testCase = false, int testRoll = 1, int testRoll2 = 1)
         {
             int roll = 0;
-            int roll2 = 0; // Second dice roll for double roll
+            int roll2 = 0; // Second dice roll for handling doubles
 
-            // Use hardcoded dice rolls in test mode
+            // Use test rolls in test mode
             if (testMode)
             {
                 roll = testRoll;
@@ -65,133 +70,155 @@ namespace PropertyTycoon
             }
             else
             {
-                // Roll the dice
+                // Roll the dice for the player
                 roll = Random.Range(1, 7);
                 roll2 = Random.Range(1, 7);
-                Debug.Log("Player " + (currentPlayerIndex + 1) + " rolled: " + roll);
+                Debug.Log($"Player {currentPlayerIndex + 1} rolled: {roll} and {roll2}");
             }
 
-            // Jail logic
+            // Handle jail logic
             if (player.inJail)
             {
                 player.jailTurns += 1;
+
                 if (player.jailTurns == 3)
                 {
+                    // Player leaves jail on the third turn
                     player.jailTurns = 0;
                     player.inJail = false;
-                    player.Move(roll + roll2);
-                    yield return new WaitForSeconds(roll * 0.2f + 0.5f);
+                    player.Move(roll + roll2); // Move the player
+                    yield return new WaitForSeconds(roll * 0.2f + 0.5f); // Simulate delay
                 }
                 else
                 {
-                    Debug.Log("Player is in jail. Press 'End turn' to end turn.");
-                    yield break; // End the turn if the player is still in jail
+                    Debug.Log("Player is in jail. Press 'End turn' to finish the turn.");
+                    yield break; // End the turn
                 }
             }
             else
             {
-                yield return player.Move(roll + roll2); // Move the player
+                yield return player.Move(roll + roll2); // Move the player normally
             }
 
+            // Post-movement logic
             if (!player.inJail)
             {
-                // Update the current tile and ownership checks
-                int currentTile = player.TileCount;
-                bool tileOwned = false;
-                int ownerIndex = -1;
+                int currentTile = player.TileCount; // Get the current tile of the player
+                bool tileOwned = false; // Flag to check if tile is owned
+                int ownerIndex = -1; // Index of the player who owns the tile
 
+                // Check if the tile is owned by another player
                 foreach (boardPlayer p in players)
                 {
                     Player realPlayer = getPlayerFromBoard(p);
+                    Property property = pmanager.getTileProperty(currentTile);
 
-                    if (pmanager.getTileProperty(currentTile) == null)
-                    {
-                        continue; // Avoid null properties
-                    }
+                    if (property == null)
+                        continue; // Skip null properties
 
-                    if (pmanager.getTileProperty(currentTile).owner == realPlayer)
+                    if (property.owner == realPlayer)
                     {
-                        Debug.Log("Tile " + currentTile + " is owned by " + p.name);
+                        Debug.Log($"Tile {currentTile} is owned by {p.name}");
                         tileOwned = true;
                         ownerIndex = System.Array.IndexOf(players, p);
                         break;
                     }
                 }
 
-                // Handle passing GO
+                // Handle scenarios based on the type of tile
                 if (player.goPassed)
                 {
+                    // Player passed GO, reward them
                     player.balance += 200;
                     player.goPassed = false;
                     Debug.Log("PASSED GO");
                 }
 
-                // Handle wildcard tiles (tax, parking, jail)
-                if (pmanager.getTileProperty(currentTile) == null)
+                Property landedProperty = pmanager.getTileProperty(currentTile);
+                if (landedProperty == null)
                 {
-                    if (currentTile == 5 || currentTile == 39)
-                    {
-                        player.taxCheck();
-                        freeParkingBalance += 100;
-                        Debug.Log("GET TAXED");
-                    }
-                    else if (currentTile == 21)
-                    {
-                        player.balance += freeParkingBalance;
-                        freeParkingBalance = 0;
-                        Debug.Log("FREE PARKING :D");
-                    }
-                    else if (currentTile == 31)
-                    {
-                        yield return player.toJail();
-                        player.TileCount = 11;
-                        player.inJail = true;
-                        player.goPassed = false;
-                        Debug.Log("GO TO JAIL");
-                    }
+                    // Handle special tiles like taxes, jail, or parking
+                    HandleSpecialTiles(currentTile, player);
                 }
-                else if (tileOwned) // Handle owned tiles
+                else if (tileOwned)
                 {
-                    if (ownerIndex != currentPlayerIndex && !players[ownerIndex].inJail)
-                    {
-                        int rent = 50; // Temporary rent value
-                        Debug.Log("Tile " + currentTile + " is owned by Player " + (ownerIndex + 1) + ". Paying rent £" + rent);
-                        players[currentPlayerIndex].PayRent(rent, pmanager.getTileProperty(currentTile));
-                    }
-                    else
-                    {
-                        Debug.Log("Tile " + currentTile + " is owned by you.");
-                    }
+                    // Tile is owned, handle rent payment
+                    HandleOwnedTile(player, landedProperty, ownerIndex);
                 }
-                else // Handle unowned tiles
+                else
                 {
-                    Debug.Log("Tile " + currentTile + " is not owned by anyone and is available.");
-                    Debug.Log("Press B to buy or SPACE to skip.");
-                    bool decisionMade = false;
-                    if (testCase) decisionMade = true;
-
-                    while (!decisionMade)
-                    {
-                        if (Input.GetKeyDown(KeyCode.B))
-                        {
-                            Property property = pmanager.getTileProperty(currentTile);
-                            player.BuyTile(property, getPlayerFromBoard(players[currentPlayerIndex]));
-                            decisionMade = true;
-                            bankBalance += 200;
-                        }
-                        else if (Input.GetKeyDown(KeyCode.Space))
-                        {
-                            Debug.Log("Purchase skipped.");
-                            decisionMade = true;
-                        }
-                        yield return null;
-                    }
+                    // Tile is unowned, trigger property purchase
+                    Debug.Log($"Tile {currentTile} is not owned by anyone and is available.");
+                    ShowPropertyPurchaseScreen(player, landedProperty);
                 }
             }
 
-            Debug.Log("Press End Turn now for next turn.");
+            // Indicate that the turn can be ended
+            Debug.Log("Press End Turn now for the next turn.");
             turnEnded = true;
         }
+
+        private void HandleSpecialTiles(int currentTile, boardPlayer player)
+        {
+            // Handle tax, parking, or jail tiles
+            if (currentTile == 5 || currentTile == 39) // Tax tiles
+            {
+                player.taxCheck();
+                freeParkingBalance += 100;
+                Debug.Log("GET TAXED");
+            }
+            else if (currentTile == 21) // Free parking
+            {
+                player.balance += freeParkingBalance;
+                freeParkingBalance = 0;
+                Debug.Log("FREE PARKING :D");
+            }
+            else if (currentTile == 31) // Go to jail
+            {
+                StartCoroutine(player.toJail());
+                player.TileCount = 11; // Jail tile index
+                player.inJail = true;
+                player.goPassed = false;
+                Debug.Log("GO TO JAIL");
+            }
+        }
+
+        private void HandleOwnedTile(boardPlayer player, Property property, int ownerIndex)
+        {
+            // Handle rent payments or ownership checks
+            if (ownerIndex != currentPlayerIndex && !players[ownerIndex].inJail)
+            {
+                int rent = property.baseRent; // Base rent value
+                Debug.Log($"Paying rent of £{rent} to Player {ownerIndex + 1}");
+                players[currentPlayerIndex].PayRent(rent, property);
+            }
+            else
+            {
+                Debug.Log("You own this property. No rent required.");
+            }
+        }
+
+        private void ShowPropertyPurchaseScreen(boardPlayer player, Property property)
+        {
+            if (propertyPurchaseScrn != null && property != null)
+            {
+                Player currentPlayer = getPlayerFromBoard(player);
+                if (currentPlayer != null)
+                {
+                    Debug.Log($"Triggering purchase screen for Property: {property.name}, Player: {currentPlayer.Name}");
+                    propertyPurchaseScrn.Show(property, currentPlayer);
+                }
+                else
+                {
+                    Debug.LogError("CurrentPlayer is null in ShowPropertyPurchaseScreen!");
+                }
+            }
+            else
+            {
+                Debug.LogError("PropertyPurchaseScrn or Property is null in ShowPropertyPurchaseScreen!");
+            }
+        }
+
 
         public void EndTurnButtonClicked()
         {
@@ -203,31 +230,35 @@ namespace PropertyTycoon
 
         public IEnumerator EndTurn()
         {
-            Debug.Log("Ending Player " + (currentPlayerIndex + 1) + "'s Turn...");
-            yield return new WaitForSeconds(0.5f);
+            // End the current player's turn
+            Debug.Log($"Ending Player {currentPlayerIndex + 1}'s Turn...");
+            yield return new WaitForSeconds(0.5f); // Simulate a delay
 
+            // Move to the next player
             currentPlayerIndex = (currentPlayerIndex + 1) % players.Length;
 
+            // Increment the round if all players have taken their turn
             if (currentPlayerIndex == 0)
             {
-                round += 1;
-                Debug.Log("Round " + round);
+                round++;
+                Debug.Log($"Round {round}");
             }
 
-            StartTurn();
+            StartTurn(); // Start the next player's turn
         }
 
-        Player getPlayerFromBoard(boardPlayer player)
+        private Player getPlayerFromBoard(boardPlayer player)
         {
+            // Find the Player object linked to the board player
             foreach (Player p in playerlist)
             {
                 if (p.bPlayer == player)
                 {
-                    Debug.Log("Fetched player " + p.Name);
+                    Debug.Log($"Fetched player {p.Name}");
                     return p;
                 }
             }
-            return null;
+            return null; // Return null if no match is found
         }
     }
 }

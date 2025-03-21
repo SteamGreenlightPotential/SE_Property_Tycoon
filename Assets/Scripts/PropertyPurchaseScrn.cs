@@ -6,18 +6,27 @@ namespace PropertyTycoon
 {
     public class PropertyPurchaseScrn : MonoBehaviour
     {
-        public Text PropertyName;        // Displays the property name
-        public Text PropertyPrice;       // Displays the property price
-        public Text PropertyColor;       // Displays the property color
-        public Text PlayerBalance;       // Displays the player's balance
-        public Button BuyButton;         // Button to purchase the property
-        public Button AuctionButton;     // Button to start an auction
-        public AuctionScrn AuctionUI;    // Reference to the Auction UI
+        [Header("UI Text Components")]
+        public Text PropertyName;       // Displays the property name
+        public Text PropertyPrice;      // Displays the property price
+        public Text PropertyColorText;  // Displays the property color
+        public Text PlayerBalance;      // Displays the player's balance
+
+        [Header("Buttons")]
+        public Button BuyButton;        // Button to purchase the property
+        public Button AuctionButton;    // Button to start an auction
+
+        [Header("Auction UI Reference")]
+        public AuctionScrn AuctionUI;   // Reference to the Auction UI
 
         private Property CurrentProperty; // Property currently being displayed
         private Player CurrentPlayer;     // Player currently viewing the screen
 
-        // Show the property purchase screen
+        /// <summary>
+        /// Displays the property purchase screen with the provided property and player information.
+        /// </summary>
+        /// <param name="property">The property to display.</param>
+        /// <param name="player">The player attempting to purchase the property.</param>
         public void Show(Property property, Player player)
         {
             if (property == null || player == null)
@@ -27,24 +36,71 @@ namespace PropertyTycoon
             }
 
             Debug.Log($"Show() called with Property: {property.name}, Player: {player.Name}");
+
+            // Set the current property and player
             CurrentProperty = property;
             CurrentPlayer = player;
 
-            // Update the UI
-            if (PropertyName != null)
-                PropertyName.text = "Property: " + CurrentProperty.name;
-            if (PropertyPrice != null)
-                PropertyPrice.text = "Price: £" + CurrentProperty.price.ToString();
-            if (PlayerBalance != null)
-                PlayerBalance.text = "Balance: £" + CurrentPlayer.Balance.ToString();
+            // Update UI elements
+            UpdateUIElements();
 
-            gameObject.SetActive(true); // Make the UI visible
+            // Make the property purchase screen visible
+            gameObject.SetActive(true);
         }
 
+        /// <summary>
+        /// Updates all UI elements on the property purchase screen.
+        /// </summary>
+        private void UpdateUIElements()
+        {
+            // Update the Property Name
+            if (PropertyName != null)
+            {
+                PropertyName.text = "Property: " + CurrentProperty.name;
+                Debug.Log($"PropertyName updated to: {PropertyName.text}");
+            }
+            else
+            {
+                Debug.LogError("PropertyName Text UI is not assigned in the Inspector!");
+            }
 
+            // Update the Property Price
+            if (PropertyPrice != null)
+            {
+                PropertyPrice.text = "Price: £" + CurrentProperty.price.ToString();
+                Debug.Log($"PropertyPrice updated to: {PropertyPrice.text}");
+            }
+            else
+            {
+                Debug.LogError("PropertyPrice Text UI is not assigned in the Inspector!");
+            }
 
+            // Update the Property Color
+            if (PropertyColorText != null)
+            {
+                PropertyColorText.text = "Color: " + CurrentProperty.colour;
+                Debug.Log($"PropertyColorText updated to: {PropertyColorText.text}");
+            }
+            else
+            {
+                Debug.LogError("PropertyColorText Text UI is not assigned in the Inspector!");
+            }
 
-        // When "Buy" button is clicked
+            // Update the Player Balance
+            if (PlayerBalance != null)
+            {
+                PlayerBalance.text = "Balance: £" + CurrentPlayer.Balance.ToString();
+                Debug.Log($"PlayerBalance updated to: {PlayerBalance.text}");
+            }
+            else
+            {
+                Debug.LogError("PlayerBalance Text UI is not assigned in the Inspector!");
+            }
+        }
+
+        /// <summary>
+        /// Called when the "Buy" button is clicked.
+        /// </summary>
         public void OnBuyButtonClicked()
         {
             if (CurrentPlayer == null || CurrentProperty == null)
@@ -55,15 +111,23 @@ namespace PropertyTycoon
 
             if (CurrentPlayer.Balance >= CurrentProperty.price)
             {
-                CurrentPlayer.Debit(CurrentProperty.price); // Deduct the price
-                CurrentPlayer.AddProperty(CurrentProperty); // Add the property to the player
-                CurrentProperty.switchOwner(CurrentPlayer); // Update the property's owner
+                // Complete the purchase
+                CurrentPlayer.Debit(CurrentProperty.price); // Deduct the price from player's balance
+                CurrentPlayer.AddProperty(CurrentProperty); // Add the property to the player's portfolio
+                CurrentProperty.switchOwner(CurrentPlayer); // Update the owner of the property
 
                 Debug.Log($"{CurrentPlayer.Name} purchased {CurrentProperty.name} for £{CurrentProperty.price}.");
+
+                // Update the player's balance on the UI
                 if (PlayerBalance != null)
+                {
                     PlayerBalance.text = "Balance: £" + CurrentPlayer.Balance.ToString();
+                    Debug.Log($"PlayerBalance updated to: {PlayerBalance.text}");
+                }
                 else
-                    Debug.LogError("PlayerBalance Text component is not assigned.");
+                {
+                    Debug.LogError("PlayerBalance Text UI is not assigned in the Inspector!");
+                }
 
                 Close(); // Close the purchase screen
             }
@@ -73,7 +137,18 @@ namespace PropertyTycoon
             }
         }
 
-        // Called when the "Auction" button is clicked
+        /// <summary>
+        /// Hides the property purchase screen.
+        /// </summary>
+        private void Close()
+        {
+            gameObject.SetActive(false);
+            Debug.Log("PropertyPurchaseScrn closed.");
+        }
+
+        /// <summary>
+        /// Called when the "Auction" button is clicked (optional implementation for auctions).
+        /// </summary>
         /*public void OnAuctionButtonClicked()
         {
             if (AuctionUI != null && GameManager.Instance != null)
@@ -97,13 +172,5 @@ namespace PropertyTycoon
 
             Close();
         }*/
-
-
-
-        // Hide the property purchase screen
-        private void Close()
-        {
-            gameObject.SetActive(false);
-        }
     }
 }

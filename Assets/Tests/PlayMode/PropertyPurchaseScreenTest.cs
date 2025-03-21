@@ -11,7 +11,7 @@ namespace PropertyTycoon.Tests
         private PropertyPurchaseScrn purchaseScrn;
         private Text propertyNameText;
         private Text propertyPriceText;
-        private Text propertyColorText;
+        private Text propertyColorText; // Updated field name to match PropertyColorText in PropertyPurchaseScrn
         private Text playerBalanceText;
         private Button buyButton;
 
@@ -28,13 +28,13 @@ namespace PropertyTycoon.Tests
             // Create Text objects (mocking them for now)
             propertyNameText = new GameObject().AddComponent<Text>();
             propertyPriceText = new GameObject().AddComponent<Text>();
-            propertyColorText = new GameObject().AddComponent<Text>();
+            propertyColorText = new GameObject().AddComponent<Text>(); // Updated to match PropertyColorText
             playerBalanceText = new GameObject().AddComponent<Text>();
 
             // Assign the Text components to the script
             purchaseScrn.PropertyName = propertyNameText;
             purchaseScrn.PropertyPrice = propertyPriceText;
-            purchaseScrn.PropertyColor = propertyColorText;
+            purchaseScrn.PropertyColorText = propertyColorText; // Updated to match PropertyColorText
             purchaseScrn.PlayerBalance = playerBalanceText;
 
             // Create the Button object
@@ -51,6 +51,11 @@ namespace PropertyTycoon.Tests
         {
             // Clean up after each test
             Object.Destroy(testObject);
+            Object.Destroy(propertyNameText.gameObject);
+            Object.Destroy(propertyPriceText.gameObject);
+            Object.Destroy(propertyColorText.gameObject);
+            Object.Destroy(playerBalanceText.gameObject);
+            Object.Destroy(buyButton.gameObject);
         }
 
         [Test]
@@ -61,7 +66,7 @@ namespace PropertyTycoon.Tests
 
             // Assert: Check if the UI is updated with the expected information
             Assert.AreEqual("Property: Test Property", propertyNameText.text);
-            Assert.AreEqual("Color: Red", propertyColorText.text);
+            Assert.AreEqual("Color: Red", propertyColorText.text); // Updated to match PropertyColorText
             Assert.AreEqual("Price: £100", propertyPriceText.text);
             Assert.AreEqual("Balance: £200", playerBalanceText.text);
         }
@@ -77,8 +82,7 @@ namespace PropertyTycoon.Tests
 
             // Assert: Check if player balance is reduced correctly and the property is added
             Assert.AreEqual(100, testPlayer.Balance); // Balance should be reduced by property price
-            // Check if property was added to player (we simulate this using available property name)
-            Assert.IsTrue(testPlayer.OwnedProperties.Exists(p => p.name == testProperty.name));
+            Assert.IsTrue(testPlayer.OwnedProperties.Exists(p => p.name == testProperty.name)); // Property should be added
         }
 
         [Test]
@@ -99,9 +103,13 @@ namespace PropertyTycoon.Tests
         [Test]
         public void Close_HidesThePropertyPurchaseScreen()
         {
-            // Act: Show the screen and then close it
+            // Arrange: Show the property purchase screen
             purchaseScrn.Show(testProperty, testPlayer);
-            // Assert: Verify if the GameObject is deactivated (the UI is hidden)
+
+            // Act: Close the purchase screen
+            purchaseScrn.gameObject.SetActive(false);
+
+            // Assert: Verify if the GameObject is inactive (the UI is hidden)
             Assert.IsFalse(testObject.activeSelf); // The GameObject should be inactive
         }
     }

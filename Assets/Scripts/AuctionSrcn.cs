@@ -41,7 +41,7 @@ namespace PropertyTycoon
             Debug.Log($"Starting auction for {property.name} with {playerList.Count} players.");
             propertyBeingAuctioned = property;
             players = new List<Player>(playerList);
-            currentBid = property.price;
+            currentBid = 0;
             currentPlayerIndex = 0;
             highestBidder = null;
 

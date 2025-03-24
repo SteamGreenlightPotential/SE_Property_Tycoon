@@ -114,18 +114,21 @@ namespace PropertyTycoon
         {
             if (highestBidder != null)
             {
+                // Deduct the bid amount from the highest bidder
                 highestBidder.Debit(currentBid);
+                
+                // Transfer ownership of the property
                 propertyBeingAuctioned.switchOwner(highestBidder);
 
                 Debug.Log($"{highestBidder.Name} won the auction for {propertyBeingAuctioned.name} at £{currentBid}.");
             }
             else
             {
-                Debug.Log($"No bids were placed. The property remains unsold.");
+                Debug.Log("No bids were placed. The property remains unsold.");
             }
 
-            Debug.Log("Hiding AuctionUI in EndAuction()");
-            gameObject.SetActive(false); // Hide the auction screen
+            // Hide the auction screen
+            gameObject.SetActive(false);
         }
 
     }

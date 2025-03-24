@@ -22,6 +22,12 @@ namespace PropertyTycoon
         private int currentPlayerIndex;          // Index of the current player in the auction
         private Player highestBidder;            // Player who placed the highest bid
 
+        private void Start()
+        {
+            // Ensure the Auction Screen is hidden at the start
+            gameObject.SetActive(false);
+        }
+        
         private void Awake()
         {
             if (Instance == null)

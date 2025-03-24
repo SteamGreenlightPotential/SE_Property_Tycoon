@@ -24,6 +24,10 @@ namespace PropertyTycoon
 
         private void Start()
         {
+
+            // Ensure the Property Purchase Panel is hidden at the start
+            gameObject.SetActive(false);
+
             if (AuctionUI != null)
             {
                 Debug.Log("AuctionUI is correctly assigned in the Inspector.");
@@ -72,7 +76,9 @@ namespace PropertyTycoon
                 CurrentPlayer.AddProperty(CurrentProperty);
                 CurrentProperty.switchOwner(CurrentPlayer);
 
-                Close();
+                Debug.Log($"{CurrentPlayer.Name} purchased {CurrentProperty.name} for £{CurrentProperty.price}.");
+                
+                Close(); // Hide the purchase screen
             }
             else
             {

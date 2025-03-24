@@ -27,26 +27,33 @@ namespace PropertyTycoon
             if (Instance == null)
             {
                 Instance = this;
-                DontDestroyOnLoad(gameObject); // Makes AuctionScrn persist across scenes
+                DontDestroyOnLoad(gameObject); // Ensure persistence
             }
             else
             {
-                Destroy(gameObject); // Ensure only one instance of AuctionScrn exists
+                Debug.LogWarning("Duplicate AuctionScrn detected. Destroying this instance.");
+                Destroy(gameObject); // Destroy duplicate
             }
         }
 
         public void StartAuction(Property property, List<Player> playerList)
         {
-            // Initialize auction variables
+            Debug.Log($"Starting auction for {property.name} with {playerList.Count} players.");
             propertyBeingAuctioned = property;
             players = new List<Player>(playerList);
-            currentBid = property.price; // Starting bid is the property price
+            currentBid = property.price;
             currentPlayerIndex = 0;
             highestBidder = null;
 
             UpdateUI();
-            gameObject.SetActive(true); // Show the auction screen
+
+            if (!gameObject.activeSelf)
+            {
+                Debug.Log("Manually activating AuctionUI.");
+                gameObject.SetActive(true);
+            }
         }
+
 
         private void UpdateUI()
         {
@@ -117,7 +124,9 @@ namespace PropertyTycoon
                 Debug.Log($"No bids were placed. The property remains unsold.");
             }
 
+            Debug.Log("Hiding AuctionUI in EndAuction()");
             gameObject.SetActive(false); // Hide the auction screen
         }
+
     }
 }

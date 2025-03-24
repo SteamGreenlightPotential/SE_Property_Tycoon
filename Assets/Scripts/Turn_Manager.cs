@@ -260,5 +260,21 @@ namespace PropertyTycoon
             }
             return null; // Return null if no match is found
         }
+
+        public static Turn_Script Instance { get; private set; }
+
+        private void Awake()
+        {
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+            else
+            {
+                Debug.LogError("Multiple Turn_Script instances detected!");
+                Destroy(gameObject);
+            }
+        }
+
     }
 }

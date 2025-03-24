@@ -1,32 +1,39 @@
 using UnityEngine;
 using UnityEngine.UI;
-using PropertyTycoon;
+using System.Collections.Generic;
 
 namespace PropertyTycoon
 {
     public class PropertyPurchaseScrn : MonoBehaviour
     {
         [Header("UI Text Components")]
-        public Text PropertyName;       // Displays the property name
-        public Text PropertyPrice;      // Displays the property price
-        public Text PropertyColorText;  // Displays the property color
-        public Text PlayerBalance;      // Displays the player's balance
+        public Text PropertyName;       
+        public Text PropertyPrice;      
+        public Text PropertyColorText;  
+        public Text PlayerBalance;      
 
         [Header("Buttons")]
-        public Button BuyButton;        // Button to purchase the property
-        public Button AuctionButton;    // Button to start an auction
+        public Button BuyButton;        
+        public Button AuctionButton;    
 
         [Header("Auction UI Reference")]
-        public AuctionScrn AuctionUI;   // Reference to the Auction UI
+        public AuctionScrn AuctionUI;   
 
-        private Property CurrentProperty; // Property currently being displayed
-        private Player CurrentPlayer;     // Player currently viewing the screen
+        private Property CurrentProperty;
+        private Player CurrentPlayer;
 
-        /// <summary>
-        /// Displays the property purchase screen with the provided property and player information.
-        /// </summary>
-        /// <param name="property">The property to display.</param>
-        /// <param name="player">The player attempting to purchase the property.</param>
+        private void Start()
+        {
+            if (AuctionUI != null)
+            {
+                Debug.Log("AuctionUI is correctly assigned in the Inspector.");
+            }
+            else
+            {
+                Debug.LogError("AuctionUI is not assigned! Check the Inspector.");
+            }
+        }
+
         public void Show(Property property, Player player)
         {
             if (property == null || player == null)
@@ -35,101 +42,37 @@ namespace PropertyTycoon
                 return;
             }
 
-            Debug.Log($"Show() called with Property: {property.name}, Player: {player.Name}");
-
-            // Set the current property and player
             CurrentProperty = property;
             CurrentPlayer = player;
 
-            // Update UI elements
             UpdateUIElements();
-
-            // Make the property purchase screen visible
             gameObject.SetActive(true);
         }
 
-        /// <summary>
-        /// Updates all UI elements on the property purchase screen.
-        /// </summary>
         private void UpdateUIElements()
         {
-            // Update the Property Name
             if (PropertyName != null)
-            {
                 PropertyName.text = "Property: " + CurrentProperty.name;
-                Debug.Log($"PropertyName updated to: {PropertyName.text}");
-            }
-            else
-            {
-                Debug.LogError("PropertyName Text UI is not assigned in the Inspector!");
-            }
 
-            // Update the Property Price
             if (PropertyPrice != null)
-            {
                 PropertyPrice.text = "Price: £" + CurrentProperty.price.ToString();
-                Debug.Log($"PropertyPrice updated to: {PropertyPrice.text}");
-            }
-            else
-            {
-                Debug.LogError("PropertyPrice Text UI is not assigned in the Inspector!");
-            }
 
-            // Update the Property Color
             if (PropertyColorText != null)
-            {
                 PropertyColorText.text = "Color: " + CurrentProperty.colour;
-                Debug.Log($"PropertyColorText updated to: {PropertyColorText.text}");
-            }
-            else
-            {
-                Debug.LogError("PropertyColorText Text UI is not assigned in the Inspector!");
-            }
 
-            // Update the Player Balance
             if (PlayerBalance != null)
-            {
                 PlayerBalance.text = "Balance: £" + CurrentPlayer.Balance.ToString();
-                Debug.Log($"PlayerBalance updated to: {PlayerBalance.text}");
-            }
-            else
-            {
-                Debug.LogError("PlayerBalance Text UI is not assigned in the Inspector!");
-            }
         }
 
-        /// <summary>
-        /// Called when the "Buy" button is clicked.
-        /// </summary>
         public void OnBuyButtonClicked()
         {
-            if (CurrentPlayer == null || CurrentProperty == null)
-            {
-                Debug.LogError("CurrentPlayer or CurrentProperty is null!");
-                return;
-            }
-
             if (CurrentPlayer.Balance >= CurrentProperty.price)
             {
-                // Complete the purchase
-                CurrentPlayer.Debit(CurrentProperty.price); // Deduct the price from player's balance
-                CurrentPlayer.AddProperty(CurrentProperty); // Add the property to the player's portfolio
-                CurrentProperty.switchOwner(CurrentPlayer); // Update the owner of the property
+                CurrentPlayer.Debit(CurrentProperty.price);
+                CurrentPlayer.AddProperty(CurrentProperty);
+                CurrentProperty.switchOwner(CurrentPlayer);
 
-                Debug.Log($"{CurrentPlayer.Name} purchased {CurrentProperty.name} for £{CurrentProperty.price}.");
-
-                // Update the player's balance on the UI
-                if (PlayerBalance != null)
-                {
-                    PlayerBalance.text = "Balance: £" + CurrentPlayer.Balance.ToString();
-                    Debug.Log($"PlayerBalance updated to: {PlayerBalance.text}");
-                }
-                else
-                {
-                    Debug.LogError("PlayerBalance Text UI is not assigned in the Inspector!");
-                }
-
-                Close(); // Close the purchase screen
+                Close();
             }
             else
             {
@@ -138,39 +81,34 @@ namespace PropertyTycoon
         }
 
         /// <summary>
-        /// Hides the property purchase screen.
+        /// Called when the "Auction" button is clicked.
         /// </summary>
+        public void OnAuctionButtonClicked()
+        {
+            if (AuctionUI == null)
+                Debug.LogError("AuctionUI is null!");
+            if (CurrentProperty == null)
+                Debug.LogError("CurrentProperty is null!");
+            if (Turn_Script.Instance == null)
+                Debug.LogError("Turn_Script.Instance is null!");
+
+            if (AuctionUI != null && CurrentProperty != null && Turn_Script.Instance != null)
+            {
+                List<Player> playerList = Turn_Script.Instance.playerlist; // Retrieve the player list
+
+                // Activate the Auction UI and start the auction
+                AuctionUI.gameObject.SetActive(true);
+                AuctionUI.StartAuction(CurrentProperty, playerList);
+                Debug.Log($"Auction started for {CurrentProperty.name} with {playerList.Count} players.");
+                Close();
+            }
+        }
+
+
+
         private void Close()
         {
             gameObject.SetActive(false);
-            Debug.Log("PropertyPurchaseScrn closed.");
         }
-
-        /// <summary>
-        /// Called when the "Auction" button is clicked (optional implementation for auctions).
-        /// </summary>
-        /*public void OnAuctionButtonClicked()
-        {
-            if (AuctionUI != null && GameManager.Instance != null)
-            {
-                AuctionUI.gameObject.SetActive(true);
-
-                if (GameManager.Instance.players != null)
-                {
-                    AuctionUI.StartAuction(CurrentProperty, GameManager.Instance.players);
-                    Debug.Log($"Auction started for {CurrentProperty.name}.");
-                }
-                else
-                {
-                    Debug.LogError("GameManager players list is null!");
-                }
-            }
-            else
-            {
-                Debug.LogError("AuctionUI or GameManager.Instance is null!");
-            }
-
-            Close();
-        }*/
     }
 }

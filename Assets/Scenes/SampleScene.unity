@@ -1701,7 +1701,6 @@ MonoBehaviour:
   turnEnded: 0
   bankBalance: 50000
   freeParkingBalance: 0
-  testMode: 0
 --- !u!1 &875626653
 GameObject:
   m_ObjectHideFlags: 0
@@ -2639,9 +2638,6 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9519210ae39f4924f922ac6b53389f17, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1299728807}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9519210ae39f4924f922ac6b53389f17, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1299728806}
   m_SourcePrefab: {fileID: 100100000, guid: 9519210ae39f4924f922ac6b53389f17, type: 3}
 --- !u!1 &1299728805 stripped
@@ -2667,18 +2663,6 @@ MonoBehaviour:
   inJail: 0
   jailTurns: 0
   balance: 1500
---- !u!114 &1299728807
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1299728805}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6667409e3c332aa4dbe691ec85609cc3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1440843550
 GameObject:
   m_ObjectHideFlags: 0

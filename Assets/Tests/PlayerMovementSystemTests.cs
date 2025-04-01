@@ -35,6 +35,7 @@ using System.Reflection;
         {
             Object.DestroyImmediate(playerObj);
             Object.DestroyImmediate(propManager.gameObject);
+            Object.DestroyImmediate(turnManager.gameObject);
         }
 
         [UnityTest]

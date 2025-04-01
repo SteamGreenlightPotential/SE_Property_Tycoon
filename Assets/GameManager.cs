@@ -28,20 +28,20 @@ namespace PropertyTycoon
 
             if (propertyManager != null)
             {
-                propertyManager.initialiseProperties();  // Load properties from PropertyManager
+                //propertyManager.initialiseProperties();  // Load properties from PropertyManager
                 properties = propertyManager.properties; // Assign properties list
             }
             else
             {
                 Debug.LogError("PropertyManager is not assigned in GameManager!");
+                propertyManager = new PropertyManager(); // Initialize PropertyManager
+
             }
 
             // Initialize core game components
             bank = new Bank();                       // Initialize the bank
             players = new List<Player>();            // Initialize the players list
             propertyManager = new PropertyManager(); // Initialize PropertyManager
-            InitialiseProperties();                  // Load all properties
-
             Debug.Log("GameManager Online");         // Debug message for confirmation
         }
 

@@ -21,7 +21,6 @@ namespace PropertyTycoon
         public int freeParkingBalance = 0; // Funds available on Free Parking
         public List<Player> playerlist = new List<Player>(); // List of Player objects corresponding to board players
 
-        public bool testMode = true; // Enables test mode (for hard-coded dice rolls)
 
         public void Start()
         {
@@ -57,8 +56,9 @@ namespace PropertyTycoon
             isWaitingForRoll = true; // Wait for player input to roll dice
         }
 
-        public IEnumerator PlayerMovePhase(boardPlayer player, bool testCase = false, int testRoll = 1, int testRoll2 = 1)
+        public IEnumerator PlayerMovePhase(boardPlayer player, bool testMode = false, int testRoll = 5, int testRoll2 = 4)
         {
+            testMode=true;//THIS IS TEST PLEASE PLEASE PLEASE GET RID OF AFTER 
             int roll = 0;
             int roll2 = 0; // Second dice roll for handling doubles
 

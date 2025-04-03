@@ -45,5 +45,11 @@ namespace PropertyTycoon
         {
             return OwnedProperties.Exists(p => p.name.Equals(propertyName, StringComparison.OrdinalIgnoreCase)); // Checks if the player owns a property
         }
+        
+        /*public bool OwnsAllPropertiesInColorGroup(string color)
+        {
+            var colorProperties = GameManager.Instance.properties.FindAll(p => p.colour == color);
+            return colorProperties.TrueForAll(p => p.owner == this);
+        }*/
     }
 }

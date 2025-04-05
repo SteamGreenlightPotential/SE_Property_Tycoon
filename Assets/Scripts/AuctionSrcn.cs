@@ -124,7 +124,7 @@ namespace PropertyTycoon
                 highestBidder.Debit(currentBid);
                 
                 // Transfer ownership of the property
-                propertyBeingAuctioned.switchOwner(highestBidder);
+                propertyBeingAuctioned.SwitchOwner(highestBidder);
 
                 Debug.Log($"{highestBidder.Name} won the auction for {propertyBeingAuctioned.name} at £{currentBid}.");
             }

@@ -74,7 +74,7 @@ namespace PropertyTycoon
             {
                 CurrentPlayer.Debit(CurrentProperty.price);
                 CurrentPlayer.AddProperty(CurrentProperty);
-                CurrentProperty.switchOwner(CurrentPlayer);
+                CurrentProperty.SwitchOwner(CurrentPlayer);
 
                 Debug.Log($"{CurrentPlayer.Name} purchased {CurrentProperty.name} for £{CurrentProperty.price}.");
                 
@@ -109,9 +109,7 @@ namespace PropertyTycoon
                 Close();
             }
         }
-
-
-
+        
         private void Close()
         {
             gameObject.SetActive(false);

@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
-using PropertyTycoon;
 
 namespace PropertyTycoon
 {
@@ -213,6 +212,4 @@ namespace PropertyTycoon
         Time.timeScale = originalTimeScale; //reset timescale
         }
     }
-
-
 }

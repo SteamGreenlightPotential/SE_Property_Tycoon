@@ -54,7 +54,7 @@ namespace PropertyTycoon
         }
 
         // Method to add a house to the property
-        public void AddHouse()
+        public void addHouse()
         {
             if (houses < 4 && !hotel)
             {
@@ -63,7 +63,7 @@ namespace PropertyTycoon
         }
 
         // Method to add a hotel (requires 4 houses)
-        public void AddHotel()
+        public void addHotel()
         {
             if (houses == 4)
             {
@@ -88,16 +88,19 @@ namespace PropertyTycoon
             hotel = false;
         }
 
-        /*        // Check if the property can be upgraded to a house
-        public bool CanUpgradeToHouse(Player owner)
+        // Check if the property can have a house added
+        /*
+        public bool CanAddHouse(Player owner)
         {
-            return houses < 4 && !hotel && owner.OwnsAllPropertiesInColorGroup(colour);
+            return owner.OwnsAllPropertiesInColorGroup(colour) && !hotel && houses < 4;
         }
 
-        // Check if the property can be upgraded to a hotel
-        public bool CanUpgradeToHotel(Player owner)
+        // Check if the property can have a hotel added
+        public bool CanAddHotel(Player owner)
         {
-            return houses == 4 && !hotel && owner.OwnsAllPropertiesInColorGroup(colour);
-        }*/
+            return owner.OwnsAllPropertiesInColorGroup(colour) && houses == 4 && !hotel;
+        }
+        */
+
     }
 }

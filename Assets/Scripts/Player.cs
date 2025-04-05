@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PropertyTycoon
 {
@@ -46,10 +47,41 @@ namespace PropertyTycoon
             return OwnedProperties.Exists(p => p.name.Equals(propertyName, StringComparison.OrdinalIgnoreCase)); // Checks if the player owns a property
         }
         
-        /*public bool OwnsAllPropertiesInColorGroup(string color)
+        /*
+        public bool OwnsAllPropertiesInColorGroup(string color)
         {
-            var colorProperties = GameManager.Instance.properties.FindAll(p => p.colour == color);
-            return colorProperties.TrueForAll(p => p.owner == this);
-        }*/
+            if (GameManager.Instance != null)
+            {
+                var colorProperties = GameManager.Instance.properties.FindAll(p => p.colour == color);
+                return colorProperties.TrueForAll(p => p.owner == this);
+            }
+            else
+            {
+                //Debug.LogError("GameManager instance is null!");
+                return false;
+            }
+        }
+
+        public bool CanAddHouseToSet(Property property)
+        {
+            var colorSet = GameManager.Instance.properties.FindAll(p => p.colour == property.colour && p.owner == this);
+
+            // Get min and max houses in the color set
+            int maxHouses = colorSet.Max(p => p.houses);
+            int minHouses = colorSet.Min(p => p.houses);
+
+            // Ensure no property in the set has more than one house difference
+            return maxHouses - minHouses <= 1 && property.houses == minHouses;
+        }
+
+        public bool CanAddHotelToSet(Property property)
+        {
+            var colorSet = GameManager.Instance.properties.FindAll(p => p.colour == property.colour && p.owner == this);
+
+            // Check if every property in the color set has 4 houses
+            return colorSet.All(p => p.houses == 4);
+        }
+        */
+
     }
 }

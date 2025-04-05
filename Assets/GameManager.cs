@@ -19,11 +19,12 @@ namespace PropertyTycoon
             {
                 Instance = this;
                 DontDestroyOnLoad(gameObject); // Makes GameManager persistent between scenes
+                Debug.Log("GameManager instance created successfully.");
             }
             else
             {
+                Debug.LogError("Multiple GameManager instances detected!");
                 Destroy(gameObject); // Ensures there's only one GameManager instance
-                return;
             }
 
             if (propertyManager != null)

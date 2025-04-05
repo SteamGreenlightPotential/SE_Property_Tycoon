@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using PropertyTycoon;
 
 namespace PropertyTycoon
 {
@@ -11,6 +10,7 @@ namespace PropertyTycoon
         public boardPlayer[] players; // Array of board players (assigned in the Unity Inspector)
         public PropertyManager pmanager; // Reference to the PropertyManager (manages properties)
         public PropertyPurchaseScrn propertyPurchaseScrn; // UI for property purchase
+        //public UpgradeScrn upgradeScrn; // Reference to the OwnedPropertyUI script
 
         // Game state variables
         public int currentPlayerIndex = 0; // Tracks the current player's turn
@@ -20,7 +20,6 @@ namespace PropertyTycoon
         public int bankBalance = 50000; // Total money in the bank
         public int freeParkingBalance = 0; // Funds available on Free Parking
         public List<Player> playerlist = new List<Player>(); // List of Player objects corresponding to board players
-
 
         public void Start()
         {
@@ -58,7 +57,7 @@ namespace PropertyTycoon
 
         public IEnumerator PlayerMovePhase(boardPlayer player, bool testMode = false, int testRoll = 5, int testRoll2 = 4)
         {
-            testMode=true;//THIS IS TEST PLEASE PLEASE PLEASE GET RID OF AFTER 
+            testMode = true; // THIS IS TEST PLEASE PLEASE PLEASE GET RID OF AFTER
             int roll = 0;
             int roll2 = 0; // Second dice roll for handling doubles
 
@@ -140,6 +139,12 @@ namespace PropertyTycoon
                     // Handle special tiles like taxes, jail, or parking
                     HandleSpecialTiles(currentTile, player);
                 }
+                /*
+                else if (landedProperty.owner == getPlayerFromBoard(player)) // Player owns the tile
+                {
+                    CheckOwnership(player, landedProperty); // Call CheckOwnership method
+                }
+                */
                 else if (tileOwned)
                 {
                     // Tile is owned, handle rent payment
@@ -197,7 +202,7 @@ namespace PropertyTycoon
                 Debug.Log("You own this property. No rent required.");
             }
         }
-
+        
         private void ShowPropertyPurchaseScreen(boardPlayer player, Property property)
         {
             if (propertyPurchaseScrn != null && property != null)
@@ -276,5 +281,26 @@ namespace PropertyTycoon
             }
         }
 
+        /*
+        public void CheckOwnership(boardPlayer player, Property property)
+        {
+            Player realPlayer = getPlayerFromBoard(player);
+
+            if (property.owner == realPlayer) // Player owns the property
+            {
+                Debug.Log($"Player {realPlayer.Name} landed on their property: {property.name}");
+
+                // Show the Owned Property Panel
+                if (upgradeScrn != null)
+                {
+                    upgradeScrn.ShowOwnedPropertyPanel(property, realPlayer);
+                }
+                else
+                {
+                    Debug.LogError("OwnedPropertyUI reference is missing!");
+                }
+            }
+        }
+        */
     }
 }

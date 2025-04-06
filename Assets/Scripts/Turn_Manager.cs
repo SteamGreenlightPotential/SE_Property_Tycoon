@@ -57,7 +57,7 @@ namespace PropertyTycoon
 
         public IEnumerator PlayerMovePhase(boardPlayer player, bool testMode = false, int testRoll = 5, int testRoll2 = 4)
         {
-            testMode = true; // THIS IS TEST PLEASE PLEASE PLEASE GET RID OF AFTER
+            //testMode = true; // THIS IS TEST PLEASE PLEASE PLEASE GET RID OF AFTER
             int roll = 0;
             int roll2 = 0; // Second dice roll for handling doubles
 

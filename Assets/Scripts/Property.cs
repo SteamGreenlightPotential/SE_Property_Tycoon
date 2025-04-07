@@ -21,6 +21,7 @@ namespace PropertyTycoon
         public int houseCost;           // Cost to build a house
         public int hotelCost;           // Cost to build a hotel
         public int tileno { get; set; } // Tile number for property location tracking
+        public bool mortgaged=false;    //Toggle fort mortgaged state
 
         // Constructor for properties with full rent details
         public Property(string name, int price, string colour, int baseRent, int rent1, int rent2, int rent3, int rent4, int hotelRent)
@@ -86,6 +87,18 @@ namespace PropertyTycoon
             owned = false;
             houses = 0;
             hotel = false;
+        }
+
+        //Toggle mortgage, return true or false depending on whether mortgaging or unmorgaging
+        public bool toggleMortgage(){
+            if (mortgaged){
+                mortgaged=false;
+                return false;
+            }
+            else{
+                mortgaged=true;
+                return true;
+            }
         }
 
         // Check if the property can have a house added

@@ -56,7 +56,7 @@ namespace PropertyTycoon
 
         public IEnumerator PlayerMovePhase(boardPlayer player, bool testMode = false, int testRoll = 4, int testRoll2 = 5)
         {
-            testMode = true; // THIS IS TEST PLEASE PLEASE PLEASE GET RID OF AFTER
+            //testMode = true; // THIS IS TEST PLEASE PLEASE PLEASE GET RID OF AFTER
             int roll = 0;
             int roll2 = 0; // Second dice roll for handling doubles
 
@@ -108,13 +108,13 @@ namespace PropertyTycoon
                 // Check if the tile is owned by another player
                 foreach (boardPlayer p in players)
                 {
-                    Player realPlayer = getPlayerFromBoard(p);
+                        Player realPlayer = getPlayerFromBoard(p);
                     Property property = pmanager.getTileProperty(currentTile);
 
                     if (property == null)
                         continue; // Skip null properties
 
-                    if (property.owner == realPlayer)
+                    if (property.owner == realPlayer && realPlayer != null)
                     {
                         Debug.Log($"Tile {currentTile} is owned by {p.name}");
                         tileOwned = true;

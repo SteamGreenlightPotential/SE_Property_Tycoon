@@ -12,6 +12,8 @@ namespace PropertyTycoon
         public PropertyPurchaseScrn propertyPurchaseScrn; // UI for property purchase
         //public UpgradeScrn upgradeScrn; // Reference to the OwnedPropertyUI script
 
+        public MortgageScreen mortgageScreen;
+
         // Game state variables
         public int currentPlayerIndex = 0; // Tracks the current player's turn
         public bool isWaitingForRoll = true; // True when waiting for the player to press SPACE to roll dice
@@ -154,8 +156,12 @@ namespace PropertyTycoon
                     // Tile is unowned, trigger property purchase
                     Debug.Log($"Tile {currentTile} is not owned by anyone and is available.");
                     ShowPropertyPurchaseScreen(player, landedProperty);
+
+                    
                 }
             }
+                            
+        
 
             // Indicate that the turn can be ended
             Debug.Log("Press End Turn now for the next turn.");
@@ -190,11 +196,14 @@ namespace PropertyTycoon
         private void HandleOwnedTile(boardPlayer player, Property property, int ownerIndex)
         {
             // Handle rent payments or ownership checks
-            if (ownerIndex != currentPlayerIndex && !players[ownerIndex].inJail)
+            if (ownerIndex != currentPlayerIndex && !players[ownerIndex].inJail && property.mortgaged==false)
             {
                 int rent = property.baseRent; // Base rent value
                 Debug.Log($"Paying rent of £{rent} to Player {ownerIndex + 1}");
                 players[currentPlayerIndex].PayRent(rent, property);
+            }
+            else if (property.mortgaged==true){
+                Debug.Log("Property mortgaged - no rent paid");
             }
             else
             {

@@ -44,12 +44,20 @@ namespace PropertyTycoon
 
         public void buttonPressed(int buttonNo){
             buttonNo-=1;
+            Property property = currentPlayer.OwnedProperties[buttonNo];
             //If mortgage is successful give player money, if unmortgaged then take away money 
-            if (currentPlayer.OwnedProperties[buttonNo].toggleMortgage()==true){
-            currentPlayer.balance+= currentPlayer.OwnedProperties[buttonNo].price/2;
+            if (property.toggleMortgage()==true){
+                currentPlayer.balance+= property.price/2;
+                Debug.Log("Mortgaged property "+property.name);
             }
             else{
-                currentPlayer.balance-= currentPlayer.OwnedProperties[buttonNo].price/2;
+                if (property.price/2 > currentPlayer.balance){
+                    Debug.Log("Too broke to unmortgage "+ property.name);
+                }
+                else{
+                currentPlayer.balance-= property.price/2;
+                 Debug.Log("Mortgaged property "+property.name);
+                }
             }
         }
         public void DoneButton(){

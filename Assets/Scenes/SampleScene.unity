@@ -4396,6 +4396,7 @@ MonoBehaviour:
   - {fileID: 1766556774}
   pmanager: {fileID: 1907366489}
   propertyPurchaseScrn: {fileID: 1440843555}
+  mortgageScreen: {fileID: 1771972298}
   currentPlayerIndex: 0
   isWaitingForRoll: 1
   round: 1
@@ -7147,7 +7148,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1440843551
 RectTransform:
   m_ObjectHideFlags: 0

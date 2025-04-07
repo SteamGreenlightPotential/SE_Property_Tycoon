@@ -120,13 +120,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 3339749694526415617}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04c3b54b8daae304fb1fd202f20d7a76, type: 3}
+  m_Script: {fileID: 11500000, guid: 472b5400151b10c4a9641fda26fe4b42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  players:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  players: []
+  pmanager: {fileID: 0}
+  propertyPurchaseScrn: {fileID: 0}
+  mortgageScreen: {fileID: 0}
+  currentPlayerIndex: 0
+  isWaitingForRoll: 1
+  round: 1
+  turnEnded: 0
+  bankBalance: 50000
+  freeParkingBalance: 0

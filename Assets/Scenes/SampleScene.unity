@@ -1892,6 +1892,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   players:
   - {fileID: 1118545115}
+  - {fileID: 686520156}
+  - {fileID: 490123317}
+  - {fileID: 1694829279}
+  - {fileID: 1681988983}
+  - {fileID: 1766556774}
   pmanager: {fileID: 1907366489}
   propertyPurchaseScrn: {fileID: 1440843555}
   currentPlayerIndex: 0

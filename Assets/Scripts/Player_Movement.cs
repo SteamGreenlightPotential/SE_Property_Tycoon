@@ -113,7 +113,7 @@ namespace PropertyTycoon
 
         
 
-        // temporary wallet example
+
 
         public int balance = 1500;
         //private int amount = 0;

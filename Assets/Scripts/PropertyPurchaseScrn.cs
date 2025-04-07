@@ -110,6 +110,8 @@ namespace PropertyTycoon
                 Close();
             }
         }
+
+        
         
         private void Close()
         {

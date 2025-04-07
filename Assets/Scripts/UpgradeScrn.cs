@@ -89,6 +89,8 @@ namespace PropertyTycoon
             ClosePanel();
         }
 
+        private void onMortGage
+
         private void ClosePanel()
         {
             OwnedPropertyPanel.SetActive(false);

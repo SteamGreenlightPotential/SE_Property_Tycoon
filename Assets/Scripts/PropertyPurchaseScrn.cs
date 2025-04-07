@@ -51,6 +51,7 @@ namespace PropertyTycoon
 
             UpdateUIElements();
             gameObject.SetActive(true);
+
         }
 
         private void UpdateUIElements()

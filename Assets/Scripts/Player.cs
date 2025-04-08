@@ -13,6 +13,8 @@ namespace PropertyTycoon
 
         public boardPlayer bPlayer; // Reference to Player on Board
 
+        public bool isAI;
+
 
      public int Balance
     {

@@ -110,6 +110,25 @@ namespace PropertyTycoon
                 Close();
             }
         }
+        public void manualAuction(){
+        if (AuctionUI == null)
+                Debug.LogError("AuctionUI is null!");
+            if (CurrentProperty == null)
+                Debug.LogError("CurrentProperty is null!");
+            if (Turn_Script.Instance == null)
+                Debug.LogError("Turn_Script.Instance is null!");
+
+            if (AuctionUI != null && CurrentProperty != null && Turn_Script.Instance != null)
+            {
+                List<Player> playerList = Turn_Script.Instance.playerlist; // Retrieve the player list
+
+                // Activate the Auction UI and start the auction
+                AuctionUI.gameObject.SetActive(true);
+                AuctionUI.StartAuction(CurrentProperty, playerList);
+                Debug.Log($"Auction started for {CurrentProperty.name} with {playerList.Count} players.");
+                Close();
+            }
+        }
 
         
         

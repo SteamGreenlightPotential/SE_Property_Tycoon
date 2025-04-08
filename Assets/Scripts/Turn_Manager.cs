@@ -42,10 +42,13 @@ namespace PropertyTycoon
         void Update()
         {
             // Listen for SPACE key to roll dice
-            if (isWaitingForRoll && Input.GetKeyDown(KeyCode.Space))
+            if (isWaitingForRoll && Input.GetKeyDown(KeyCode.Space) &&playerlist[currentPlayerIndex].isAI==false)
             {
                 isWaitingForRoll = false; // Prevent multiple rolls
                 StartCoroutine(PlayerMovePhase(players[currentPlayerIndex])); // Start the move phase
+            }
+            else if (isWaitingForRoll&&playerlist[currentPlayerIndex].isAI){
+                StartCoroutine(PlayerMovePhase(players[currentPlayerIndex]));
             }
         }
 
@@ -58,6 +61,7 @@ namespace PropertyTycoon
 
         public IEnumerator PlayerMovePhase(boardPlayer player, bool testMode = false, int testRoll = 4, int testRoll2 = 5)
         {
+            bool isAi = getPlayerFromBoard(player).isAI;
             //testMode = true; // THIS IS TEST PLEASE PLEASE PLEASE GET RID OF AFTER
             int roll = 0;
             int roll2 = 0; // Second dice roll for handling doubles
@@ -92,7 +96,12 @@ namespace PropertyTycoon
                 else
                 {
                     Debug.Log("Player is in jail. Press 'End turn' to finish the turn.");
+                    if (isAi){
+                        StartCoroutine(EndTurn());
+                    }
+                    else{
                     yield break; // End the turn
+                    }
                 }
             }
             else
@@ -154,9 +163,19 @@ namespace PropertyTycoon
                 else
                 {
                     // Tile is unowned, trigger property purchase
+                    if (!isAi){
                     Debug.Log($"Tile {currentTile} is not owned by anyone and is available.");
                     ShowPropertyPurchaseScreen(player, landedProperty);
-
+                }
+                else if (landedProperty.price < player.balance){
+                    Player pObject = getPlayerFromBoard(player);
+                    pObject.Debit(landedProperty.price);
+                    pObject.AddProperty(landedProperty);
+                    landedProperty.SwitchOwner(pObject);
+                }
+                else{
+                propertyPurchaseScrn.manualAuction();
+                }
                     
                 }
             }

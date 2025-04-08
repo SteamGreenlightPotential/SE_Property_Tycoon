@@ -6,7 +6,7 @@ namespace PropertyTycoon
 {
     public class MortgageScreen : MonoBehaviour
     {
-        private boardPlayer currentPlayer;
+        public boardPlayer currentPlayer;
         private int activeCount = 0;
        
         public Button[] buttonList = new Button[20];            

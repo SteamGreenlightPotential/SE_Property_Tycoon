@@ -46,16 +46,16 @@ namespace PropertyTycoon
             new Card("Advance to Han Xin Gardens. If you pass GO, collect £200", "Player moves token"),
             new Card("Fined £15 for speeding", "Player puts £15 on free parking"),
             new Card("Pay university fees of £150", "Player pays £150 to the bank"),
-            new Card("Take a trip to Hove station. If you pass GO, collect £200", "Player moves token"),
+            //new Card("Take a trip to Hove station. If you pass GO, collect £200", "Player moves token"),
             new Card("Loan matures, collect £150", "Bank pays £150 to the player"),
             new Card("You are assessed for repairs, £40/house, £115/hotel", "Player pays money to the bank"),
             new Card("Advance to GO", "Player moves token"),
             new Card("You are assessed for repairs, £25/house, £100/hotel", "Player pays money to the bank"),
-            new Card("Go back 3 spaces", "Player moves token"),
+            //new Card("Go back 3 spaces", "Player moves token"),
             new Card("Advance to Skywalker Drive. If you pass GO, collect £200", "Player moves token"),
-            new Card("Go to jail. Do not pass GO, do not collect £200", "As the card says"),
+            new Card("Go to jail. Do not pass GO, do not collect £200", "Go to jail"),
             new Card("Drunk in charge of a hoverboard. Fine £30", "Player puts £30 on free parking"),
-            new Card("Get out of jail free", "Retained by the player until needed. No resale or trade value")
+            new Card("Get out of jail free", "Player leaves jail instantly")
         };
 
         // Draw the top card from the deck
@@ -150,6 +150,9 @@ namespace PropertyTycoon
 
                 default:
                     Debug.Log("Action not implemented");
+                    Shuffle(PotLuck);
+                    Shuffle(OpportunityKnocks);
+                    DrawTopCard(OpportunityKnocks);
                     break;
             }
         }

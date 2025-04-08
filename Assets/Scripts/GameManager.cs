@@ -77,7 +77,6 @@ namespace PropertyTycoon
 
             payer.Debit(amount);        // Deducts amount from the payer
             payee.Credit(amount);       // Adds amount to the payee
-            bank.RecordTransaction(new Transaction(payer.Name, payee.Name, amount)); // Records the transaction in the bank
 
             Debug.Log($"{payer.Name} paid {payee.Name} £{amount}."); // Debug message for confirmation
         }

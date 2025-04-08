@@ -6,13 +6,11 @@ namespace PropertyTycoon
     public class Bank
     {
         public int TotalFunds { get; private set; }
-        public List<Transaction> TransactionLog { get; private set; }
         public int FreeParking { get; private set; }
 
         public Bank()
         {
             TotalFunds = 50000; // Bank starts with £50,000
-            TransactionLog = new List<Transaction>(); // Transaction Log (Could be used later)
             FreeParking = 0; // Free Parking initially £0
         }
 
@@ -32,9 +30,6 @@ namespace PropertyTycoon
             FreeParking += amount; // Adds funds to the Free Parking pool
         }
 
-        public void RecordTransaction(Transaction transaction)
-        {
-            TransactionLog.Add(transaction); // Logs the transaction
-        }
+        
     }
 }

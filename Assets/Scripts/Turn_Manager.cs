@@ -13,6 +13,8 @@ namespace PropertyTycoon
         //public UpgradeScrn upgradeScrn; // Reference to the OwnedPropertyUI script
 
         public MortgageScreen mortgageScreen;
+        public Bank bank = new Bank();
+
 
         // Game state variables
         public int currentPlayerIndex = 0; // Tracks the current player's turn
@@ -56,7 +58,7 @@ namespace PropertyTycoon
             isWaitingForRoll = true; // Wait for player input to roll dice
         }
 
-        public IEnumerator PlayerMovePhase(boardPlayer player, bool testMode = false, int testRoll = 4, int testRoll2 = 5)
+        public IEnumerator PlayerMovePhase(boardPlayer player, bool testMode = false, int testRoll = 2, int testRoll2 = 0)
         {
             //testMode = true; // THIS IS TEST PLEASE PLEASE PLEASE GET RID OF AFTER
             int roll = 0;
@@ -170,12 +172,26 @@ namespace PropertyTycoon
 
         private void HandleSpecialTiles(int currentTile, boardPlayer player)
         {
-            // Handle tax, parking, or jail tiles
+            // Handle tax, parking, chance or jail tiles
             if (currentTile == 5 || currentTile == 39) // Tax tiles
             {
                 player.taxCheck();
                 freeParkingBalance += 100;
                 Debug.Log("GET TAXED");
+            }
+            else if (currentTile==3||currentTile==18||currentTile==34){
+                Debug.Log("Pot luck");
+                Card currentCard = Cards.DrawTopCard(Cards.OpportunityKnocks);
+                Cards.ExecuteCardAction(currentCard,getPlayerFromBoard(player),bank,playerlist);
+                Cards.Shuffle(Cards.OpportunityKnocks);
+            }
+            else if (currentTile==8||currentTile==23){
+                Debug.Log("OPPORTUNITY KNOCKS");
+                
+                Card currentCard = Cards.DrawTopCard(Cards.OpportunityKnocks);
+                Cards.ExecuteCardAction(currentCard,getPlayerFromBoard(player),bank,playerlist);
+                Cards.Shuffle(Cards.OpportunityKnocks);
+
             }
             else if (currentTile == 21) // Free parking
             {

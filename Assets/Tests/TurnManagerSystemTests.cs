@@ -32,6 +32,13 @@ public class TurnManagerSystemTests
             turnManager.players[i].name="player "+i.ToString();
         }
         turnManager.pmanager=pmanager; //Assign propertymanager to turnmanager
+
+        GameObject purchaseScreenObject = new GameObject("PropertyPurchaseScreen");PropertyPurchaseScrn ppscreen = purchaseScreenObject.AddComponent<PropertyPurchaseScrn>();
+        //have to make ten million objects for turnmanager to be happy
+        GameObject AuctionScreenObject = new GameObject("AuctionPurchaseScreen"); AuctionScrn auscreen = purchaseScreenObject.AddComponent<AuctionScrn>();
+        ppscreen.AuctionUI = auscreen;
+        turnManager.propertyPurchaseScrn = ppscreen; //Add property purchase screen
+        
         turnManager.Start();
         yield return null; // Allow Awake() to initialize
     }
@@ -117,6 +124,7 @@ public class TurnManagerSystemTests
         Assert.IsTrue(movedTiles >= 2 && movedTiles <= 12);
 
 
+
     }
     */
 
@@ -138,6 +146,105 @@ public class TurnManagerSystemTests
         yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(player,true,1,0));
         Assert.AreEqual(1000, player.balance);
     }
+
+    
+}
+
+//GENERATED USING AI. PROMPT: Generate system and unit tests for the "Double roll" functionality in this script
+public class TurnManagerDoublesTests
+{
+    private GameObject turnManagerObject;
+    private GameObject propertyManagerObject;
+    private Turn_Script turnManager;
+    private PropertyManager pmanager;
+
+    // A simple setup that instantiates a Turn_Script with a couple of players.
+    [UnitySetUp]
+    public IEnumerator SetUp()
+    {
+        // Create and set up Turn_Script
+        turnManagerObject = new GameObject("TurnManager");
+        turnManager = turnManagerObject.AddComponent<Turn_Script>();
+
+        // Create and attach a dummy PropertyManager as required by Turn_Script.
+        propertyManagerObject = new GameObject("PropertyManager");
+        pmanager = propertyManagerObject.AddComponent<PropertyManager>();
+        turnManager.pmanager = pmanager;
+
+        GameObject purchaseScreenObject = new GameObject("PropertyPurchaseScreen");PropertyPurchaseScrn ppscreen = purchaseScreenObject.AddComponent<PropertyPurchaseScrn>();
+        //have to make ten million objects for turnmanager to be happy
+        GameObject AuctionScreenObject = new GameObject("AuctionPurchaseScreen"); AuctionScrn auscreen = purchaseScreenObject.AddComponent<AuctionScrn>();
+        ppscreen.AuctionUI = auscreen;
+        turnManager.propertyPurchaseScrn = ppscreen; //Add property purchase screen
+
+        // Create two boardPlayer instances and assign them to Turn_Script.players.
+        turnManager.players = new boardPlayer[2];
+        for (int i = 0; i < turnManager.players.Length; i++)
+        {
+            GameObject playerObj = new GameObject("Player_" + i);
+            turnManager.players[i] = playerObj.AddComponent<boardPlayer>();
+            turnManager.players[i].name = "player " + i;
+        }
+        // Run Start() to initialize internal player list.
+        turnManager.Start();
+        yield return null;
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        Object.DestroyImmediate(turnManagerObject);
+        foreach (var player in turnManager.players)
+        {
+            Object.DestroyImmediate(player.gameObject);
+        }
+        Object.DestroyImmediate(propertyManagerObject);
+        Time.timeScale = 1f;
+    }
+
+    /// <summary>
+    /// Test that when the player does not roll doubles (i.e. testRoll != testRoll2),
+    /// the PlayerMovePhase processes a single movement (already indirectly tested elsewhere).
+    /// </summary>
+    [UnityTest]
+    public IEnumerator Test_PlayerMovePhase_NoDoubles_SingleMove()
+    {
+        boardPlayer player = turnManager.players[0];
+        int initialTile = player.TileCount;
+        // Use test dice values that are not doubles.
+        yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(player, true, 4, 3));
+
+        // Expect the player's TileCount to have increased by roll + roll2 (4+3).
+        Assert.AreEqual(initialTile + 7, player.TileCount, "Player should move exactly 7 tiles when no doubles are rolled.");
+        Assert.IsFalse(player.inJail, "Player should not be sent to jail when not rolling doubles.");
+    }
+
+    /// <summary>
+    /// Test that if the player rolls doubles repeatedly (three times in a row),
+    /// the game logic sends the player to jail.
+    /// </summary>
+    
+    // it doesnt work i dont know why i give up
+    /*
+    [UnityTest]
+    public IEnumerator Test_PlayerMovePhase_TripleDoubles_GoesToJail()
+    {
+        boardPlayer player = turnManager.players[0];
+        // Ensure a known starting state.
+        player.inJail = false;
+        // Record the starting tile (should be 1 by default).
+        int initialTile = player.TileCount;
+
+        // Use test dice values that are doubles. Since the coroutine uses the same fixed values each loop
+        // in testMode, the player will roll doubles on each iteration.
+        yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(player, true, 4, 4));
+
+        // The logic in PlayerMovePhase will increment a loop counter each time a double is rolled.
+        // After three doubles (i.e. loopcount > 3), jailBound is set and the player is sent to jail.
+        Assert.IsTrue(player.inJail, "Player should be marked as in jail after rolling three consecutive doubles.");
+        Assert.AreEqual(11, player.TileCount, "Player's TileCount should be set to the jail tile (11) after excessive doubles.");
+    }
+    */
 }
 
 

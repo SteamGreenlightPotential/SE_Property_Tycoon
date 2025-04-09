@@ -190,7 +190,9 @@ namespace PropertyTycoon
                 Debug.Log("Speeding, go to jail");
             }   
                             
-           
+           if (testMode == true){
+                yield return null;
+            }
 
         }
 
@@ -240,6 +242,8 @@ namespace PropertyTycoon
             {
                 Debug.Log("You own this property. No rent required.");
             }
+
+
         }
         
         private void ShowPropertyPurchaseScreen(boardPlayer player, Property property)
@@ -262,6 +266,8 @@ namespace PropertyTycoon
             {
                 Debug.LogError("PropertyPurchaseScrn or Property is null in ShowPropertyPurchaseScreen!");
             }
+
+            
         }
 
 

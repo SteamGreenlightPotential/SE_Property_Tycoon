@@ -55,8 +55,7 @@ public class TurnManagerSystemTests
    [UnityTest]
     public IEnumerator Test_RoundIncrementsAfterFullCycle()
     {
-        // Save original time scale and speed up time
-        // this worked apparently???????
+        
         float originalTimeScale = Time.timeScale;
         Time.timeScale = 100f; // Makes 0.5s delay ~0.005s
         
@@ -106,27 +105,25 @@ public class TurnManagerSystemTests
         Assert.AreNotEqual(11, jailedPlayer.TileCount);
     }
 
-    /*
-    This isnt meant to be here yet, need to implement double dice
+    
+    //Test for doubles making you move further
     [UnityTest]
     public IEnumerator Test_DoubleDiceMovement()
     {
         // Setup
-        turnManager.testMode = false;
         var currentPlayer = turnManager.players[0];
         int initialTile = currentPlayer.TileCount;
         // Execute roll
-        turnManager.StartCoroutine(turnManager.PlayerMovePhase(currentPlayer));
-        yield return new WaitForSeconds(0.1f);
+        yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(currentPlayer,true,4,4));
         
         // Verify valid movement range
         int movedTiles = currentPlayer.TileCount - initialTile;
-        Assert.IsTrue(movedTiles >= 2 && movedTiles <= 12);
+        Assert.IsTrue(movedTiles > 8);
 
 
 
     }
-    */
+    
 
     //Test to make sure jailed players dont need rent
     [UnityTest]

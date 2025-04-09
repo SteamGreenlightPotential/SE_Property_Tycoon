@@ -174,6 +174,7 @@ namespace PropertyTycoon
                     // Tile is unowned, trigger property purchase
                     Debug.Log($"Tile {currentTile} is not owned by anyone and is available.");
                     ShowPropertyPurchaseScreen(player, landedProperty);
+                    if (testMode==true){purchaseDone=true;}
                     
                 }
 

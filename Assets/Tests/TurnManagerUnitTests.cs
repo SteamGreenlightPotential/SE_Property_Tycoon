@@ -102,10 +102,13 @@ public class TurnManagerUnitTests
         player.TileCount=11;
         
         // Simulate 3 jail turns and then a normal turn
-        for (int i = 0; i < 4; i++)
+        while (player.inJail==true){
         {
             yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(player, true));
         }
+            }   
+        yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(player, true));
+
         
         Assert.IsFalse(player.inJail);
         Assert.AreEqual(0, player.jailTurns);

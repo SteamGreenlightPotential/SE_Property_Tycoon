@@ -31,6 +31,18 @@ public class TurnManagerSystemTests
             turnManager.players[i] = playerObj.AddComponent<boardPlayer>();
             turnManager.players[i].name="player "+i.ToString();
         }
+
+
+        //Initialise auction and property screens boilerplate
+        GameObject buyScreenObj = new GameObject();
+        PropertyPurchaseScrn buyScreen = buyScreenObj.AddComponent<PropertyPurchaseScrn>();
+        GameObject AucScreenObj = new GameObject();
+        AuctionScrn aucScreen = AucScreenObj.AddComponent<AuctionScrn>();
+        buyScreen.AuctionUI = aucScreen;
+        turnManager.propertyPurchaseScrn = buyScreen;
+
+
+
         turnManager.pmanager=pmanager; //Assign propertymanager to turnmanager
         turnManager.Start();
         yield return null; // Allow Awake() to initialize
@@ -48,8 +60,7 @@ public class TurnManagerSystemTests
    [UnityTest]
     public IEnumerator Test_RoundIncrementsAfterFullCycle()
     {
-        // Save original time scale and speed up time
-        // this worked apparently???????
+
         float originalTimeScale = Time.timeScale;
         Time.timeScale = 100f; // Makes 0.5s delay ~0.005s
         

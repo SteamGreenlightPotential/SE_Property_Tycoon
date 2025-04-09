@@ -44,7 +44,20 @@ public class TurnManagerAIUnitTests
     {
         // Create a GameObject and add Turn_Script.
         turnManagerGO = new GameObject("TurnManager");
-        turnManager = turnManagerGO.AddComponent<Turn_Script>();
+        
+
+            PlayerSelection.aiCount=0;
+            PlayerSelection.numberOfPlayers=2;
+            turnManager = turnManagerGO.AddComponent<Turn_Script>();
+            // Initialize players and dependencies
+            turnManager.players = new boardPlayer[6];
+            GameObject[] playerObj= new GameObject[6]; 
+             for (int i = 0; i < 6; i++)
+        {
+            playerObj[i] = new GameObject();
+            turnManager.players[i] = playerObj[i].AddComponent<boardPlayer>();
+            turnManager.players[i].name="player "+i.ToString();
+        }
 
         // Create and assign a dummy PropertyManager.
         pmGO = new GameObject("DummyPM");
@@ -60,17 +73,7 @@ public class TurnManagerAIUnitTests
         GameObject aucscrgo = new GameObject("auction");
         AuctionScrn aucscrn = aucscrgo.AddComponent<AuctionScrn>();
         dummyPurchaseScrn.AuctionUI = aucscrn;
-        
 
-    
-
-        turnManager.players = new boardPlayer[2];
-            for (int i=0;i<2;i++){
-            GameObject playerObj = new GameObject();
-            turnManager.players[i] = playerObj.AddComponent<boardPlayer>();
-            turnManager.players[i].name="Player "+i.ToString();
-            }
-        // Mark the player as AI.
 
     }
 

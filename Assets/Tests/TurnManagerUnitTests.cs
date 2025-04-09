@@ -20,17 +20,19 @@ public class TurnManagerUnitTests
     public IEnumerator SetUp()
     {
         turnManagerObject = new GameObject();
-        turnManager = turnManagerObject.AddComponent<Turn_Script>();
         
         propertyManagerObject = new GameObject();
         pmanager = propertyManagerObject.AddComponent<PropertyManager>();
-
-        // Initialize players and dependencies
-        turnManager.players = new boardPlayer[2];
-        for (int i = 0; i < 2; i++)
+            PlayerSelection.aiCount=0;
+            PlayerSelection.numberOfPlayers=2;
+            turnManager = turnManagerObject.AddComponent<Turn_Script>();
+            // Initialize players and dependencies
+            turnManager.players = new boardPlayer[6];
+            GameObject[] playerObj= new GameObject[6]; 
+             for (int i = 0; i < 6; i++)
         {
-            GameObject playerObj = new GameObject();
-            turnManager.players[i] = playerObj.AddComponent<boardPlayer>();
+            playerObj[i] = new GameObject();
+            turnManager.players[i] = playerObj[i].AddComponent<boardPlayer>();
             turnManager.players[i].name="player "+i.ToString();
         }
 

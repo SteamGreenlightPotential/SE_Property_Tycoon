@@ -35,10 +35,7 @@ namespace PropertyTycoon
             
 
 
-            //Avoid too many AI
-            if (players.Length<AiCount){
-                AiCount=players.Length;
-            }
+
 
             //Make player array match number of players
             boardPlayer[] temparray = new boardPlayer[playerCount];
@@ -47,7 +44,7 @@ namespace PropertyTycoon
                 Debug.Log($"Added {players[j].name} to reduced player list");
             }
             //DESTROY unused players
-            for (int j = players.Length-playerCount-2;j<players.Length;j++){
+            for (int j = players.Length-(players.Length-playerCount);j<players.Length;j++){
                 GameObject.DestroyImmediate(players[j].gameObject);
             }
             players = temparray;
@@ -60,6 +57,10 @@ namespace PropertyTycoon
                 playerlist.Add(new Player(name, bplayer)); // Link board player to player logic
                 Debug.Log($"Added {name} to player list.");
                 i++;
+            }
+            //Avoid too many AI
+            if (players.Length<AiCount){
+                AiCount=players.Length;
             }
 
              //Logic to assign AI

@@ -22,20 +22,23 @@ public class TurnManagerSystemTests
     public IEnumerator SetUp()
     {
         turnManagerObject = new GameObject();
-        turnManager = turnManagerObject.AddComponent<Turn_Script>();
+  
         
         propertyManagerObject = new GameObject();
         pmanager = propertyManagerObject.AddComponent<PropertyManager>();
 
-        // Initialize players and dependencies
-        turnManager.players = new boardPlayer[2];
-        for (int i = 0; i < 2; i++)
+        PlayerSelection.aiCount=0;
+            PlayerSelection.numberOfPlayers=2;
+            turnManager = turnManagerObject.AddComponent<Turn_Script>();
+            // Initialize players and dependencies
+            turnManager.players = new boardPlayer[6];
+            GameObject[] playerObj= new GameObject[6]; 
+             for (int i = 0; i < 6; i++)
         {
-            GameObject playerObj = new GameObject();
-            turnManager.players[i] = playerObj.AddComponent<boardPlayer>();
+            playerObj[i] = new GameObject();
+            turnManager.players[i] = playerObj[i].AddComponent<boardPlayer>();
             turnManager.players[i].name="player "+i.ToString();
         }
-
 
         //Initialise auction and property screens boilerplate
         buyScreenObj = new GameObject();
@@ -45,10 +48,7 @@ public class TurnManagerSystemTests
         buyScreen.AuctionUI = aucScreen;
         turnManager.propertyPurchaseScrn = buyScreen;
 
-
-
         turnManager.pmanager=pmanager; //Assign propertymanager to turnmanager
-        turnManager.Start();
         yield return null; // Allow Awake() to initialize
     }
 
@@ -173,7 +173,19 @@ public class TurnManagerDoublesTests
     {
         // Create and set up Turn_Script
         turnManagerObject = new GameObject("TurnManager");
-        turnManager = turnManagerObject.AddComponent<Turn_Script>();
+
+            PlayerSelection.aiCount=0;
+            PlayerSelection.numberOfPlayers=2;
+            turnManager = turnManagerObject.AddComponent<Turn_Script>();
+            // Initialize players and dependencies
+            turnManager.players = new boardPlayer[6];
+            GameObject[] playerObj= new GameObject[6]; 
+             for (int i = 0; i < 6; i++)
+        {
+            playerObj[i] = new GameObject();
+            turnManager.players[i] = playerObj[i].AddComponent<boardPlayer>();
+            turnManager.players[i].name="player "+i.ToString();
+        }
 
         // Create and attach a dummy PropertyManager as required by Turn_Script.
         propertyManagerObject = new GameObject("PropertyManager");
@@ -185,17 +197,6 @@ public class TurnManagerDoublesTests
         GameObject AuctionScreenObject = new GameObject("AuctionPurchaseScreen"); AuctionScrn auscreen = purchaseScreenObject.AddComponent<AuctionScrn>();
         ppscreen.AuctionUI = auscreen;
         turnManager.propertyPurchaseScrn = ppscreen; //Add property purchase screen
-
-        // Create two boardPlayer instances and assign them to Turn_Script.players.
-        turnManager.players = new boardPlayer[2];
-        for (int i = 0; i < turnManager.players.Length; i++)
-        {
-            GameObject playerObj = new GameObject("Player_" + i);
-            turnManager.players[i] = playerObj.AddComponent<boardPlayer>();
-            turnManager.players[i].name = "player " + i;
-        }
-        // Run Start() to initialize internal player list.
-        turnManager.Start();
         yield return null;
     }
 

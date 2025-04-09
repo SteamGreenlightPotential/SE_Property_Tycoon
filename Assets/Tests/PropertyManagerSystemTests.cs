@@ -16,6 +16,7 @@ public class PropertyManagerSystemTests
     {
         gameObject = new GameObject();
         propertyManager = gameObject.AddComponent<PropertyManager>();
+        
         yield return null; 
     }
 
@@ -23,6 +24,9 @@ public class PropertyManagerSystemTests
     public void TearDown()
     {
         Object.DestroyImmediate(gameObject);
+        
+
+
     }
 
     // System Test: Verify properties are initialized during Awake()

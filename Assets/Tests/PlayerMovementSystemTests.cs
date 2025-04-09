@@ -26,6 +26,15 @@ using System.Reflection;
             turnManager.players[0]=player; //adds player to turn manager
             propManager = new GameObject().AddComponent<PropertyManager>();
             //propManager.initialiseProperties();
+
+            //Initialise auction and property screens boilerplate
+            GameObject buyScreenObj = new GameObject();
+            PropertyPurchaseScrn buyScreen = buyScreenObj.AddComponent<PropertyPurchaseScrn>();
+            GameObject AucScreenObj = new GameObject();
+            AuctionScrn aucScreen = AucScreenObj.AddComponent<AuctionScrn>();
+            buyScreen.AuctionUI = aucScreen;
+            turnManager.propertyPurchaseScrn = buyScreen;
+            
             turnManager.pmanager=propManager; //adds property manager to turn manager
             yield return null;
         }

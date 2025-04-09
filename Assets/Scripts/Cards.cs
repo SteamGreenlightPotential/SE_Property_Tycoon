@@ -17,11 +17,13 @@ namespace PropertyTycoon
 
     public static class Cards
     {
+        // Referencing the PropertyManager class for movement related cards
+        private static PropertyManager propertyManager = GameObject.FindFirstObjectByType<PropertyManager>();
         public static List<Card> PotLuck = new List<Card>()
         {
             new Card("You inherit £200", "Bank pays player £200"),
             new Card("You have won 2nd prize in a beauty contest, collect £50", "Bank pays player £50"),
-            new Card("You are up the creek with no paddle - go back to the Old Creek", "Player token moves backwards to the Old Creek"),
+            new Card("You are up the creek with no paddle - go back to the Old Creek", "Player token moves backwards to the Old Creek"), 
             new Card("Student loan refund. Collect £20", "Bank pays player £20"),
             new Card("Bank error in your favour. Collect £200", "Bank pays player £200"),
             new Card("Pay bill for text books of £100", "Player pays £100 to the bank"),
@@ -147,6 +149,65 @@ namespace PropertyTycoon
                     player.Debit(30);
                     bank.AddToFreeParking(30);
                     break;
+
+                // Player movement related cards
+                case "Player moves forwards to GO":
+                    int stepsToGo = 40 - player.bPlayer.TileCount;
+                    player.bPlayer.Move(stepsToGo);
+                    break;
+
+                case "Player token moves forwards to Turing Heights":
+                    Property turingHeights = propertyManager.getTileProperty(40); // Tile number for Turing Heights 40
+                    if (turingHeights != null)
+                    {
+                        int stepsToTuringHeights = (turingHeights.tileno - player.bPlayer.TileCount + 40) % 40;
+                        player.bPlayer.Move(stepsToTuringHeights);
+                    }
+                    break;
+
+                case "Player moves token to Han Xin Gardens":
+                    Property hanXinGardens = propertyManager.getTileProperty(25); // Tile number for Han Xin Gardens 25
+                    if (hanXinGardens != null)
+                    {
+                        int stepsToHanXinGardens = (hanXinGardens.tileno - player.bPlayer.TileCount + 40) % 40;
+                        player.bPlayer.Move(stepsToHanXinGardens);
+                    }
+                    break;
+
+                case "Player moves token to Skywalker Drive":
+                    Property skywalkerDrive = propertyManager.getTileProperty(12); // Tile number for Skywalker Drive 12
+                    if (skywalkerDrive != null)
+                    {
+                        int stepsToSkywalkerDrive = (skywalkerDrive.tileno - player.bPlayer.TileCount + 40) % 40;
+                        player.bPlayer.Move(stepsToSkywalkerDrive);
+                    }
+                    break;
+
+                case "Player moves token to The Old Creek":
+                    Property oldCreek = propertyManager.getTileProperty(2); // Tile number for The Old Creek 2
+                    if (oldCreek != null)
+                    {
+                        int stepsToOldCreek = (oldCreek.tileno - player.bPlayer.TileCount + 40) % 40;
+                        player.bPlayer.Move(stepsToOldCreek);
+                    }
+                    break;
+
+                case "Player moves token backwards 3 spaces":
+                    player.bPlayer.TileCount -= 3;
+                    if (player.bPlayer.TileCount < 0)
+                        player.bPlayer.TileCount += 40;
+                    player.bPlayer.Move(-3);
+                    break;
+
+                /*case "Go to jail":
+                    Property jail = propertyManager.getTileProperty(11); // Assuming 11 is the tile for jail
+                    if (jail != null)
+                    {
+                        player.bPlayer.TileCount = jail.tileno;
+                        player.bPlayer.transform.position = *Jail tile position here* Vector3.zero; // Need Jil Position for this Card
+                   }
+                    break;*/
+
 
                 default:
                     Debug.Log("Action not implemented");

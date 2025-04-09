@@ -58,7 +58,6 @@ namespace PropertyTycoon
             return OwnedProperties.Exists(p => p.name.Equals(propertyName, StringComparison.OrdinalIgnoreCase)); // Checks if the player owns a property
         }
         
-        /*
         public bool OwnsAllPropertiesInColorGroup(string color)
         {
             if (GameManager.Instance != null)
@@ -92,7 +91,6 @@ namespace PropertyTycoon
             // Check if every property in the color set has 4 houses
             return colorSet.All(p => p.houses == 4);
         }
-        */
 
     }
 }

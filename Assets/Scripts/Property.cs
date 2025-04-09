@@ -102,7 +102,6 @@ namespace PropertyTycoon
         }
 
         // Check if the property can have a house added
-        /*
         public bool CanAddHouse(Player owner)
         {
             return owner.OwnsAllPropertiesInColorGroup(colour) && !hotel && houses < 4;
@@ -113,7 +112,6 @@ namespace PropertyTycoon
         {
             return owner.OwnsAllPropertiesInColorGroup(colour) && houses == 4 && !hotel;
         }
-        */
 
     }
 }

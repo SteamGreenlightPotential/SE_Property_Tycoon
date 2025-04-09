@@ -13,6 +13,7 @@ namespace PropertyTycoon
         //public UpgradeScrn upgradeScrn; // Reference to the OwnedPropertyUI script
 
         public MortgageScreen mortgageScreen;
+        public UpgradeScrn upgradeScrn; // Reference to the OwnedPropertyUI script
 
         // Game state variables
         public int currentPlayerIndex = 0; // Tracks the current player's turn
@@ -23,6 +24,8 @@ namespace PropertyTycoon
         public int freeParkingBalance = 0; // Funds available on Free Parking
         public List<Player> playerlist = new List<Player>(); // List of Player objects corresponding to board players
         public static bool purchaseDone = true;    //Global bool to stop turn from continuing without property decicion being made
+
+        [System.Obsolete]
         public void Start()
         {
             Debug.Log("Round " + round); // Announce round 1 has started
@@ -35,6 +38,11 @@ namespace PropertyTycoon
                 playerlist.Add(new Player(name, bplayer)); // Link board player to player logic
                 Debug.Log($"Added {name} to player list.");
                 i++;
+            }
+            upgradeScrn = FindObjectOfType<UpgradeScrn>(); // Find the UpgradeScrn in the scene
+            if (upgradeScrn == null)
+            {
+                Debug.LogError("UpgradeScrn not found in the scene!");
             }
             StartTurn(); // Begin the first turn
         }
@@ -158,12 +166,10 @@ namespace PropertyTycoon
                     // Handle special tiles like taxes, jail, or parking
                     HandleSpecialTiles(currentTile, player);
                 }
-                /*
                 else if (landedProperty.owner == getPlayerFromBoard(player)) // Player owns the tile
                 {
                     CheckOwnership(player, landedProperty); // Call CheckOwnership method
                 }
-                */
                 else if (tileOwned)
                 {
                     // Tile is owned, handle rent payment
@@ -328,7 +334,7 @@ namespace PropertyTycoon
             }
         }
 
-        /*
+        
         public void CheckOwnership(boardPlayer player, Property property)
         {
             Player realPlayer = getPlayerFromBoard(player);
@@ -348,6 +354,6 @@ namespace PropertyTycoon
                 }
             }
         }
-        */
+        
     }
 }

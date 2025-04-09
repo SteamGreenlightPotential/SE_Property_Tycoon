@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace PropertyTycoon
 {
-    /*
     public class UpgradeManager : MonoBehaviour
     {
         public void TryAddHouse(Property property, Player player)
@@ -12,7 +11,7 @@ namespace PropertyTycoon
                 if (player.Balance >= property.houseCost)
                 {
                     player.Debit(property.houseCost);
-                    property.AddHouse();
+                    property.addHouse();
                     Debug.Log($"House added to {property.name}. Total houses: {property.houses}");
                 }
                 else
@@ -32,7 +31,7 @@ namespace PropertyTycoon
                 if (player.Balance >= property.houseCost * 5) // Hotel = 5 house costs
                 {
                     player.Debit(property.houseCost * 5);
-                    property.AddHotel();
+                    property.addHotel();
                     Debug.Log($"Added a hotel to {property.name}");
                 }
                 else
@@ -46,5 +45,4 @@ namespace PropertyTycoon
             }
         }
     }
-    */
 }

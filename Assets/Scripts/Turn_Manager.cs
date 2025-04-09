@@ -48,11 +48,13 @@ namespace PropertyTycoon
                 StartCoroutine(PlayerMovePhase(players[currentPlayerIndex])); // Start the move phase
             }
             else if (isWaitingForRoll&&playerlist[currentPlayerIndex].isAI){
+                isWaitingForRoll=false;
                 StartCoroutine(PlayerMovePhase(players[currentPlayerIndex]));
+                
             }
         }
 
-        void StartTurn()
+        public void StartTurn()
         {
             turnEnded = false; // Reset end turn state
             Debug.Log($"Player {currentPlayerIndex + 1}'s Turn. Press SPACE to roll.");
@@ -62,6 +64,13 @@ namespace PropertyTycoon
         public IEnumerator PlayerMovePhase(boardPlayer player, bool testMode = false, int testRoll = 4, int testRoll2 = 5)
         {
             bool isAi = getPlayerFromBoard(player).isAI;
+            //SORRY THIS IS STUPID BUT UPDATE WORKS WEIRD WITH AI AND TESTS IM SORRY
+
+            if(isAi &&isWaitingForRoll==true){
+                isWaitingForRoll=false;
+            }
+
+
             //testMode = true; // THIS IS TEST PLEASE PLEASE PLEASE GET RID OF AFTER
             int roll = 0;
             int roll2 = 0; // Second dice roll for handling doubles
@@ -180,12 +189,15 @@ namespace PropertyTycoon
                     
                 }
             }
+            if (isAi&&testMode==false){
+                yield return StartCoroutine(EndTurn());
+            }
                             
-        
-
+            else{
             // Indicate that the turn can be ended
             Debug.Log("Press End Turn now for the next turn.");
             turnEnded = true;
+            }
         }
 
         private void HandleSpecialTiles(int currentTile, boardPlayer player)

@@ -4,6 +4,7 @@ using UnityEngine.TestTools;
 using System.Collections;
 using System.Collections.Generic;
 using PropertyTycoon;
+using System.Linq;
 
 #region Dummy Helpers
 
@@ -15,15 +16,7 @@ using PropertyTycoon;
 // Instead, we use the 'new' keyword to hide the base implementation.
 public class DummyPropertyPurchaseScrn : PropertyPurchaseScrn
 {
-    public bool manualAuctionCalled = false;
-
-    // Hide the parent's manualAuction method.
-    public new void manualAuction()
-    {
-        manualAuctionCalled = true;
-        // For testing, simply hide the UI.
-        gameObject.SetActive(false);
-    }
+    
     
     // To ensure that when PropertyPurchaseScrn.manualAuction is called in code,
     // it calls our dummy version, assign this dummy instance to Turn_Script.propertyPurchaseScrn.
@@ -37,12 +30,14 @@ public class DummyPropertyPurchaseScrn : PropertyPurchaseScrn
 public class TurnManagerAIUnitTests
 {
     private GameObject turnManagerGO;
+    private GameObject pmGO;
     private Turn_Script turnManager;
     private PropertyManager dummyPM;
     private DummyPropertyPurchaseScrn dummyPurchaseScrn;
-    private boardPlayer aiBoardPlayer;
     private GameObject aiPlayerGO;
     private GameObject aucscrgo;
+    private GameObject purchaseScrnGO;
+    
 
     [SetUp]
     public void SetUp()
@@ -52,12 +47,12 @@ public class TurnManagerAIUnitTests
         turnManager = turnManagerGO.AddComponent<Turn_Script>();
 
         // Create and assign a dummy PropertyManager.
-        GameObject pmGO = new GameObject("DummyPM");
+        pmGO = new GameObject("DummyPM");
         dummyPM = pmGO.AddComponent<PropertyManager>();
         turnManager.pmanager = dummyPM;
 
         // Create a dummy purchase screen.
-        GameObject purchaseScrnGO = new GameObject("DummyPurchaseScrn");
+        purchaseScrnGO = new GameObject("DummyPurchaseScrn");
         dummyPurchaseScrn = purchaseScrnGO.AddComponent<DummyPropertyPurchaseScrn>();
         // Assign the dummy purchase screen to Turn_Script.
         turnManager.propertyPurchaseScrn = dummyPurchaseScrn;
@@ -67,25 +62,25 @@ public class TurnManagerAIUnitTests
         dummyPurchaseScrn.AuctionUI = aucscrn;
         
 
-        // Create a single AI boardPlayer.
-        aiPlayerGO = new GameObject("AIPlayer");
-        aiBoardPlayer = aiPlayerGO.AddComponent<boardPlayer>();
-        aiBoardPlayer.balance = 1500;
-        aiBoardPlayer.OwnedProperties = new List<Property>();
+    
 
-        turnManager.players = new boardPlayer[] { aiBoardPlayer };
-        // Run Start() to initialize the internal player list.
-        turnManager.Start();
+        turnManager.players = new boardPlayer[2];
+            for (int i=0;i<2;i++){
+            GameObject playerObj = new GameObject();
+            turnManager.players[i] = playerObj.AddComponent<boardPlayer>();
+            turnManager.players[i].name="Player "+i.ToString();
+            }
         // Mark the player as AI.
-        turnManager.playerlist[0].isAI = true;
+
     }
 
     [TearDown]
     public void TearDown()
     {
         Object.DestroyImmediate(turnManagerGO);
-        Object.DestroyImmediate(aiPlayerGO);
+        foreach (boardPlayer player in turnManager.players){ Object.DestroyImmediate(player.gameObject);}
         Object.DestroyImmediate(aucscrgo);
+        Object.DestroyImmediate(aiPlayerGO);
     }
 
     /// <summary>
@@ -93,10 +88,11 @@ public class TurnManagerAIUnitTests
     /// the AI automatically purchases the property.
     /// </summary>
     
-    /*Some insane shit broke here i'm gonna have to test it by hand
+    //Some insane shit broke here i'm gonna have to test it by hand
     [UnityTest]
     public IEnumerator Test_AI_AutoPurchaseProperty_Succeeds()
     {
+        turnManager.playerlist[0].isAI = true;
         // Arrange
         // Create a test property with a price lower than the AI's balance.
         Property testProperty = dummyPM.properties[4];
@@ -108,7 +104,9 @@ public class TurnManagerAIUnitTests
         int prebalance = aiPlayer.Balance;
 
         // Simulate movement so that the AI lands on this property.
+        turnManager.StartTurn();
         yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(aiPlayer.bPlayer, true, 4, 5));
+        
 
         // Assert
         // The AI should have automatically purchased the property.
@@ -116,14 +114,16 @@ public class TurnManagerAIUnitTests
         Assert.AreEqual(prebalance - testProperty.price, aiPlayer.Balance, "The AI's balance should be reduced by the property price.");
         Assert.AreEqual(aiPlayer, testProperty.owner, "The property's owner should be set to the AI player.");
     }
-    */
+    
     
     /// <summary>
     /// Test that when an AI lands on an unowned property but lacks sufficient funds,
     /// the AI triggers an auction via the manualAuction call.
     /// </summary>
 
-    /* I tested this personally and can see it works. Very hard to make a good unit test for this bit though
+    /* 
+    
+    //I tested this personally and can see it works. Very hard to make a good unit test for this bit though
     [UnityTest]
     public IEnumerator Test_AI_AutoPurchaseProperty_Fails_TriggersAuction()
     {
@@ -150,54 +150,6 @@ public class TurnManagerAIUnitTests
         Assert.IsFalse(testProperty.owned, "The property should remain unowned when the AI cannot purchase it.");
     }
     */
-}
-#endregion
-
-#region AI System Tests
-
-
-public class TurnManagerAISystemTests
-{
-    private GameObject turnManagerGO;
-    private Turn_Script turnManager;
-    private PropertyManager dummyPM;
-    private boardPlayer aiBoardPlayer;
-    private GameObject aiPlayerGO;
-
-    [UnitySetUp]
-    public IEnumerator SetUp()
-    {
-        // Create Turn_Script GameObject.
-        turnManagerGO = new GameObject("TurnManager");
-        turnManager = turnManagerGO.AddComponent<Turn_Script>();
-
-        // Create and assign a dummy PropertyManager.
-        GameObject pmGO = new GameObject("DummyPM");
-        dummyPM = pmGO.AddComponent<PropertyManager>();
-        turnManager.pmanager = dummyPM;
-
-        // Create a boardPlayer for the AI.
-        aiPlayerGO = new GameObject("AIPlayer");
-        aiBoardPlayer = aiPlayerGO.AddComponent<boardPlayer>();
-        aiBoardPlayer.balance = 1500;
-        aiBoardPlayer.OwnedProperties = new List<Property>();
-
-        turnManager.players = new boardPlayer[] { aiBoardPlayer };
-        turnManager.Start();
-        
-        // Mark the player as AI.
-        turnManager.playerlist[0].isAI = true;
-
-        // Wait one frame for initialization.
-        yield return null;
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
-        Object.DestroyImmediate(turnManagerGO);
-        Object.DestroyImmediate(aiPlayerGO);
-    }
 
     /// <summary>
     /// Test that when an AI player's turn begins, the Update method automatically triggers
@@ -206,6 +158,8 @@ public class TurnManagerAISystemTests
     [UnityTest]
     public IEnumerator Test_AI_Turn_AutomaticMove()
     {
+        
+        
         // Arrange
         // For this test we simulate a scenario where there is no human input.
         // Mark the current player as AI.
@@ -217,14 +171,36 @@ public class TurnManagerAISystemTests
         // Act
         // Set waiting flag and call Update to trigger the AI branch.
         turnManager.isWaitingForRoll = true;
-        turnManager.Update();
 
         // Since PlayerMovePhase is a coroutine, wait briefly to let it run.
-        yield return new WaitForSeconds(0.9f);
+        yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(turnManager.players[0], true, 4, 5));
+        
 
         // Assert
         // The turn should now be flagged as ended.
         Assert.IsTrue(turnManager.turnEnded, "After an AI turn, the turn should be flagged as ended.");
+    }
+
+
+    [UnityTest]
+    public IEnumerator multipleAITest(){
+        turnManager.playerlist[0].isAI=true;
+        turnManager.playerlist[1].isAI=true;
+
+        //Test AI #1 buying a property
+        yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(turnManager.players[0], true, 4, 5));
+
+        //Test AI #2 going to jail and trying to move again
+        yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(turnManager.players[1], true, 2, 2));
+        yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(turnManager.players[1], true, 2, 3));
+
+        Assert.AreEqual(turnManager.players[0].TileCount,10);
+
+        Assert.AreEqual(turnManager.players[1].TileCount,11);
+
+        //Test AI 
+
+
     }
 }
 #endregion

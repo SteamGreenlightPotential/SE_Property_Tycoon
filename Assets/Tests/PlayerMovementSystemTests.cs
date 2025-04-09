@@ -10,6 +10,8 @@ using System.Reflection;
     public class PlayerMovementSystemTests
     {
         private GameObject playerObj;
+        private GameObject buyScreenObj;
+        private GameObject AucScreenObj;
         private boardPlayer player;
         private PropertyManager propManager;
         private Turn_Script turnManager;
@@ -26,6 +28,15 @@ using System.Reflection;
             turnManager.players[0]=player; //adds player to turn manager
             propManager = new GameObject().AddComponent<PropertyManager>();
             //propManager.initialiseProperties();
+
+            //Initialise auction and property screens boilerplate
+            buyScreenObj = new GameObject();
+            PropertyPurchaseScrn buyScreen = buyScreenObj.AddComponent<PropertyPurchaseScrn>();
+            AucScreenObj = new GameObject();
+            AuctionScrn aucScreen = AucScreenObj.AddComponent<AuctionScrn>();
+            buyScreen.AuctionUI = aucScreen;
+            turnManager.propertyPurchaseScrn = buyScreen;
+            
             turnManager.pmanager=propManager; //adds property manager to turn manager
             yield return null;
         }
@@ -36,6 +47,8 @@ using System.Reflection;
             Object.DestroyImmediate(playerObj);
             Object.DestroyImmediate(propManager.gameObject);
             Object.DestroyImmediate(turnManager.gameObject);
+            Object.DestroyImmediate(buyScreenObj);
+            Object.DestroyImmediate(AucScreenObj);
         }
 
         [UnityTest]

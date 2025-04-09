@@ -135,6 +135,7 @@ namespace PropertyTycoon
 
             // Hide the auction screen
             gameObject.SetActive(false);
+            Turn_Script.purchaseDone=true;
         }
 
     }

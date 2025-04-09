@@ -71,10 +71,11 @@ namespace PropertyTycoon
 
         public void PlaceBid()
         {
+         Player currentPlayer = players[currentPlayerIndex];
+         if (currentPlayer.isAI==false){   
             // Get the player's inputted bid amount
             if (int.TryParse(BidAmountInput.text, out int bidAmount))
             {
-                Player currentPlayer = players[currentPlayerIndex];
 
                 if (bidAmount > currentBid && bidAmount <= currentPlayer.Balance)
                 {
@@ -93,6 +94,10 @@ namespace PropertyTycoon
             {
                 Debug.Log("Invalid bid amount entered.");
             }
+         }
+         else{
+            PassTurn();
+         }
         }
 
         public void PassTurn()

@@ -47,17 +47,22 @@ namespace PropertyTycoon
             StartTurn(); // Begin the first turn
         }
 
-        void Update()
+        public void Update()
         {
             // Listen for SPACE key to roll dice
-            if (isWaitingForRoll && Input.GetKeyDown(KeyCode.Space))
+            if (isWaitingForRoll && Input.GetKeyDown(KeyCode.Space) &&playerlist[currentPlayerIndex].isAI==false)
             {
                 isWaitingForRoll = false; // Prevent multiple rolls
                 StartCoroutine(PlayerMovePhase(players[currentPlayerIndex])); // Start the move phase
             }
+            else if (isWaitingForRoll&&playerlist[currentPlayerIndex].isAI){
+                isWaitingForRoll=false;
+                StartCoroutine(PlayerMovePhase(players[currentPlayerIndex]));
+                
+            }
         }
 
-        void StartTurn()
+        public void StartTurn()
         {
             turnEnded = false; // Reset end turn state
             Debug.Log($"Player {currentPlayerIndex + 1}'s Turn. Press SPACE to roll.");
@@ -66,6 +71,14 @@ namespace PropertyTycoon
 
         public IEnumerator PlayerMovePhase(boardPlayer player, bool testMode = false, int testRoll = 4, int testRoll2 = 5)
         {
+            bool isAi = getPlayerFromBoard(player).isAI;
+            //SORRY THIS IS STUPID BUT UPDATE WORKS WEIRD WITH AI AND TESTS IM SORRY
+
+            if(isAi &&isWaitingForRoll==true){
+                isWaitingForRoll=false;
+            }
+
+
             bool repeatturn = true;
             int loopcount = 1;
             bool jailBound = false;
@@ -99,6 +112,10 @@ namespace PropertyTycoon
                 repeatturn=false;
             }
             else{
+                if(player.inJail==true){
+                    player.inJail=false;
+                    Debug.Log("Broke out of jail!");
+                }
                 loopcount++;
             }
 
@@ -118,7 +135,12 @@ namespace PropertyTycoon
                 else
                 {
                     Debug.Log("Player is in jail. Press 'End turn' to finish the turn.");
+                    if (isAi){
+                        StartCoroutine(EndTurn());
+                    }
+                    else{
                     yield break; // End the turn
+                    }
                 }
             }
             else if (!jailBound)
@@ -178,8 +200,19 @@ namespace PropertyTycoon
                 else
                 {
                     // Tile is unowned, trigger property purchase
+                    if (!isAi){
                     Debug.Log($"Tile {currentTile} is not owned by anyone and is available.");
                     ShowPropertyPurchaseScreen(player, landedProperty);
+                    }
+                    else if (landedProperty.price < player.balance){
+                    Player pObject = getPlayerFromBoard(player);
+                    pObject.Debit(landedProperty.price);
+                    pObject.AddProperty(landedProperty);
+                    landedProperty.SwitchOwner(pObject);
+                    }
+                    else{
+                    propertyPurchaseScrn.manualAuction(landedProperty);
+                    }
                     if (testMode==true){purchaseDone=true;}
                     
                 }
@@ -197,15 +230,18 @@ namespace PropertyTycoon
                 Debug.Log("Speeding, go to jail");
             }   
                             
-           if (testMode == true){
-                yield return null;
-            }
+           
 
         }
-
+            if (isAi&&testMode==false){
+                yield return StartCoroutine(EndTurn());
+            }
+                            
+            else{
             // Indicate that the turn can be ended
             Debug.Log("Press End Turn now for the next turn.");
             turnEnded = true;
+            }
         }
 
         private void HandleSpecialTiles(int currentTile, boardPlayer player)

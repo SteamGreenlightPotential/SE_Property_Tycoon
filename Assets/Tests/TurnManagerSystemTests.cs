@@ -48,13 +48,6 @@ public class TurnManagerSystemTests
 
 
         turnManager.pmanager=pmanager; //Assign propertymanager to turnmanager
-
-        GameObject purchaseScreenObject = new GameObject("PropertyPurchaseScreen");PropertyPurchaseScrn ppscreen = purchaseScreenObject.AddComponent<PropertyPurchaseScrn>();
-        //have to make ten million objects for turnmanager to be happy
-        GameObject AuctionScreenObject = new GameObject("AuctionPurchaseScreen"); AuctionScrn auscreen = purchaseScreenObject.AddComponent<AuctionScrn>();
-        ppscreen.AuctionUI = auscreen;
-        turnManager.propertyPurchaseScrn = ppscreen; //Add property purchase screen
-        
         turnManager.Start();
         yield return null; // Allow Awake() to initialize
     }

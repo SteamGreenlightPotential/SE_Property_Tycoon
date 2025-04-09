@@ -5,11 +5,15 @@ using UnityEngine.TestTools;
 using System.Collections;
 using PropertyTycoon;
 using System.Reflection;
+using System.Security.Cryptography;
 
 public class TurnManagerSystemTests
 {
     private GameObject turnManagerObject;
     private GameObject propertyManagerObject;
+
+    private GameObject buyScreenObj;
+    private GameObject AucScreenObj;
 
     private Turn_Script turnManager;
 
@@ -34,9 +38,9 @@ public class TurnManagerSystemTests
 
 
         //Initialise auction and property screens boilerplate
-        GameObject buyScreenObj = new GameObject();
+        buyScreenObj = new GameObject();
         PropertyPurchaseScrn buyScreen = buyScreenObj.AddComponent<PropertyPurchaseScrn>();
-        GameObject AucScreenObj = new GameObject();
+        AucScreenObj = new GameObject();
         AuctionScrn aucScreen = AucScreenObj.AddComponent<AuctionScrn>();
         buyScreen.AuctionUI = aucScreen;
         turnManager.propertyPurchaseScrn = buyScreen;
@@ -59,6 +63,9 @@ public class TurnManagerSystemTests
     public void TearDown()
     {
         Object.DestroyImmediate(turnManagerObject);
+        Object.DestroyImmediate(propertyManagerObject);
+        Object.DestroyImmediate(buyScreenObj);
+        Object.DestroyImmediate(AucScreenObj);
         foreach (var player in turnManager.players) Object.DestroyImmediate(player.gameObject);
         Time.timeScale=1f;
     }

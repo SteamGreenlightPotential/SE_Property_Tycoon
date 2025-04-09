@@ -14,6 +14,7 @@ public class TurnManagerSystemTests
 
     private GameObject buyScreenObj;
     private GameObject AucScreenObj;
+    GameObject upgradeScreenObj;
 
     private Turn_Script turnManager;
 
@@ -46,6 +47,9 @@ public class TurnManagerSystemTests
         AucScreenObj = new GameObject();
         AuctionScrn aucScreen = AucScreenObj.AddComponent<AuctionScrn>();
         buyScreen.AuctionUI = aucScreen;
+        upgradeScreenObj = new GameObject();
+            UpgradeScrn upscrn = upgradeScreenObj.AddComponent<UpgradeScrn>();
+            turnManager.upgradeScrn = upscrn;
         turnManager.propertyPurchaseScrn = buyScreen;
 
         turnManager.pmanager=pmanager; //Assign propertymanager to turnmanager
@@ -164,6 +168,7 @@ public class TurnManagerDoublesTests
 {
     private GameObject turnManagerObject;
     private GameObject propertyManagerObject;
+    GameObject upgradeScreenObj;
     private Turn_Script turnManager;
     private PropertyManager pmanager;
 
@@ -196,6 +201,12 @@ public class TurnManagerDoublesTests
         //have to make ten million objects for turnmanager to be happy
         GameObject AuctionScreenObject = new GameObject("AuctionPurchaseScreen"); AuctionScrn auscreen = purchaseScreenObject.AddComponent<AuctionScrn>();
         ppscreen.AuctionUI = auscreen;
+        upgradeScreenObj = new GameObject();
+            UpgradeScrn upscrn = upgradeScreenObj.AddComponent<UpgradeScrn>();
+            GameObject propertypanel = new GameObject();
+            upscrn.OwnedPropertyPanel= propertypanel;
+            turnManager.upgradeScrn = upscrn;
+            
         turnManager.propertyPurchaseScrn = ppscreen; //Add property purchase screen
         yield return null;
     }

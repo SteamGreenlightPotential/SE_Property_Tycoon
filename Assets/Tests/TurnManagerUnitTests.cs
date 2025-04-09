@@ -13,6 +13,7 @@ public class TurnManagerUnitTests
     private GameObject propertyManagerObject;
 
     private GameObject buyScreenObj;
+    GameObject upgradeScreenObj;
     private GameObject AucScreenObj;
     private PropertyManager pmanager;
 
@@ -42,6 +43,12 @@ public class TurnManagerUnitTests
         AucScreenObj = new GameObject();
         AuctionScrn aucScreen = AucScreenObj.AddComponent<AuctionScrn>();
         buyScreen.AuctionUI = aucScreen;
+        upgradeScreenObj = new GameObject();
+            UpgradeScrn upscrn = upgradeScreenObj.AddComponent<UpgradeScrn>();
+
+            GameObject propertypanel = new GameObject();
+            upscrn.OwnedPropertyPanel= propertypanel;
+            turnManager.upgradeScrn = upscrn;
         turnManager.propertyPurchaseScrn = buyScreen;
 
         turnManager.pmanager=pmanager; //assign propertymanager to turnmanager

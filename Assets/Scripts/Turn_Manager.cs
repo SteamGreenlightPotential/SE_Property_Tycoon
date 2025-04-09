@@ -64,7 +64,7 @@ namespace PropertyTycoon
             upgradeScrn = FindObjectOfType<UpgradeScrn>(); // Find the UpgradeScrn in the scene
             if (upgradeScrn == null)
             {
-                Debug.LogError("UpgradeScrn not found in the scene!");
+                Debug.Log("UpgradeScrn not found in the scene!");
             }
             //Avoid too many AI
             if (players.Length<AiCount){

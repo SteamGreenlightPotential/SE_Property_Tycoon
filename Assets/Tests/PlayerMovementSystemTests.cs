@@ -12,6 +12,7 @@ using System.Reflection;
         private GameObject playerObj;
         private GameObject buyScreenObj;
         private GameObject AucScreenObj;
+        private GameObject upgradeScreenObj;
         private boardPlayer player;
         private PropertyManager propManager;
         private Turn_Script turnManager;
@@ -37,13 +38,18 @@ using System.Reflection;
             propManager = new GameObject().AddComponent<PropertyManager>();
             //propManager.initialiseProperties();
 
-            //Initialise auction and property screens boilerplate
+            //Initialise auction,upgrade and property screens boilerplate
             buyScreenObj = new GameObject();
             PropertyPurchaseScrn buyScreen = buyScreenObj.AddComponent<PropertyPurchaseScrn>();
             AucScreenObj = new GameObject();
             AuctionScrn aucScreen = AucScreenObj.AddComponent<AuctionScrn>();
+            upgradeScreenObj = new GameObject();
+            UpgradeScrn upscrn = upgradeScreenObj.AddComponent<UpgradeScrn>();
+            upscrn.OwnedPropertyPanel= new GameObject();
+            turnManager.upgradeScrn = upscrn;
             buyScreen.AuctionUI = aucScreen;
             turnManager.propertyPurchaseScrn = buyScreen;
+            
             
             turnManager.pmanager=propManager; //adds property manager to turn manager
             yield return null;
@@ -58,6 +64,7 @@ using System.Reflection;
             foreach (var player in turnManager.players) Object.DestroyImmediate(player.gameObject);
             Object.DestroyImmediate(buyScreenObj);
             Object.DestroyImmediate(AucScreenObj);
+            Object.DestroyImmediate(upgradeScreenObj);
         }
 
         [UnityTest]

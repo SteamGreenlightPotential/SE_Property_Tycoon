@@ -27,7 +27,7 @@ namespace PropertyTycoon
             upgradeManager = FindObjectOfType<UpgradeManager>();
             if (upgradeManager == null)
             {
-                Debug.LogError("UpgradeManager is missing! Please add it to the scene.");
+                Debug.Log("UpgradeManager is missing! Please add it to the scene.");
             }
 
             // Setup Close button functionality

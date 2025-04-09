@@ -22,7 +22,7 @@ namespace PropertyTycoon
         public int bankBalance = 50000; // Total money in the bank
         public int freeParkingBalance = 0; // Funds available on Free Parking
         public List<Player> playerlist = new List<Player>(); // List of Player objects corresponding to board players
-
+        public static bool purchaseDone = true;    //Global bool to stop turn from continuing without property decicion being made
         public void Start()
         {
             Debug.Log("Round " + round); // Announce round 1 has started
@@ -58,6 +58,12 @@ namespace PropertyTycoon
 
         public IEnumerator PlayerMovePhase(boardPlayer player, bool testMode = false, int testRoll = 4, int testRoll2 = 5)
         {
+            bool repeatturn = true;
+            int loopcount = 1;
+            bool jailBound = false;
+
+            //Allows for moving again on doubles 
+            while (repeatturn){
             //testMode = true; // THIS IS TEST PLEASE PLEASE PLEASE GET RID OF AFTER
             int roll = 0;
             int roll2 = 0; // Second dice roll for handling doubles
@@ -74,6 +80,18 @@ namespace PropertyTycoon
                 roll = Random.Range(1, 7);
                 roll2 = Random.Range(1, 7);
                 Debug.Log($"Player {currentPlayerIndex + 1} rolled: {roll} and {roll2}");
+            }
+
+            
+            if (loopcount>3){
+                jailBound=true;
+                repeatturn=false;
+            }
+            else if (roll!=roll2){
+                repeatturn=false;
+            }
+            else{
+                loopcount++;
             }
 
             // Handle jail logic
@@ -95,13 +113,13 @@ namespace PropertyTycoon
                     yield break; // End the turn
                 }
             }
-            else
+            else if (!jailBound)
             {
                 yield return player.Move(roll + roll2); // Move the player normally
             }
 
             // Post-movement logic
-            if (!player.inJail)
+            if (!player.inJail&&jailBound==false)
             {
                 int currentTile = player.TileCount; // Get the current tile of the player
                 bool tileOwned = false; // Flag to check if tile is owned
@@ -156,12 +174,28 @@ namespace PropertyTycoon
                     // Tile is unowned, trigger property purchase
                     Debug.Log($"Tile {currentTile} is not owned by anyone and is available.");
                     ShowPropertyPurchaseScreen(player, landedProperty);
-
+                    if (testMode==true){purchaseDone=true;}
                     
                 }
+
+                while (purchaseDone==false)
+                {
+                yield return null;}        
+            
             }
+            if (jailBound){
+                StartCoroutine(player.toJail());
+                player.TileCount = 11; // Jail tile index
+                player.inJail = true;
+                player.goPassed = false;
+                Debug.Log("Speeding, go to jail");
+            }   
                             
-        
+           if (testMode == true){
+                yield return null;
+            }
+
+        }
 
             // Indicate that the turn can be ended
             Debug.Log("Press End Turn now for the next turn.");
@@ -209,6 +243,8 @@ namespace PropertyTycoon
             {
                 Debug.Log("You own this property. No rent required.");
             }
+
+
         }
         
         private void ShowPropertyPurchaseScreen(boardPlayer player, Property property)
@@ -220,6 +256,7 @@ namespace PropertyTycoon
                 {
                     Debug.Log($"Triggering purchase screen for Property: {property.name}, Player: {currentPlayer.Name}");
                     propertyPurchaseScrn.Show(property, currentPlayer);
+                    
                 }
                 else
                 {
@@ -230,6 +267,8 @@ namespace PropertyTycoon
             {
                 Debug.LogError("PropertyPurchaseScrn or Property is null in ShowPropertyPurchaseScreen!");
             }
+
+            
         }
 
 

@@ -22,6 +22,8 @@ namespace PropertyTycoon
         private Property CurrentProperty;
         private Player CurrentPlayer;
 
+        
+
         private void Start()
         {
 
@@ -40,6 +42,8 @@ namespace PropertyTycoon
 
         public void Show(Property property, Player player)
         {
+            Turn_Script.purchaseDone = false;
+
             if (property == null || player == null)
             {
                 Debug.LogError("Show() received a null Property or Player!");
@@ -80,6 +84,7 @@ namespace PropertyTycoon
                 Debug.Log($"{CurrentPlayer.Name} purchased {CurrentProperty.name} for £{CurrentProperty.price}.");
                 
                 Close(); // Hide the purchase screen
+                Turn_Script.purchaseDone=true;
             }
             else
             {

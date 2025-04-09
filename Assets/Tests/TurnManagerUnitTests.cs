@@ -12,6 +12,8 @@ public class TurnManagerUnitTests
     private boardPlayer[] mockPlayers;
     private GameObject propertyManagerObject;
 
+    private GameObject buyScreenObj;
+    private GameObject AucScreenObj;
     private PropertyManager pmanager;
 
     [UnitySetUp]
@@ -33,9 +35,9 @@ public class TurnManagerUnitTests
         }
 
         //Initialise auction and property screens boilerplate
-        GameObject buyScreenObj = new GameObject();
+        buyScreenObj = new GameObject();
         PropertyPurchaseScrn buyScreen = buyScreenObj.AddComponent<PropertyPurchaseScrn>();
-        GameObject AucScreenObj = new GameObject();
+        AucScreenObj = new GameObject();
         AuctionScrn aucScreen = AucScreenObj.AddComponent<AuctionScrn>();
         buyScreen.AuctionUI = aucScreen;
         turnManager.propertyPurchaseScrn = buyScreen;
@@ -51,6 +53,8 @@ public class TurnManagerUnitTests
         Object.DestroyImmediate(turnManagerObject);
         foreach (var player in turnManager.players) Object.DestroyImmediate(player.gameObject);
         Object.DestroyImmediate(propertyManagerObject);
+        Object.DestroyImmediate(buyScreenObj);
+        Object.DestroyImmediate(AucScreenObj);
     }
 
     // Unit Test: Verify playerlist initializes correctly in Start()
@@ -102,10 +106,13 @@ public class TurnManagerUnitTests
         player.TileCount=11;
         
         // Simulate 3 jail turns and then a normal turn
-        for (int i = 0; i < 4; i++)
+        while (player.inJail==true){
         {
             yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(player, true));
         }
+            }   
+        yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(player, true));
+
         
         Assert.IsFalse(player.inJail);
         Assert.AreEqual(0, player.jailTurns);

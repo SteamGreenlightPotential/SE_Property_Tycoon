@@ -12,6 +12,8 @@ public class TurnManagerUnitTests
     private boardPlayer[] mockPlayers;
     private GameObject propertyManagerObject;
 
+    private GameObject buyScreenObj;
+    private GameObject AucScreenObj;
     private PropertyManager pmanager;
 
     [UnitySetUp]
@@ -31,6 +33,15 @@ public class TurnManagerUnitTests
             turnManager.players[i] = playerObj.AddComponent<boardPlayer>();
             turnManager.players[i].name="player "+i.ToString();
         }
+
+        //Initialise auction and property screens boilerplate
+        buyScreenObj = new GameObject();
+        PropertyPurchaseScrn buyScreen = buyScreenObj.AddComponent<PropertyPurchaseScrn>();
+        AucScreenObj = new GameObject();
+        AuctionScrn aucScreen = AucScreenObj.AddComponent<AuctionScrn>();
+        buyScreen.AuctionUI = aucScreen;
+        turnManager.propertyPurchaseScrn = buyScreen;
+
         turnManager.pmanager=pmanager; //assign propertymanager to turnmanager
         yield return null; // Allow Awake() to initialize
     }
@@ -42,6 +53,8 @@ public class TurnManagerUnitTests
         Object.DestroyImmediate(turnManagerObject);
         foreach (var player in turnManager.players) Object.DestroyImmediate(player.gameObject);
         Object.DestroyImmediate(propertyManagerObject);
+        Object.DestroyImmediate(buyScreenObj);
+        Object.DestroyImmediate(AucScreenObj);
     }
 
     // Unit Test: Verify playerlist initializes correctly in Start()
@@ -49,7 +62,7 @@ public class TurnManagerUnitTests
     public void Test_Start_InitializesPlayerList()
     {
         Assert.AreEqual(2, turnManager.playerlist.Count);
-        Assert.AreEqual("player 1", turnManager.playerlist[0].Name);
+        Assert.AreEqual("Player 1", turnManager.playerlist[0].Name);
     }
 
     // Unit Test: Verify currentPlayerIndex wraps after last player

@@ -39,7 +39,7 @@ namespace PropertyTycoon
             StartTurn(); // Begin the first turn
         }
 
-        void Update()
+        public void Update()
         {
             // Listen for SPACE key to roll dice
             if (isWaitingForRoll && Input.GetKeyDown(KeyCode.Space) &&playerlist[currentPlayerIndex].isAI==false)
@@ -166,16 +166,17 @@ namespace PropertyTycoon
                     if (!isAi){
                     Debug.Log($"Tile {currentTile} is not owned by anyone and is available.");
                     ShowPropertyPurchaseScreen(player, landedProperty);
-                }
-                else if (landedProperty.price < player.balance){
+                    }
+                    
+                    else if (landedProperty.price < player.balance){
                     Player pObject = getPlayerFromBoard(player);
                     pObject.Debit(landedProperty.price);
                     pObject.AddProperty(landedProperty);
                     landedProperty.SwitchOwner(pObject);
-                }
-                else{
-                propertyPurchaseScrn.manualAuction();
-                }
+                    }
+                    else{
+                    propertyPurchaseScrn.manualAuction(landedProperty);
+                    }
                     
                 }
             }

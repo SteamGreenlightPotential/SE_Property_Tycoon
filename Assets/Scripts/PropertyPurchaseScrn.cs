@@ -110,7 +110,8 @@ namespace PropertyTycoon
                 Close();
             }
         }
-        public void manualAuction(){
+        public void manualAuction(Property CurrentProperty){
+            this.CurrentProperty = CurrentProperty;
         if (AuctionUI == null)
                 Debug.LogError("AuctionUI is null!");
             if (CurrentProperty == null)

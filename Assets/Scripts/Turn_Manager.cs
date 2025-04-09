@@ -2,6 +2,10 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+using System.Linq;
+using UnityEditor;
+
+
 namespace PropertyTycoon
 {
     public class Turn_Script : MonoBehaviour
@@ -26,6 +30,23 @@ namespace PropertyTycoon
         public void Start()
         {
             Debug.Log("Round " + round); // Announce round 1 has started
+            int playerCount = PlayerSelection.numberOfPlayers;
+            int AiCount = PlayerSelection.aiCount;
+            
+
+
+            //Avoid too many AI
+            if (players.Length<AiCount){
+                AiCount=players.Length;
+            }
+
+            //Make player array match number of players
+            boardPlayer[] temparray = new boardPlayer[playerCount];
+            for (int j = 0;j<playerCount;j++){
+                temparray[j] = players[j];
+                Debug.Log($"Added {players[j].name} to reduced player list");
+            }
+            players = temparray;
 
             // Initialize Player objects for each board player
             int i = 1;
@@ -36,7 +57,17 @@ namespace PropertyTycoon
                 Debug.Log($"Added {name} to player list.");
                 i++;
             }
-            StartTurn(); // Begin the first turn
+
+             //Logic to assign AI
+            
+            for (int j = playerlist.Count-1; j > playerlist.Count - AiCount-1; j--)
+            {
+                playerlist[j].isAI=true;
+                Debug.Log($"{players[j].name} assigned as AI");
+            }
+
+
+
         }
 
         public void Update()

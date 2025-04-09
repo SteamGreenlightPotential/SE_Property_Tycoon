@@ -7,12 +7,13 @@ namespace PropertyTycoon
     public class Player
     {
         private string v; // added for test class
-
         public string Name { get; set; }
-
-
         public boardPlayer bPlayer; // Reference to Player on Board
 
+        public int HousesOwned { get; set; } = 0; // Default to 0 houses
+        public int HotelsOwned { get; set; } = 0; // Default to 0 hotels
+        public bool HasGetOutOfJailCard { get; set; } = false; // Default to false
+        public bool IsInJail { get; set; } = false; // Default to false ( found a same property in Player_Movement.cs... but it works so...)
 
      public int Balance
     {

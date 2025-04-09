@@ -30,10 +30,19 @@ using System.Reflection;
             //propManager.initialiseProperties();
 
             //Initialise auction and property screens boilerplate
-            buyScreenObj = new GameObject();
+            GameObject buyScreenObj = new GameObject();
             PropertyPurchaseScrn buyScreen = buyScreenObj.AddComponent<PropertyPurchaseScrn>();
-            AucScreenObj = new GameObject();
+            GameObject AucScreenObj = new GameObject();
             AuctionScrn aucScreen = AucScreenObj.AddComponent<AuctionScrn>();
+            buyScreen.AuctionUI = aucScreen;
+            turnManager.propertyPurchaseScrn = buyScreen;
+            
+
+            //Initialise auction and property screens boilerplate
+            buyScreenObj = new GameObject();
+            buyScreen = buyScreenObj.AddComponent<PropertyPurchaseScrn>();
+            AucScreenObj = new GameObject();
+            aucScreen = AucScreenObj.AddComponent<AuctionScrn>();
             buyScreen.AuctionUI = aucScreen;
             turnManager.propertyPurchaseScrn = buyScreen;
             

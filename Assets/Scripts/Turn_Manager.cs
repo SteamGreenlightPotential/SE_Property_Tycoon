@@ -104,6 +104,10 @@ namespace PropertyTycoon
                 repeatturn=false;
             }
             else{
+                if(player.inJail==true){
+                    player.inJail=false;
+                    Debug.Log("Broke out of jail!");
+                }
                 loopcount++;
             }
 
@@ -220,9 +224,7 @@ namespace PropertyTycoon
                 Debug.Log("Speeding, go to jail");
             }   
                             
-           if (testMode == true){
-                yield return null;
-            }
+           
 
         }
             if (isAi&&testMode==false){

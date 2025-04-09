@@ -194,9 +194,9 @@ public class TurnManagerAIUnitTests
         yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(turnManager.players[1], true, 2, 2));
         yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(turnManager.players[1], true, 2, 3));
 
-        Assert.AreEqual(turnManager.players[0].TileCount,10);
+        Assert.AreEqual(10,turnManager.players[0].TileCount);
 
-        Assert.AreEqual(turnManager.players[1].TileCount,11);
+        Assert.AreEqual(11,turnManager.players[1].TileCount);
 
         //Test AI 
 

@@ -46,6 +46,10 @@ namespace PropertyTycoon
                 temparray[j] = players[j];
                 Debug.Log($"Added {players[j].name} to reduced player list");
             }
+            //DESTROY unused players
+            for (int j = players.Length-playerCount-2;j<players.Length;j++){
+                GameObject.DestroyImmediate(players[j].gameObject);
+            }
             players = temparray;
 
             // Initialize Player objects for each board player

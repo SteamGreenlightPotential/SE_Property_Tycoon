@@ -36,6 +36,7 @@ public class StartScreenTests
 
     PlayerSelection.aiCount=1;
     PlayerSelection.numberOfPlayers=6;
+    PlayerSelection.startScreenUsed=true;
 
     turnManagerObject = new GameObject();
         turnManager = turnManagerObject.AddComponent<Turn_Script>();
@@ -65,6 +66,7 @@ public class StartScreenTests
 
     PlayerSelection.aiCount=0;
     PlayerSelection.numberOfPlayers=2;
+    PlayerSelection.startScreenUsed=true;
         turnManagerObject = new GameObject();
         turnManager = turnManagerObject.AddComponent<Turn_Script>();
         
@@ -91,6 +93,7 @@ public class StartScreenTests
    public IEnumerator TooManyAiTest(){
     PlayerSelection.aiCount=5;
     PlayerSelection.numberOfPlayers=2;
+    PlayerSelection.startScreenUsed=true;
         turnManagerObject = new GameObject();
         turnManager = turnManagerObject.AddComponent<Turn_Script>();
         
@@ -117,6 +120,7 @@ public class StartScreenTests
    public IEnumerator AllAiTest(){
     PlayerSelection.aiCount=6;
     PlayerSelection.numberOfPlayers=6;
+    PlayerSelection.startScreenUsed=true;
           turnManagerObject = new GameObject();
         turnManager = turnManagerObject.AddComponent<Turn_Script>();
         

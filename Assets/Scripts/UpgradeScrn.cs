@@ -1,4 +1,3 @@
-/*
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,28 +6,34 @@ namespace PropertyTycoon
     public class UpgradeScrn : MonoBehaviour
     {
         [Header("UI Elements")]
-        public GameObject OwnedPropertyPanel; // Reference to the panel
-        public Text PropertyMessage; // Text to display property details
-        public Button UpgradeHouseButton; // Button to upgrade to a house
-        public Button UpgradeHotelButton; // Button to upgrade to a hotel
-        public Button MortgageButton; // Button to mortgage the property (not implemented yet)
-        public Button CloseButton; // Button to close the panel
+        public GameObject OwnedPropertyPanel;
+        public MortgageScreen mortgageScreen;
+        public Text PropertyMessage;
+        public Button UpgradeHouseButton;
+        public Button UpgradeHotelButton;
+        public Button MortgageButton; 
+        public Button CloseButton;
 
-        private Property currentProperty; // Property currently being interacted with
-        private Player currentPlayer; // Player who owns the property
-        //private UpgradeManager upgradeManager; // Reference to UpgradeManager
+        private Property currentProperty;
+        private Player currentPlayer;
+         public boardPlayer testPlayer; // For testing purposes, remove in production
+        private UpgradeManager upgradeManager; // Declare upgradeManager
 
         [System.Obsolete]
         private void Start()
         {
-            // Ensure the panel is initially hidden
-            OwnedPropertyPanel.SetActive(false);
 
-            // Initialize the UpgradeManager reference
+            // Initialize upgradeManager
             upgradeManager = FindObjectOfType<UpgradeManager>();
             if (upgradeManager == null)
             {
-                Debug.LogError("UpgradeManager is missing! Please assign it in the scene.");
+                Debug.Log("UpgradeManager is missing! Please add it to the scene.");
+            }
+
+            MortgageScreen mortgageScreen = FindObjectOfType<MortgageScreen>();
+            if (mortgageScreen == null)
+            {
+                Debug.Log("MortgageScreen is missing! Please add it to the scene.");
             }
 
             // Setup Close button functionality
@@ -36,6 +41,9 @@ namespace PropertyTycoon
             {
                 CloseButton.onClick.AddListener(ClosePanel);
             }
+            // Ensure the panel is initially hidden
+            this.gameObject.SetActive(false);
+
         }
 
         public void ShowOwnedPropertyPanel(Property property, Player player)
@@ -46,13 +54,12 @@ namespace PropertyTycoon
                 return;
             }
 
-            // Assign current property and player
             currentProperty = property;
             currentPlayer = player;
 
             // Update UI elements
             OwnedPropertyPanel.SetActive(true);
-            PropertyMessage.text = $"Welcome to {property.name}! You own this property.";
+            PropertyMessage.text = $"Welcome Back to {property.name}!";
 
             // Setup button listeners
             UpgradeHouseButton.onClick.RemoveAllListeners();
@@ -60,10 +67,15 @@ namespace PropertyTycoon
 
             UpgradeHotelButton.onClick.RemoveAllListeners();
             UpgradeHotelButton.onClick.AddListener(OnUpgradeHotel);
+
+            if (MortgageButton != null)
+            {
+                MortgageButton.onClick.RemoveAllListeners();
+                MortgageButton.onClick.AddListener(OnMortgage);
+            }
         }
 
-        
-        private void OnUpgradeHouse()
+        public void OnUpgradeHouse()
         {
             if (upgradeManager != null)
             {
@@ -74,9 +86,8 @@ namespace PropertyTycoon
                 Debug.LogError("UpgradeManager is not assigned.");
             }
             ClosePanel();
-        }
-
-        private void OnUpgradeHotel()
+        } 
+        public void OnUpgradeHotel()
         {
             if (upgradeManager != null)
             {
@@ -89,12 +100,19 @@ namespace PropertyTycoon
             ClosePanel();
         }
 
-        private void onMortGage
+        public void OnMortgage()
+        {
+            //TEST REASONS
 
-        private void ClosePanel()
+            
+            mortgageScreen.mortgageCall(testPlayer);
+            ClosePanel();
+
+        }
+
+        public void ClosePanel()
         {
             OwnedPropertyPanel.SetActive(false);
         }
     }
 }
-*/

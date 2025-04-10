@@ -2,6 +2,10 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+using System.Linq;
+using UnityEditor;
+
+
 namespace PropertyTycoon
 {
     public class Turn_Script : MonoBehaviour
@@ -13,6 +17,7 @@ namespace PropertyTycoon
         //public UpgradeScrn upgradeScrn; // Reference to the OwnedPropertyUI script
 
         public MortgageScreen mortgageScreen;
+        public UpgradeScrn upgradeScrn; // Reference to the OwnedPropertyUI script
         public Bank bank = new Bank();
 
 
@@ -24,10 +29,33 @@ namespace PropertyTycoon
         public int bankBalance = 50000; // Total money in the bank
         public int freeParkingBalance = 0; // Funds available on Free Parking
         public List<Player> playerlist = new List<Player>(); // List of Player objects corresponding to board players
+        public static bool purchaseDone = true;    //Global bool to stop turn from continuing without property decicion being made
 
+        [System.Obsolete]
         public void Start()
         {
             Debug.Log("Round " + round); // Announce round 1 has started
+            int playerCount = PlayerSelection.numberOfPlayers;
+            int AiCount = PlayerSelection.aiCount;
+            bool startScreenUsed = PlayerSelection.startScreenUsed;
+
+            if (!startScreenUsed){
+                playerCount = 6; 
+                AiCount=0;
+            }
+
+
+            //Make player array match number of players
+            boardPlayer[] temparray = new boardPlayer[playerCount];
+            for (int j = 0;j<playerCount;j++){
+                temparray[j] = players[j];
+                Debug.Log($"Added {players[j].name} to reduced player list");
+            }
+            //DESTROY unused players
+            for (int j = players.Length-(players.Length-playerCount);j<players.Length;j++){
+                GameObject.DestroyImmediate(players[j].gameObject);
+            }
+            players = temparray;
 
             // Initialize Player objects for each board player
             int i = 1;
@@ -38,20 +66,44 @@ namespace PropertyTycoon
                 Debug.Log($"Added {name} to player list.");
                 i++;
             }
-            StartTurn(); // Begin the first turn
+            upgradeScrn = FindObjectOfType<UpgradeScrn>(); // Find the UpgradeScrn in the scene
+            if (upgradeScrn == null)
+            {
+                Debug.Log("UpgradeScrn not found in the scene!");
+            }
+            //Avoid too many AI
+            if (players.Length<AiCount){
+                AiCount=players.Length;
+            }
+
+             //Logic to assign AI
+            
+            for (int j = playerlist.Count-1; j > playerlist.Count - AiCount-1; j--)
+            {
+                playerlist[j].isAI=true;
+                Debug.Log($"{players[j].name} assigned as AI");
+            }
+
+
+
         }
 
-        void Update()
+        public void Update()
         {
             // Listen for SPACE key to roll dice
-            if (isWaitingForRoll && Input.GetKeyDown(KeyCode.Space))
+            if (isWaitingForRoll && Input.GetKeyDown(KeyCode.Space) &&playerlist[currentPlayerIndex].isAI==false)
             {
                 isWaitingForRoll = false; // Prevent multiple rolls
                 StartCoroutine(PlayerMovePhase(players[currentPlayerIndex])); // Start the move phase
             }
+            else if (isWaitingForRoll&&playerlist[currentPlayerIndex].isAI){
+                isWaitingForRoll=false;
+                StartCoroutine(PlayerMovePhase(players[currentPlayerIndex]));
+                
+            }
         }
 
-        void StartTurn()
+        public void StartTurn()
         {
             turnEnded = false; // Reset end turn state
             Debug.Log($"Player {currentPlayerIndex + 1}'s Turn. Press SPACE to roll.");
@@ -60,6 +112,20 @@ namespace PropertyTycoon
 
         public IEnumerator PlayerMovePhase(boardPlayer player, bool testMode = false, int testRoll = 2, int testRoll2 = 0)
         {
+            bool isAi = getPlayerFromBoard(player).isAI;
+            //SORRY THIS IS STUPID BUT UPDATE WORKS WEIRD WITH AI AND TESTS IM SORRY
+
+            if(isAi &&isWaitingForRoll==true){
+                isWaitingForRoll=false;
+            }
+
+
+            bool repeatturn = true;
+            int loopcount = 1;
+            bool jailBound = false;
+
+            //Allows for moving again on doubles 
+            while (repeatturn){
             //testMode = true; // THIS IS TEST PLEASE PLEASE PLEASE GET RID OF AFTER
             int roll = 0;
             int roll2 = 0; // Second dice roll for handling doubles
@@ -78,6 +144,22 @@ namespace PropertyTycoon
                 Debug.Log($"Player {currentPlayerIndex + 1} rolled: {roll} and {roll2}");
             }
 
+            
+            if (loopcount>3){
+                jailBound=true;
+                repeatturn=false;
+            }
+            else if (roll!=roll2){
+                repeatturn=false;
+            }
+            else{
+                if(player.inJail==true){
+                    player.inJail=false;
+                    Debug.Log("Broke out of jail!");
+                }
+                loopcount++;
+            }
+
             // Handle jail logic
             if (player.inJail)
             {
@@ -94,16 +176,21 @@ namespace PropertyTycoon
                 else
                 {
                     Debug.Log("Player is in jail. Press 'End turn' to finish the turn.");
+                    if (isAi){
+                        StartCoroutine(EndTurn());
+                    }
+                    else{
                     yield break; // End the turn
+                    }
                 }
             }
-            else
+            else if (!jailBound)
             {
                 yield return player.Move(roll + roll2); // Move the player normally
             }
 
             // Post-movement logic
-            if (!player.inJail)
+            if (!player.inJail&&jailBound==false)
             {
                 int currentTile = player.TileCount; // Get the current tile of the player
                 bool tileOwned = false; // Flag to check if tile is owned
@@ -142,12 +229,10 @@ namespace PropertyTycoon
                     // Handle special tiles like taxes, jail, or parking
                     HandleSpecialTiles(currentTile, player);
                 }
-                /*
                 else if (landedProperty.owner == getPlayerFromBoard(player)) // Player owns the tile
                 {
                     CheckOwnership(player, landedProperty); // Call CheckOwnership method
                 }
-                */
                 else if (tileOwned)
                 {
                     // Tile is owned, handle rent payment
@@ -156,18 +241,51 @@ namespace PropertyTycoon
                 else
                 {
                     // Tile is unowned, trigger property purchase
+                    if (!isAi){
                     Debug.Log($"Tile {currentTile} is not owned by anyone and is available.");
                     ShowPropertyPurchaseScreen(player, landedProperty);
-
+                    }
+                    else if (landedProperty.price < player.balance){
+                    Player pObject = getPlayerFromBoard(player);
+                    pObject.Debit(landedProperty.price);
+                    pObject.AddProperty(landedProperty);
+                    landedProperty.SwitchOwner(pObject);
+                    }
+                    else{
+                    propertyPurchaseScrn.manualAuction(landedProperty);
+                    }
+                    //if (testMode==true){purchaseDone=true;}
                     
                 }
+                if(testMode==true){purchaseDone=true;}
+                while (purchaseDone==false){
+                    yield return null; 
+                }
+
+
+
+
+            }
+            if (jailBound){
+                StartCoroutine(player.toJail());
+                player.TileCount = 11; // Jail tile index
+                player.inJail = true;
+                player.goPassed = false;
+                Debug.Log("Speeding, go to jail");
+            }   
+                            
+           
+
+        }
+            if (isAi&&testMode==false){
+                yield return StartCoroutine(EndTurn());
             }
                             
-        
-
+            else{
             // Indicate that the turn can be ended
             Debug.Log("Press End Turn now for the next turn.");
             turnEnded = true;
+            }
         }
 
         private void HandleSpecialTiles(int currentTile, boardPlayer player)
@@ -225,6 +343,8 @@ namespace PropertyTycoon
             {
                 Debug.Log("You own this property. No rent required.");
             }
+
+
         }
         
         private void ShowPropertyPurchaseScreen(boardPlayer player, Property property)
@@ -236,6 +356,7 @@ namespace PropertyTycoon
                 {
                     Debug.Log($"Triggering purchase screen for Property: {property.name}, Player: {currentPlayer.Name}");
                     propertyPurchaseScrn.Show(property, currentPlayer);
+                    
                 }
                 else
                 {
@@ -246,6 +367,8 @@ namespace PropertyTycoon
             {
                 Debug.LogError("PropertyPurchaseScrn or Property is null in ShowPropertyPurchaseScreen!");
             }
+
+            
         }
 
 
@@ -305,7 +428,7 @@ namespace PropertyTycoon
             }
         }
 
-        /*
+        
         public void CheckOwnership(boardPlayer player, Property property)
         {
             Player realPlayer = getPlayerFromBoard(player);
@@ -325,6 +448,6 @@ namespace PropertyTycoon
                 }
             }
         }
-        */
+        
     }
 }

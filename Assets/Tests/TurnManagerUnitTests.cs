@@ -26,6 +26,7 @@ public class TurnManagerUnitTests
         pmanager = propertyManagerObject.AddComponent<PropertyManager>();
             PlayerSelection.aiCount=0;
             PlayerSelection.numberOfPlayers=2;
+            PlayerSelection.startScreenUsed=true;
             turnManager = turnManagerObject.AddComponent<Turn_Script>();
             // Initialize players and dependencies
             turnManager.players = new boardPlayer[6];

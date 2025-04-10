@@ -48,6 +48,7 @@ public class TurnManagerAIUnitTests
 
             PlayerSelection.aiCount=0;
             PlayerSelection.numberOfPlayers=2;
+            PlayerSelection.startScreenUsed=true;
             turnManager = turnManagerGO.AddComponent<Turn_Script>();
             // Initialize players and dependencies
             turnManager.players = new boardPlayer[6];

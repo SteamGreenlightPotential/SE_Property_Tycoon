@@ -255,10 +255,11 @@ namespace PropertyTycoon
                     //if (testMode==true){purchaseDone=true;}
                     
                 }
+                if(testMode==true){purchaseDone=true;}
+                while (purchaseDone==false){
+                    yield return null; 
+                }
 
-                while (purchaseDone==false)
-                {
-                yield return null;}
 
 
 

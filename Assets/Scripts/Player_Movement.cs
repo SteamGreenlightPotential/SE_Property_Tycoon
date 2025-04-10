@@ -48,6 +48,15 @@ namespace PropertyTycoon
         {
             nameOfObject = gameObject.name;
             Vector3 direction = Vector3.zero;
+            float fromSquareMultiplier = 1.3f; // value for boot/iron/car
+            float betweenRectanglesMultiplier = 0.9f;
+
+            // Set multipliers based on object name
+            if (nameOfObject == "hat" || nameOfObject == "ship" || nameOfObject == "smartphone")
+            {
+                fromSquareMultiplier = 1.5f;
+                betweenRectanglesMultiplier = 1.1f;
+            }
             if (nameOfObject == "car")
             {
                 if (TileCount >= 1 && TileCount < 11)
@@ -70,6 +79,7 @@ namespace PropertyTycoon
                     direction = Vector3.up; // Move piece up
                     transform.eulerAngles = new Vector3(180, 0, 360); // Rotate to face up
                 }
+                
                 else
                 {
                     TileCount = 0; // Reset TileCount to loop board
@@ -167,6 +177,15 @@ namespace PropertyTycoon
                 }
             }
 
+            // Adjust movement distance based on tile type 
+            if (TileCount == 1 || TileCount == 11 || TileCount == 21 || TileCount == 31)
+            {
+                direction *= fromSquareMultiplier;
+            }
+            else
+            {
+                direction *= betweenRectanglesMultiplier;
+            }
 
             TileCount += 1; // Increment TileCount for each tile moved across
             return direction;

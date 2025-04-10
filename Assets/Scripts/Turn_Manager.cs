@@ -38,7 +38,7 @@ namespace PropertyTycoon
             bool startScreenUsed = PlayerSelection.startScreenUsed;
 
             if (!startScreenUsed){
-                playerCount = 6;
+                playerCount = 6; 
                 AiCount=0;
             }
 
@@ -252,14 +252,16 @@ namespace PropertyTycoon
                     else{
                     propertyPurchaseScrn.manualAuction(landedProperty);
                     }
-                    if (testMode==true){purchaseDone=true;}
+                    //if (testMode==true){purchaseDone=true;}
                     
                 }
 
                 while (purchaseDone==false)
                 {
-                yield return null;}        
-            
+                yield return null;}
+
+
+
             }
             if (jailBound){
                 StartCoroutine(player.toJail());

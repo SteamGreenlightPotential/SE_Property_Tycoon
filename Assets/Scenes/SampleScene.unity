@@ -2755,7 +2755,7 @@ RectTransform:
   m_GameObject: {fileID: 418072511}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1771972295}
@@ -5143,7 +5143,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0.010009766, y: 0}
   m_SizeDelta: {x: -700, y: -200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1001904717
@@ -5212,11 +5212,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OwnedPropertyPanel: {fileID: 1001904715}
-  PropertyMessage: {fileID: 0}
+  mortgageScreen: {fileID: 1771972298}
+  PropertyMessage: {fileID: 1608851221}
   UpgradeHouseButton: {fileID: 1373460573}
   UpgradeHotelButton: {fileID: 1156847710}
   MortgageButton: {fileID: 163689068}
   CloseButton: {fileID: 2127080742}
+  testPlayer: {fileID: 1118545115}
 --- !u!1 &1009944160
 GameObject:
   m_ObjectHideFlags: 0
@@ -7943,7 +7945,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Cancel
+  m_Text: Done
 --- !u!222 &1511360910
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9019,6 +9021,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cbb1a0221935424b9bd4af695b3bf25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentPlayer: {fileID: 0}
+  ownedPropertyPanel: {fileID: 1001904715}
   buttonList:
   - {fileID: 844116045}
   - {fileID: 1446307348}

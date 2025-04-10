@@ -105,7 +105,7 @@ namespace PropertyTycoon
 
             
             mortgageScreen.mortgageCall(testPlayer);
-            
+            ClosePanel();
 
         }
 

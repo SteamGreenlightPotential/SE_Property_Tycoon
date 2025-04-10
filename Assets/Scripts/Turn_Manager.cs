@@ -38,8 +38,8 @@ namespace PropertyTycoon
             bool startScreenUsed = PlayerSelection.startScreenUsed;
 
             if (!startScreenUsed){
-                playerCount = 2;
-                AiCount=1;
+                playerCount = 6; 
+                AiCount=0;
             }
 
 
@@ -124,7 +124,7 @@ namespace PropertyTycoon
 
             //Allows for moving again on doubles 
             while (repeatturn){
-            testMode = true; // THIS IS TEST PLEASE PLEASE PLEASE GET RID OF AFTER
+            //testMode = true; // THIS IS TEST PLEASE PLEASE PLEASE GET RID OF AFTER
             int roll = 0;
             int roll2 = 0; // Second dice roll for handling doubles
 
@@ -259,7 +259,7 @@ namespace PropertyTycoon
                 while (purchaseDone==false)
                 {
                 yield return null;}
-                upgradeScrn.ShowOwnedPropertyPanel(landedProperty, getPlayerFromBoard(player)); //TESTINGbn  
+
 
 
             }

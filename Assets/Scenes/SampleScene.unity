@@ -7945,7 +7945,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Cancel
+  m_Text: Done
 --- !u!222 &1511360910
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9022,6 +9022,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentPlayer: {fileID: 0}
+  ownedPropertyPanel: {fileID: 1001904715}
   buttonList:
   - {fileID: 844116045}
   - {fileID: 1446307348}

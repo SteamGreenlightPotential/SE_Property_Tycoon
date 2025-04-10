@@ -11,6 +11,7 @@ namespace PropertyTycoon
     {
         public boardPlayer currentPlayer;
         private int activeCount = 0;
+        public GameObject ownedPropertyPanel;
        
          public Button[] buttonList = new Button[20];            
 
@@ -72,6 +73,7 @@ namespace PropertyTycoon
                 buttonList[i].gameObject.SetActive(false);
             }
             gameObject.SetActive(false);
+            ownedPropertyPanel.SetActive(true);
             
 
         }

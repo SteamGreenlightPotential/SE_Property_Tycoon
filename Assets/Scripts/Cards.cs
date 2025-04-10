@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,7 +24,7 @@ namespace PropertyTycoon
         {
             new Card("You inherit £200", "Bank pays player £200"),
             new Card("You have won 2nd prize in a beauty contest, collect £50", "Bank pays player £50"),
-            new Card("You are up the creek with no paddle - go back to the Old Creek", "Player token moves backwards to the Old Creek"), 
+            new Card("You are up the creek with no paddle - go back to the Old Creek", "Player moves token to The Old Creek"), 
             new Card("Student loan refund. Collect £20", "Bank pays player £20"),
             new Card("Bank error in your favour. Collect £200", "Bank pays player £200"),
             new Card("Pay bill for text books of £100", "Player pays £100 to the bank"),
@@ -43,8 +44,8 @@ namespace PropertyTycoon
         {
             new Card("Bank pays you a dividend of £50", "Bank pays player £50"),
             new Card("You have won a lip sync battle. Collect £100", "Bank pays player £100"),
-            new Card("Advance to Turing Heights", "Player token moves forwards to Turing Heights"),
-            new Card("Advance to Han Xin Gardens. If you pass GO, collect £200", "Player moves token"),
+            new Card("Advance to Turing Heights", "Player moves token to Turing Heights"),
+            new Card("Advance to Han Xin Gardens. If you pass GO, collect £200", "Player moves token to Han Xin Gardens"),
             new Card("Fined £15 for speeding", "Player puts £15 on free parking"),
             new Card("Pay university fees of £150", "Player pays £150 to the bank"),
             //new Card("Take a trip to Hove station. If you pass GO, collect £200", "Player moves token"),
@@ -53,7 +54,7 @@ namespace PropertyTycoon
             new Card("Advance to GO", "Player moves token"),
             new Card("You are assessed for repairs, £25/house, £100/hotel", "Player pays money to the bank"),
             //new Card("Go back 3 spaces", "Player moves token"),
-            new Card("Advance to Skywalker Drive. If you pass GO, collect £200", "Player moves token"),
+            new Card("Advance to Skywalker Drive. If you pass GO, collect £200", "Player moves token to Skywalker Drive"),
             new Card("Go to jail. Do not pass GO, do not collect £200", "Go to jail"),
             new Card("Drunk in charge of a hoverboard. Fine £30", "Player puts £30 on free parking"),
             new Card("Get out of jail free", "Player leaves jail instantly")
@@ -80,7 +81,7 @@ namespace PropertyTycoon
             }
         }
 
-        public static void ExecuteCardAction(Card card, Player player, Bank bank, List<Player> players)
+        public static IEnumerator ExecuteCardAction(Card card, Player player, Bank bank, List<Player> players)
         {
             Debug.Log($"{card.Description} - {card.Action}");
             switch (card.Action)
@@ -156,23 +157,24 @@ namespace PropertyTycoon
                     break;
 
                 case "Player moves token to Turing Heights":
-                    MoveToProperty("Turing Heights", 40, player);
+                    yield return MoveToProperty("Turing Heights", 40, player);
                     break;
 
                 case "Player moves token to Han Xin Gardens":
-                    MoveToProperty("Han Xin Gardens", 25, player);
+                    yield return MoveToProperty("Han Xin Gardens", 25, player);
                     break;
 
                 case "Player moves token to Hove station":
-                    MoveToProperty("Hove station", 15, player);
+                    yield return MoveToProperty("Hove station", 15, player);
                     break;
 
                 case "Player moves token to Skywalker Drive":
-                    MoveToProperty("Skywalker Drive", 12, player);
+                    yield return MoveToProperty("Skywalker Drive", 12, player);
                     break;
 
                 case "Player moves token to The Old Creek":
-                    MoveToProperty("The Old Creek", 2, player);
+                    yield return MoveToProperty("The Old Creek", 2, player);
+                    player.bPlayer.goPassed=false; //No go passed because player is moving backwards
                     break;
 
                 case "Player moves token backwards 3 spaces":
@@ -205,7 +207,6 @@ namespace PropertyTycoon
                     Debug.Log("Action not implemented");
                     Shuffle(PotLuck);
                     Shuffle(OpportunityKnocks);
-                    DrawTopCard(OpportunityKnocks);
                     break;
             }
         }
@@ -231,13 +232,17 @@ namespace PropertyTycoon
             }
         }
 
-        private static void MoveToProperty(string propertyName, int tileNo, Player player)
+        private static IEnumerator MoveToProperty(string propertyName, int tileNo, Player player)
         {
             Property property = propertyManager.getTileProperty(tileNo);
             if (property != null)
             {
                 int stepsToProperty = (property.tileno - player.bPlayer.TileCount + 40) % 40;
-                player.bPlayer.Move(stepsToProperty);
+                // set timescale to 100 to save me time making a player teleport
+                float originalTimeScale = Time.timeScale;
+                Time.timeScale = 100f; //make piece "teleport" to location
+                yield return player.bPlayer.StartCoroutine(player.bPlayer.ProcessTeleport(stepsToProperty,originalTimeScale));
+
             }
         }
     }

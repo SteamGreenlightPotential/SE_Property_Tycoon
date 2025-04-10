@@ -161,6 +161,39 @@ public class TurnManagerSystemTests
         Assert.AreEqual(1000, player.balance);
     }
 
+    [UnityTest]
+    public IEnumerator TestPotLuckDrawn(){
+        boardPlayer player = turnManager.players[0];
+        // Use test dice values that are not doubles.
+        yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(player, true, 2, 0));
+        Assert.AreEqual(1700, player.balance, "Player should receieve 200 from top card");
+        TearDown();
+        yield return SetUp();
+        player = turnManager.players[0];
+        yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(player, true, 1, 16));
+        Assert.AreEqual(1550, player.balance, "Player should receieve 50 from top card");
+        TearDown();
+        yield return SetUp();
+        player = turnManager.players[0];
+        yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(player, true, 1, 32));
+        Assert.AreEqual(2,player.TileCount,"Should be moved to creek");
+    }
+
+    [UnityTest]
+    public IEnumerator TestOpportunityKnocksDrawn(){
+        boardPlayer player = turnManager.players[0];
+        // Use test dice values that are not doubles.
+        yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(player, true, 6, 1));
+        Assert.AreEqual(1550, player.balance, "Player should receieve 50 from top card");
+        TearDown();
+        yield return SetUp();
+        player = turnManager.players[0];
+        yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(player, true, 1, 21));
+        Assert.AreEqual(1600, player.balance, "Player should receieve 100 from top card");
+
+    }
+
+
     
 }
 
@@ -233,15 +266,14 @@ public class TurnManagerDoublesTests
         boardPlayer player = turnManager.players[0];
         int initialTile = player.TileCount;
         // Use test dice values that are not doubles.
-        yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(player, true, 4, 3));
+        yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(player, true, 4, 5));
 
         // Expect the player's TileCount to have increased by roll + roll2 (4+3).
-        Assert.AreEqual(initialTile + 7, player.TileCount, "Player should move exactly 7 tiles when no doubles are rolled.");
+        Assert.AreEqual(initialTile + 9, player.TileCount, "Player should move exactly 7 tiles when no doubles are rolled.");
         Assert.IsFalse(player.inJail, "Player should not be sent to jail when not rolling doubles.");
     }
 
- 
-
+    
 
 
     /// <summary>

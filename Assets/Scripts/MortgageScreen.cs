@@ -13,7 +13,7 @@ namespace PropertyTycoon
         private int activeCount = 0;
         public GameObject ownedPropertyPanel;
        
-         public Button[] buttonList = new Button[20];            
+         public Button[] buttonList = new Button[20];     //Buttons show/hide for each property owned       
 
         
 
@@ -44,7 +44,7 @@ namespace PropertyTycoon
                 counter++;
             }
             for(int i=0;i!=counter;i++){
-                buttonList[i].gameObject.SetActive(true);
+                buttonList[i].gameObject.SetActive(true); //Reveal buttons
             }
             activeCount=counter;
             gameObject.SetActive(true);
@@ -72,8 +72,8 @@ namespace PropertyTycoon
             for(int i=0;i!=activeCount;i++){
                 buttonList[i].gameObject.SetActive(false);
             }
-            gameObject.SetActive(false);
-            ownedPropertyPanel.SetActive(true);
+            gameObject.SetActive(false); //Close this page
+            ownedPropertyPanel.SetActive(true); //Open other page
             
 
         }

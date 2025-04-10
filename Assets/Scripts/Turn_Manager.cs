@@ -124,6 +124,7 @@ namespace PropertyTycoon
             int loopcount = 1;
             bool jailBound = false;
 
+            
             //Allows for moving again on doubles 
             while (repeatturn){
             //testMode = true; // THIS IS TEST PLEASE PLEASE PLEASE GET RID OF AFTER
@@ -142,6 +143,9 @@ namespace PropertyTycoon
                 roll = Random.Range(1, 7);
                 roll2 = Random.Range(1, 7);
                 Debug.Log($"Player {currentPlayerIndex + 1} rolled: {roll} and {roll2}");
+                //Only shuffle cards out of testmode
+                Cards.Shuffle(Cards.OpportunityKnocks);
+                Cards.Shuffle(Cards.PotLuck);
             }
 
             
@@ -227,7 +231,7 @@ namespace PropertyTycoon
                 if (landedProperty == null)
                 {
                     // Handle special tiles like taxes, jail, or parking
-                    HandleSpecialTiles(currentTile, player);
+                    yield return HandleSpecialTiles(currentTile, player);
                 }
                 else if (landedProperty.owner == getPlayerFromBoard(player)) // Player owns the tile
                 {
@@ -288,7 +292,7 @@ namespace PropertyTycoon
             }
         }
 
-        private void HandleSpecialTiles(int currentTile, boardPlayer player)
+        private IEnumerator HandleSpecialTiles(int currentTile, boardPlayer player)
         {
             // Handle tax, parking, chance or jail tiles
             if (currentTile == 5 || currentTile == 39) // Tax tiles
@@ -299,16 +303,19 @@ namespace PropertyTycoon
             }
             else if (currentTile==3||currentTile==18||currentTile==34){
                 Debug.Log("Pot luck");
-                Card currentCard = Cards.DrawTopCard(Cards.OpportunityKnocks);
-                Cards.ExecuteCardAction(currentCard,getPlayerFromBoard(player),bank,playerlist);
-                Cards.Shuffle(Cards.OpportunityKnocks);
+                Card currentCard = Cards.DrawTopCard(Cards.PotLuck);
+                yield return Cards.ExecuteCardAction(currentCard,getPlayerFromBoard(player),bank,playerlist);
+
+
             }
             else if (currentTile==8||currentTile==23){
                 Debug.Log("OPPORTUNITY KNOCKS");
                 
                 Card currentCard = Cards.DrawTopCard(Cards.OpportunityKnocks);
-                Cards.ExecuteCardAction(currentCard,getPlayerFromBoard(player),bank,playerlist);
-                Cards.Shuffle(Cards.OpportunityKnocks);
+                yield return Cards.ExecuteCardAction(currentCard,getPlayerFromBoard(player),bank,playerlist);
+                
+
+
 
             }
             else if (currentTile == 21) // Free parking

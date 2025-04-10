@@ -28,8 +28,9 @@ public class TurnManagerSystemTests
         propertyManagerObject = new GameObject();
         pmanager = propertyManagerObject.AddComponent<PropertyManager>();
 
-        PlayerSelection.aiCount=0;
+            PlayerSelection.aiCount=0;
             PlayerSelection.numberOfPlayers=2;
+            PlayerSelection.startScreenUsed=true;
             turnManager = turnManagerObject.AddComponent<Turn_Script>();
             // Initialize players and dependencies
             turnManager.players = new boardPlayer[6];
@@ -49,7 +50,9 @@ public class TurnManagerSystemTests
         buyScreen.AuctionUI = aucScreen;
         upgradeScreenObj = new GameObject();
             UpgradeScrn upscrn = upgradeScreenObj.AddComponent<UpgradeScrn>();
-            turnManager.upgradeScrn = upscrn;
+
+        upscrn.OwnedPropertyPanel= upgradeScreenObj;
+        turnManager.upgradeScrn = upscrn;
         turnManager.propertyPurchaseScrn = buyScreen;
 
         turnManager.pmanager=pmanager; //Assign propertymanager to turnmanager
@@ -72,16 +75,14 @@ public class TurnManagerSystemTests
     public IEnumerator Test_RoundIncrementsAfterFullCycle()
     {
 
-        float originalTimeScale = Time.timeScale;
-        Time.timeScale = 100f; // Makes 0.5s delay ~0.005s
+
         
         turnManager.currentPlayerIndex = 1; // Last player in a 2-player game
         turnManager.turnEnded = true; // Enable ending the turn
-        for (int i=0;i<2;i++){
-        turnManager.EndTurnButtonClicked();
-        yield return new WaitUntil(() => turnManager.currentPlayerIndex == 0); // Wait for index 
-        }
-        Time.timeScale = originalTimeScale; //fix timescale after
+        yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(turnManager.players[1],true));
+        yield return turnManager.StartCoroutine(turnManager.EndTurn());
+
+        
         Assert.AreEqual(2, turnManager.round); // Round should increment after all players
     }
     
@@ -202,10 +203,9 @@ public class TurnManagerDoublesTests
         GameObject AuctionScreenObject = new GameObject("AuctionPurchaseScreen"); AuctionScrn auscreen = purchaseScreenObject.AddComponent<AuctionScrn>();
         ppscreen.AuctionUI = auscreen;
         upgradeScreenObj = new GameObject();
-            UpgradeScrn upscrn = upgradeScreenObj.AddComponent<UpgradeScrn>();
-            GameObject propertypanel = new GameObject();
-            upscrn.OwnedPropertyPanel= propertypanel;
-            turnManager.upgradeScrn = upscrn;
+        UpgradeScrn upscrn = upgradeScreenObj.AddComponent<UpgradeScrn>();
+        upscrn.OwnedPropertyPanel= upgradeScreenObj;
+        turnManager.upgradeScrn = upscrn;
             
         turnManager.propertyPurchaseScrn = ppscreen; //Add property purchase screen
         yield return null;

@@ -22,8 +22,6 @@ namespace PropertyTycoon
         [System.Obsolete]
         private void Start()
         {
-            // Ensure the panel is initially hidden
-            OwnedPropertyPanel.SetActive(false);
 
             // Initialize upgradeManager
             upgradeManager = FindObjectOfType<UpgradeManager>();
@@ -43,6 +41,9 @@ namespace PropertyTycoon
             {
                 CloseButton.onClick.AddListener(ClosePanel);
             }
+            // Ensure the panel is initially hidden
+            this.gameObject.SetActive(false);
+
         }
 
         public void ShowOwnedPropertyPanel(Property property, Player player)

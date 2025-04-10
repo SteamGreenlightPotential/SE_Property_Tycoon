@@ -28,6 +28,8 @@ public class TurnManagerUnitTests
             PlayerSelection.numberOfPlayers=2;
             PlayerSelection.startScreenUsed=true;
             turnManager = turnManagerObject.AddComponent<Turn_Script>();
+            //Stops Update running early 
+            turnManager.startAsTest=true;   
             // Initialize players and dependencies
             turnManager.players = new boardPlayer[6];
             GameObject[] playerObj= new GameObject[6]; 

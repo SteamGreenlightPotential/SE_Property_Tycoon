@@ -32,6 +32,8 @@ public class TurnManagerSystemTests
             PlayerSelection.numberOfPlayers=2;
             PlayerSelection.startScreenUsed=true;
             turnManager = turnManagerObject.AddComponent<Turn_Script>();
+            //Stops Update running early 
+            turnManager.startAsTest=true;   
             // Initialize players and dependencies
             turnManager.players = new boardPlayer[6];
             GameObject[] playerObj= new GameObject[6]; 
@@ -66,6 +68,7 @@ public class TurnManagerSystemTests
         Object.DestroyImmediate(propertyManagerObject);
         Object.DestroyImmediate(buyScreenObj);
         Object.DestroyImmediate(AucScreenObj);
+        Object.DestroyImmediate(upgradeScreenObj);
         foreach (var player in turnManager.players) Object.DestroyImmediate(player.gameObject);
         Time.timeScale=1f;
     }
@@ -205,6 +208,10 @@ public class TurnManagerDoublesTests
     GameObject upgradeScreenObj;
     private Turn_Script turnManager;
     private PropertyManager pmanager;
+    private GameObject purchaseScreenObject;
+    PropertyPurchaseScrn ppscreen;
+    private AuctionScrn aucscreen;
+    GameObject AuctionScreenObject;
 
     // A simple setup that instantiates a Turn_Script with a couple of players.
     [UnitySetUp]
@@ -216,6 +223,8 @@ public class TurnManagerDoublesTests
             PlayerSelection.aiCount=0;
             PlayerSelection.numberOfPlayers=2;
             turnManager = turnManagerObject.AddComponent<Turn_Script>();
+            //Stops Update running early 
+            turnManager.startAsTest=true;   
             // Initialize players and dependencies
             turnManager.players = new boardPlayer[6];
             GameObject[] playerObj= new GameObject[6]; 
@@ -231,16 +240,26 @@ public class TurnManagerDoublesTests
         pmanager = propertyManagerObject.AddComponent<PropertyManager>();
         turnManager.pmanager = pmanager;
 
-        GameObject purchaseScreenObject = new GameObject("PropertyPurchaseScreen");PropertyPurchaseScrn ppscreen = purchaseScreenObject.AddComponent<PropertyPurchaseScrn>();
+        
         //have to make ten million objects for turnmanager to be happy
-        GameObject AuctionScreenObject = new GameObject("AuctionPurchaseScreen"); AuctionScrn auscreen = purchaseScreenObject.AddComponent<AuctionScrn>();
-        ppscreen.AuctionUI = auscreen;
+        AuctionScreenObject = new GameObject("AuctionPurchaseScreen"); 
+        aucscreen = AuctionScreenObject.AddComponent<AuctionScrn>();
+        
+        purchaseScreenObject = new GameObject("PropertyPurchaseScreen");
+        ppscreen = purchaseScreenObject.AddComponent<PropertyPurchaseScrn>();
+        ppscreen.AuctionUI = aucscreen; //Add auction screen to property purchase screen
+        
+   
+        
+
+        turnManager.propertyPurchaseScrn = ppscreen; //Add property purchase screen
+
         upgradeScreenObj = new GameObject();
         UpgradeScrn upscrn = upgradeScreenObj.AddComponent<UpgradeScrn>();
+        
         upscrn.OwnedPropertyPanel= upgradeScreenObj;
         turnManager.upgradeScrn = upscrn;
-            
-        turnManager.propertyPurchaseScrn = ppscreen; //Add property purchase screen
+
         yield return null;
     }
 
@@ -248,12 +267,12 @@ public class TurnManagerDoublesTests
     public void TearDown()
     {
         Object.DestroyImmediate(turnManagerObject);
-        foreach (var player in turnManager.players)
-        {
-            Object.DestroyImmediate(player.gameObject);
-        }
         Object.DestroyImmediate(propertyManagerObject);
-        Time.timeScale = 1f;
+        Object.DestroyImmediate(upgradeScreenObj);
+        Object.DestroyImmediate(AuctionScreenObject);
+        Object.DestroyImmediate(purchaseScreenObject);
+        foreach (var player in turnManager.players) Object.DestroyImmediate(player.gameObject);
+        Time.timeScale=1f;
     }
 
     /// <summary>
@@ -273,15 +292,6 @@ public class TurnManagerDoublesTests
         Assert.IsFalse(player.inJail, "Player should not be sent to jail when not rolling doubles.");
     }
 
-    
-
-
-    /// <summary>
-    /// Test that if the player rolls doubles repeatedly (three times in a row),
-    /// the game logic sends the player to jail.
-    /// </summary>
-    
-    // it doesnt work i dont know why i give up
     
     [UnityTest]
     public IEnumerator Test_PlayerMovePhase_TripleDoubles_GoesToJail()

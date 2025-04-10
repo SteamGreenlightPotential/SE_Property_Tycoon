@@ -9,6 +9,8 @@ namespace PropertyTycoon{
     public class Turn_Script : MonoBehaviour{
         public boardPlayer[] players; // Assigned the scripts from each piece in the Inspector
         public PropertyManager pmanager; //Assigned PropertyManager in Unity Inspector
+        public DiceRoller droll;
+        public DiceRoller droll2;
         public int currentPlayerIndex = 0;
         public bool isWaitingForRoll = true; // Wait for player to press space to roll
         public int round = 1;
@@ -16,9 +18,13 @@ namespace PropertyTycoon{
         public int bankBalance = 50000;
         public int freeParkingBalance = 0;
         public List<Player> playerlist=new List<Player>(); //Create an array of player objects corresponding to board players
+        private int roll;
+        private int roll2;
 
-        public bool testMode = true; //"Test Mode" allows for hard coded dice rolls for testing purposes
+        public bool testMode = false; //"Test Mode" allows for hard coded dice rolls for testing purposes
 
+        //public gameObject dice1;
+        //public gameObject dice2;
 
         public void Start(){
             Debug.Log("Round " + round); // Announce round 1 has started
@@ -40,7 +46,7 @@ namespace PropertyTycoon{
                 StartCoroutine(PlayerMovePhase(players[currentPlayerIndex]));
             }
         }
-
+    
         void StartTurn()
         {
             turnEnded = false; // Disable the end turn button
@@ -48,31 +54,44 @@ namespace PropertyTycoon{
             isWaitingForRoll = true; // Wait for player to press space before rolling
         }
 
-        public IEnumerator PlayerMovePhase(boardPlayer player,bool testCase=false, int testRoll=1,int testRoll2=1)
+
+        public IEnumerator PlayerMovePhase(boardPlayer player, bool testMode = false, int testRoll = 4, int testRoll2 = 5)
         {
             int roll = 0;
-            int roll2 =0;//Second dice roll for double roll
-            //Lets me skip input, because this isnt modular i gotta do this
-            if (testCase==false){
-                // Wait for player to press space before rolling
-                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
-            }
+            int roll2 = 0;//Second dice roll for double roll 
             
-            //If test mode is on, roll hard coded number for test reasons 
-            if (testMode==true){
+            if (testMode)
+            {
                 roll = testRoll;
                 roll2 = testRoll2;
             }
-            else{
+            else
+            {
+                // Show both dice and prepare them for rolling
+                droll.GetComponent<DiceRoller>().PrepareRoll();
+                droll2.GetComponent<DiceRoller>().PrepareRoll();
+
+                // Wait for player to press Space to roll
+                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+
+                // Roll both dice simultaneously
+                var dice1 = droll.GetComponent<DiceRoller>();
+                var dice2 = droll2.GetComponent<DiceRoller>();
                 
-                // Roll the dice
-                roll = Random.Range(1, 7); // Roll dice for movement
-                roll2 = Random.Range(1, 7); // Roll dice for double roll
-                //implement double roll here ig
+                // Start both rolls at the same time
+                Coroutine roll1 = StartCoroutine(dice1.CompleteRoll());
+                Coroutine roll2Coroutine = StartCoroutine(dice2.CompleteRoll());
                 
-                Debug.Log("Player " + (currentPlayerIndex + 1) + " rolled: " + roll);
+                // Wait for both rolls to complete
+                yield return roll1;
+                yield return roll2Coroutine;
             }
+
+            roll = droll.GetComponent<DiceRoller>().Result;
+            roll2 = droll2.GetComponent<DiceRoller>().Result; 
             
+            Debug.Log("Player " + (currentPlayerIndex + 1) + " rolled: " + (roll + roll2));
+
             
             //Jail implementation
            if (player.inJail==true){
@@ -179,7 +198,7 @@ namespace PropertyTycoon{
                     Debug.Log("Tile " + currentTile + " is not owned by anyone and is available.");
                     Debug.Log("Press B to buy or Space to skip.");
                     bool decisionMade = false;
-                    if (testCase==true){decisionMade=true;}//cheeky test case to stop input buffering
+                    if (testMode==true){decisionMade=true;}//cheeky test case to stop input buffering 
                     while (!decisionMade)
                     {
                         if (Input.GetKeyDown(KeyCode.B))
@@ -205,15 +224,15 @@ namespace PropertyTycoon{
             Debug.Log("Press Space to Skip (THIS IS FOR THE BUY PHASE LATER)");
             
 
-            // Wait for the player to press space to continue. Skip input in testmode
-            if (testCase==false){
+            // Wait for the player to press space to continue. Skip input in test mode
+            if (testMode==false){
             yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
             }
             Debug.Log("Press End Turn now for next turn");
             turnEnded = true; // Enable the end turn button2
 
             //apparently i have to return :(
-            //if(testCase==true){yield break;}
+            //if(testMode==true){yield break;}
         }
 
         public void EndTurnButtonClicked()

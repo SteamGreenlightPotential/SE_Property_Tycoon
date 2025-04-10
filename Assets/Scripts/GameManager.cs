@@ -19,29 +19,30 @@ namespace PropertyTycoon
             {
                 Instance = this;
                 DontDestroyOnLoad(gameObject); // Makes GameManager persistent between scenes
+                Debug.Log("GameManager instance created successfully.");
             }
             else
             {
+                Debug.LogError("Multiple GameManager instances detected!");
                 Destroy(gameObject); // Ensures there's only one GameManager instance
-                return;
             }
 
             if (propertyManager != null)
             {
-                propertyManager.initialiseProperties();  // Load properties from PropertyManager
+                //propertyManager.initialiseProperties();  // Load properties from PropertyManager
                 properties = propertyManager.properties; // Assign properties list
             }
             else
             {
                 Debug.LogError("PropertyManager is not assigned in GameManager!");
+                propertyManager = new PropertyManager(); // Initialize PropertyManager
+
             }
 
             // Initialize core game components
             bank = new Bank();                       // Initialize the bank
             players = new List<Player>();            // Initialize the players list
             propertyManager = new PropertyManager(); // Initialize PropertyManager
-            InitialiseProperties();                  // Load all properties
-
             Debug.Log("GameManager Online");         // Debug message for confirmation
         }
 

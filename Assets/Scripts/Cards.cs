@@ -17,11 +17,13 @@ namespace PropertyTycoon
 
     public static class Cards
     {
+        private static PropertyManager propertyManager = GameObject.FindFirstObjectByType<PropertyManager>();
+        
         public static List<Card> PotLuck = new List<Card>()
         {
             new Card("You inherit £200", "Bank pays player £200"),
             new Card("You have won 2nd prize in a beauty contest, collect £50", "Bank pays player £50"),
-            new Card("You are up the creek with no paddle - go back to the Old Creek", "Player token moves backwards to the Old Creek"),
+            new Card("You are up the creek with no paddle - go back to the Old Creek", "Player token moves backwards to the Old Creek"), 
             new Card("Student loan refund. Collect £20", "Bank pays player £20"),
             new Card("Bank error in your favour. Collect £200", "Bank pays player £200"),
             new Card("Pay bill for text books of £100", "Player pays £100 to the bank"),
@@ -37,7 +39,6 @@ namespace PropertyTycoon
             new Card("It's your birthday. Collect £10 from each player", "Player receives £10 from each player"),
             new Card("Get out of jail free", "Retained by the player until needed. No resale or trade value")
         };
-
         public static List<Card> OpportunityKnocks = new List<Card>()
         {
             new Card("Bank pays you a dividend of £50", "Bank pays player £50"),
@@ -148,9 +149,92 @@ namespace PropertyTycoon
                     bank.AddToFreeParking(30);
                     break;
 
+                // Player movement related cards
+                case "Player moves forwards to GO":
+                    int stepsToGo = 40 - player.bPlayer.TileCount;
+                    player.bPlayer.Move(stepsToGo);
+                    break;
+
+                case "Player moves token to Turing Heights":
+                    MoveToProperty("Turing Heights", 40, player);
+                    break;
+
+                case "Player moves token to Han Xin Gardens":
+                    MoveToProperty("Han Xin Gardens", 25, player);
+                    break;
+
+                case "Player moves token to Hove station":
+                    MoveToProperty("Hove station", 15, player);
+                    break;
+
+                case "Player moves token to Skywalker Drive":
+                    MoveToProperty("Skywalker Drive", 12, player);
+                    break;
+
+                case "Player moves token to The Old Creek":
+                    MoveToProperty("The Old Creek", 2, player);
+                    break;
+
+                case "Player moves token backwards 3 spaces":
+                    player.bPlayer.TileCount -= 3;
+                    if (player.bPlayer.TileCount < 0)
+                        player.bPlayer.TileCount += 40;
+                    player.bPlayer.Move(-3);
+                    break;
+
+                case "Go to jail":
+                    player.bPlayer.inJail = true;       // Mark the player as being in jail
+                    player.bPlayer.jailTurns = 0;       // Reset jail turn count
+                    player.bPlayer.StartCoroutine(player.bPlayer.toJail()); // Move the player to jail
+                    break;
+
+                
+                case "Player pays for property repairs":
+                    int repairCostHouse = card.Description.Contains("£40") ? 40 : 25;
+                    int repairCostHotel = card.Description.Contains("£115") ? 115 : 100;
+                    int totalRepairCost = (player.HousesOwned * repairCostHouse) + (player.HotelsOwned * repairCostHotel);
+                    player.Debit(totalRepairCost);
+                    bank.ReceivePayment(totalRepairCost);
+                    break;
+
+                case "Get out of jail free":
+                    GetOutOfJail(player, bank); // Useing the method
+                    break;
+
                 default:
                     Debug.Log("Action not implemented");
                     break;
+            }
+        }
+
+        public static void GetOutOfJail(Player player, Bank bank)
+        {
+            if (player.HasGetOutOfJailCard) // Check for "Get Out of Jail Free" card
+            {
+                player.HasGetOutOfJailCard = false; // Use the card
+                player.bPlayer.inJail = false; // Release the player
+                Debug.Log($"{player.Name} used a Get Out of Jail Free card!");
+            }
+            else if (player.Balance >= 50) // Check if the player can pay £50
+            {
+                player.Debit(50); // Deduct £50 from their balance
+                bank.ReceivePayment(50); // Send the payment to the bank
+                player.bPlayer.inJail = false; // Release the player
+                Debug.Log($"{player.Name} paid £50 to get out of jail!");
+            }
+            else // DOUBLE ROLL METHOD GOES HERE 
+            {
+                Debug.Log($"{player.Name} must roll for doubles to get out of jail.");
+            }
+        }
+
+        private static void MoveToProperty(string propertyName, int tileNo, Player player)
+        {
+            Property property = propertyManager.getTileProperty(tileNo);
+            if (property != null)
+            {
+                int stepsToProperty = (property.tileno - player.bPlayer.TileCount + 40) % 40;
+                player.bPlayer.Move(stepsToProperty);
             }
         }
     }

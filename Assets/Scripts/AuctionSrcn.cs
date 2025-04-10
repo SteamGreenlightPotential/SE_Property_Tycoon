@@ -71,10 +71,11 @@ namespace PropertyTycoon
 
         public void PlaceBid()
         {
+         Player currentPlayer = players[currentPlayerIndex];
+         if (currentPlayer.isAI==false){   
             // Get the player's inputted bid amount
             if (int.TryParse(BidAmountInput.text, out int bidAmount))
             {
-                Player currentPlayer = players[currentPlayerIndex];
 
                 if (bidAmount > currentBid && bidAmount <= currentPlayer.Balance)
                 {
@@ -93,6 +94,10 @@ namespace PropertyTycoon
             {
                 Debug.Log("Invalid bid amount entered.");
             }
+         }
+         else{
+            PassTurn();
+         }
         }
 
         public void PassTurn()
@@ -124,7 +129,7 @@ namespace PropertyTycoon
                 highestBidder.Debit(currentBid);
                 
                 // Transfer ownership of the property
-                propertyBeingAuctioned.switchOwner(highestBidder);
+                propertyBeingAuctioned.SwitchOwner(highestBidder);
 
                 Debug.Log($"{highestBidder.Name} won the auction for {propertyBeingAuctioned.name} at £{currentBid}.");
             }
@@ -135,6 +140,7 @@ namespace PropertyTycoon
 
             // Hide the auction screen
             gameObject.SetActive(false);
+            Turn_Script.purchaseDone=true;
         }
 
     }

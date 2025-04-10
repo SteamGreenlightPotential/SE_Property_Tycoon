@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
-using PropertyTycoon;
 
 namespace PropertyTycoon
 {
@@ -68,7 +67,7 @@ namespace PropertyTycoon
             }
             else
             {
-                TileCount = 0; // Reset TileCount to loop board
+                TileCount = 1; // Reset TileCount to loop board
                 direction = Vector3.right; // Reset direction to right
                 goPassed = true; // Player has passed Go
             }
@@ -114,7 +113,7 @@ namespace PropertyTycoon
 
         
 
-        // temporary wallet example
+
 
         public int balance = 1500;
         //private int amount = 0;
@@ -213,6 +212,4 @@ namespace PropertyTycoon
         Time.timeScale = originalTimeScale; //reset timescale
         }
     }
-
-
 }

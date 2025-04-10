@@ -48,42 +48,33 @@ namespace PropertyTycoon
         {
             nameOfObject = gameObject.name;
             Vector3 direction = Vector3.zero;
-            float fromSquareMultiplier = 1.3f; // value for boot/iron/car
-            float betweenRectanglesMultiplier = 0.9f;
 
-            // Set multipliers based on object name
-            if (nameOfObject == "hat" || nameOfObject == "ship" || nameOfObject == "smartphone")
-            {
-                fromSquareMultiplier = 1.5f;
-                betweenRectanglesMultiplier = 1.1f;
-            }
             if (nameOfObject == "car")
             {
                 if (TileCount >= 1 && TileCount < 11)
                 {
-                direction = Vector3.right; // Move piece right
-                transform.eulerAngles = new Vector3(180, 0, 90); // Rotate to face right
+                    direction = Vector3.up; // Move piece up
+                    transform.eulerAngles = new Vector3(180, 0, 0); // Rotate to face up
                 }
                 else if (TileCount >= 11 && TileCount < 21)
+                {
+                    direction = Vector3.right; // Move piece right
+                    transform.eulerAngles = new Vector3(180, 0, 90); // Rotate to face right
+                }
+                else if (TileCount >= 21 && TileCount < 31)
                 {
                     direction = Vector3.down; // Move piece down 
                     transform.eulerAngles = new Vector3(180, 0, 180); // Rotate to face down
                 }
-                else if (TileCount >= 21 && TileCount < 31)
+                else if (TileCount >= 31 && TileCount < 41)
                 {
                     direction = Vector3.left; // Move piece left
                     transform.eulerAngles = new Vector3(180, 0, 270); // Rotate to face left
                 }
-                else if (TileCount >= 31 && TileCount < 41)
-                {
-                    direction = Vector3.up; // Move piece up
-                    transform.eulerAngles = new Vector3(180, 0, 360); // Rotate to face up
-                }
-                
                 else
                 {
-                    TileCount = 0; // Reset TileCount to loop board
-                    direction = Vector3.right; // Reset direction to right
+                    TileCount = 1; // Reset TileCount to loop board
+                    direction = Vector3.up; // Reset direction to up
                     goPassed = true; // Player has passed Go
                 }
             }  
@@ -92,28 +83,28 @@ namespace PropertyTycoon
             {
                 if (TileCount >= 1 && TileCount < 11)
                 {
-                direction = Vector3.right; // Move piece right
-                transform.eulerAngles = new Vector3(90, -90, 90); // Rotate to face right
+                    direction = Vector3.up; // Move piece up
+                    transform.eulerAngles = new Vector3(90, -90, 0); // Rotate to face up
                 }
                 else if (TileCount >= 11 && TileCount < 21)
                 {
-                    direction = Vector3.down; // Move piece down 
-                    transform.eulerAngles = new Vector3(0, -90, 90); // Rotate to face down
+                    direction = Vector3.right; // Move piece right
+                    transform.eulerAngles = new Vector3(0, -90, 90); // Rotate to face right
                 }
                 else if (TileCount >= 21 && TileCount < 31)
                 {
-                    direction = Vector3.left; // Move piece left
-                    transform.eulerAngles = new Vector3(-90, -270, 270); // Rotate to face left
+                    direction = Vector3.down; // Move piece down 
+                    transform.eulerAngles = new Vector3(-90, -270, 180); // Rotate to face down
                 }
                 else if (TileCount >= 31 && TileCount < 41)
                 {
-                    direction = Vector3.up; // Move piece up
-                    transform.eulerAngles = new Vector3(0, -270, 270); // Rotate to face up
+                    direction = Vector3.left; // Move piece left
+                    transform.eulerAngles = new Vector3(0, -270, 270); // Rotate to face left
                 }
                 else
                 {
-                    TileCount = 0; // Reset TileCount to loop board
-                    direction = Vector3.right; // Reset direction to right
+                    TileCount = 1; // Reset TileCount to loop board
+                    direction = Vector3.up; // Reset direction to up
                     goPassed = true; // Player has passed Go
                 }
             }
@@ -122,28 +113,28 @@ namespace PropertyTycoon
             {
                 if (TileCount >= 1 && TileCount < 11)
                 {
-                direction = Vector3.right; // Move piece right
-                transform.eulerAngles = new Vector3(180, 90, 0); // Rotate to face right
+                    direction = Vector3.up; // Move piece up
+                    transform.eulerAngles = new Vector3(270, 90, 0); // Rotate to face up
                 }
                 else if (TileCount >= 11 && TileCount < 21)
+                {
+                    direction = Vector3.right; // Move piece right
+                    transform.eulerAngles = new Vector3(180, 90, 0); // Rotate to face right
+                }
+                else if (TileCount >= 21 && TileCount < 31)
                 {
                     direction = Vector3.down; // Move piece down 
                     transform.eulerAngles = new Vector3(270, 90, 0); // Rotate to face down
                 }
-                else if (TileCount >= 21 && TileCount < 31)
+                else if (TileCount >= 31 && TileCount < 41)
                 {
                     direction = Vector3.left; // Move piece left
                     transform.eulerAngles = new Vector3(180, 90, 0); // Rotate to face left
                 }
-                else if (TileCount >= 31 && TileCount < 41)
-                {
-                    direction = Vector3.up; // Move piece up
-                    transform.eulerAngles = new Vector3(270, 90, 0); // Rotate to face up
-                }
                 else
                 {
-                    TileCount = 0; // Reset TileCount to loop board
-                    direction = Vector3.right; // Reset direction to right
+                    TileCount = 1; // Reset TileCount to loop board
+                    direction = Vector3.up; // Reset direction to up
                     goPassed = true; // Player has passed Go
                 }
             } 
@@ -151,45 +142,38 @@ namespace PropertyTycoon
             {
                 if (TileCount >= 1 && TileCount < 11)
                 {
-                direction = Vector3.right; // Move piece right
-                transform.eulerAngles = new Vector3(180, 0, 270); // Rotate to face right
+                    direction = Vector3.up; // Move piece up
+                    transform.eulerAngles = new Vector3(180, 0, 0); // Rotate to face up
                 }
                 else if (TileCount >= 11 && TileCount < 21)
                 {
-                    direction = Vector3.down; // Move piece down 
-                    transform.eulerAngles = new Vector3(180, 0, 0); // Rotate to face down
+                    direction = Vector3.right; // Move piece right
+                    transform.eulerAngles = new Vector3(180, 0, 90); // Rotate to face right
                 }
                 else if (TileCount >= 21 && TileCount < 31)
                 {
-                    direction = Vector3.left; // Move piece left
-                    transform.eulerAngles = new Vector3(180, 0, 90); // Rotate to face left
+                    direction = Vector3.down; // Move piece down 
+                    transform.eulerAngles = new Vector3(180, 0, 180); // Rotate to face down
                 }
                 else if (TileCount >= 31 && TileCount < 41)
                 {
-                    direction = Vector3.up; // Move piece up
-                    transform.eulerAngles = new Vector3(180, 0, 180); // Rotate to face up
+                    direction = Vector3.left; // Move piece left
+                    transform.eulerAngles = new Vector3(180, 0, 270); // Rotate to face left
                 }
                 else
                 {
-                    TileCount = 0; // Reset TileCount to loop board
-                    direction = Vector3.right; // Reset direction to right
+                    TileCount = 1; // Reset TileCount to loop board
+                    direction = Vector3.up; // Reset direction to up
                     goPassed = true; // Player has passed Go
                 }
             }
 
-            // Adjust movement distance based on tile type 
-            if (TileCount == 1 || TileCount == 11 || TileCount == 21 || TileCount == 31)
-            {
-                direction *= fromSquareMultiplier;
-            }
-            else
-            {
-                direction *= betweenRectanglesMultiplier;
-            }
+        
 
             TileCount += 1; // Increment TileCount for each tile moved across
             return direction;
         }
+
 
         private IEnumerator MovePlayer(Vector3 direction)
         {

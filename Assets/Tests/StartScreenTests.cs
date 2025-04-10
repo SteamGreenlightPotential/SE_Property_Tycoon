@@ -96,7 +96,7 @@ public class StartScreenTests
     PlayerSelection.startScreenUsed=true;
         turnManagerObject = new GameObject();
         turnManager = turnManagerObject.AddComponent<Turn_Script>();
-        
+        turnManager.isWaitingForRoll=false;
 
         // Initialize players and dependencies boilerplate
         turnManager.players = new boardPlayer[6];
@@ -123,7 +123,7 @@ public class StartScreenTests
     PlayerSelection.startScreenUsed=true;
           turnManagerObject = new GameObject();
         turnManager = turnManagerObject.AddComponent<Turn_Script>();
-        
+        turnManager.isWaitingForRoll=false;
 
         // Initialize players and dependencies boilerplate
         turnManager.players = new boardPlayer[6];

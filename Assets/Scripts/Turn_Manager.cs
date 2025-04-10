@@ -35,9 +35,12 @@ namespace PropertyTycoon
             Debug.Log("Round " + round); // Announce round 1 has started
             int playerCount = PlayerSelection.numberOfPlayers;
             int AiCount = PlayerSelection.aiCount;
-            
+            bool startScreenUsed = PlayerSelection.startScreenUsed;
 
-
+            if (!startScreenUsed){
+                playerCount = 6;
+                AiCount=0;
+            }
 
 
             //Make player array match number of players

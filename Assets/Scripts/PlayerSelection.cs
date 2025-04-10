@@ -7,6 +7,7 @@ public class PlayerSelection : MonoBehaviour
     public Dropdown aiDropDown;
     public static int numberOfPlayers; // Store the selected number of players
     public static int aiCount;
+    public static bool startScreenUsed = false;
 
 
     void Start()
@@ -14,6 +15,7 @@ public class PlayerSelection : MonoBehaviour
         // Set a default value, e.g., 2 players
         numberOfPlayers = 2;
         aiCount=0;
+        startScreenUsed=true;
 
         // Add listener to detect when dropdown value changes
         playerDropdown.onValueChanged.AddListener(DropdownValueChanged);

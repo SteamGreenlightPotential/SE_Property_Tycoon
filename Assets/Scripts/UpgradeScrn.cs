@@ -7,14 +7,16 @@ namespace PropertyTycoon
     {
         [Header("UI Elements")]
         public GameObject OwnedPropertyPanel;
+        public MortgageScreen mortgageScreen;
         public Text PropertyMessage;
         public Button UpgradeHouseButton;
         public Button UpgradeHotelButton;
-        public Button MortgageButton;
+        public Button MortgageButton; 
         public Button CloseButton;
 
         private Property currentProperty;
         private Player currentPlayer;
+         public boardPlayer testPlayer; // For testing purposes, remove in production
         private UpgradeManager upgradeManager; // Declare upgradeManager
 
         [System.Obsolete]
@@ -28,6 +30,12 @@ namespace PropertyTycoon
             if (upgradeManager == null)
             {
                 Debug.Log("UpgradeManager is missing! Please add it to the scene.");
+            }
+
+            MortgageScreen mortgageScreen = FindObjectOfType<MortgageScreen>();
+            if (mortgageScreen == null)
+            {
+                Debug.Log("MortgageScreen is missing! Please add it to the scene.");
             }
 
             // Setup Close button functionality
@@ -77,8 +85,7 @@ namespace PropertyTycoon
                 Debug.LogError("UpgradeManager is not assigned.");
             }
             ClosePanel();
-        }
-
+        } 
         public void OnUpgradeHotel()
         {
             if (upgradeManager != null)
@@ -94,9 +101,12 @@ namespace PropertyTycoon
 
         public void OnMortgage()
         {
-            Debug.Log("Mortgage functionality is not yet implemented.");
-            // MORTGAGE STUFF GOES HERE
-            ClosePanel();
+            //TEST REASONS
+
+            
+            mortgageScreen.mortgageCall(testPlayer);
+            
+
         }
 
         public void ClosePanel()

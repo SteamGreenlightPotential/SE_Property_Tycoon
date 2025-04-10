@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using TMPro;
+
+
 
 namespace PropertyTycoon
 {
@@ -9,7 +12,7 @@ namespace PropertyTycoon
         public boardPlayer currentPlayer;
         private int activeCount = 0;
        
-        public Button[] buttonList = new Button[20];            
+         public Button[] buttonList = new Button[20];            
 
         
 
@@ -23,6 +26,8 @@ namespace PropertyTycoon
             foreach (Button b in buttonList){
                 b.gameObject.SetActive(false);
             }
+
+            Debug.Log("Mortgage screen started");
             
         }
 
@@ -31,8 +36,10 @@ namespace PropertyTycoon
             //Name buttons right stuff
             currentPlayer=bplayer;
             int counter = 0;
+            
             foreach(Property p in bplayer.OwnedProperties){
-                buttonList[counter].GetComponentInChildren<Text>().text=p.name;
+                Debug.Log(buttonList[counter].GetComponentInChildren<TextMeshProUGUI>().text);
+                buttonList[counter].GetComponentInChildren<TextMeshProUGUI>().text=p.name;
                 counter++;
             }
             for(int i=0;i!=counter;i++){
@@ -56,7 +63,7 @@ namespace PropertyTycoon
                 }
                 else{
                 currentPlayer.balance-= property.price/2;
-                 Debug.Log("Mortgaged property "+property.name);
+                 Debug.Log("Unmortgaged property "+property.name);
                 }
             }
         }
@@ -65,6 +72,7 @@ namespace PropertyTycoon
                 buttonList[i].gameObject.SetActive(false);
             }
             gameObject.SetActive(false);
+            
 
         }
         

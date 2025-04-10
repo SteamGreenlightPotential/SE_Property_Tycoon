@@ -28,6 +28,7 @@ namespace PropertyTycoon.Tests
             testObject = new GameObject();
             auctionScrn = testObject.AddComponent<AuctionScrn>();
 
+
             // Create Text objects (mocking them for now)
             propertyNameText = new GameObject().AddComponent<Text>();
             highestBidText = new GameObject().AddComponent<Text>();
@@ -47,6 +48,7 @@ namespace PropertyTycoon.Tests
             // Create an InputField object for the bid amount input
             bidAmountInput = new GameObject().AddComponent<InputField>();
             auctionScrn.BidAmountInput = bidAmountInput;
+            
 
             // Create players and a test property
             player1 = new Player("Player 1") { Balance = 500 };

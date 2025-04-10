@@ -50,6 +50,8 @@ public class TurnManagerAIUnitTests
             PlayerSelection.numberOfPlayers=2;
             PlayerSelection.startScreenUsed=true;
             turnManager = turnManagerGO.AddComponent<Turn_Script>();
+            //Stops Update running early 
+            turnManager.startAsTest=true;   
             // Initialize players and dependencies
             turnManager.players = new boardPlayer[6];
             GameObject[] playerObj= new GameObject[6]; 
@@ -85,6 +87,10 @@ public class TurnManagerAIUnitTests
         foreach (boardPlayer player in turnManager.players){ Object.DestroyImmediate(player.gameObject);}
         Object.DestroyImmediate(aucscrgo);
         Object.DestroyImmediate(aiPlayerGO);
+        Object.DestroyImmediate(pmGO);
+        Object.DestroyImmediate(purchaseScrnGO);
+        Object.DestroyImmediate(dummyPurchaseScrn);
+        Object.DestroyImmediate(dummyPM);
     }
 
     /// <summary>

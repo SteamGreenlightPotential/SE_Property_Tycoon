@@ -40,6 +40,8 @@ public class StartScreenTests
 
     turnManagerObject = new GameObject();
         turnManager = turnManagerObject.AddComponent<Turn_Script>();
+            //Stops Update running early 
+            turnManager.startAsTest=true;        
         
 
         // Initialize players and dependencies boilerplate
@@ -69,6 +71,8 @@ public class StartScreenTests
     PlayerSelection.startScreenUsed=true;
         turnManagerObject = new GameObject();
         turnManager = turnManagerObject.AddComponent<Turn_Script>();
+        //Stops Update running early 
+            turnManager.startAsTest=true;   
         
 
         // Initialize players and dependencies boilerplate
@@ -96,6 +100,8 @@ public class StartScreenTests
     PlayerSelection.startScreenUsed=true;
         turnManagerObject = new GameObject();
         turnManager = turnManagerObject.AddComponent<Turn_Script>();
+        //Stops Update running early 
+            turnManager.startAsTest=true;   
         turnManager.isWaitingForRoll=false;
 
         // Initialize players and dependencies boilerplate
@@ -123,6 +129,8 @@ public class StartScreenTests
     PlayerSelection.startScreenUsed=true;
           turnManagerObject = new GameObject();
         turnManager = turnManagerObject.AddComponent<Turn_Script>();
+        //Stops Update running early 
+            turnManager.startAsTest=true;   
         turnManager.isWaitingForRoll=false;
 
         // Initialize players and dependencies boilerplate

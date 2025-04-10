@@ -31,6 +31,8 @@ namespace PropertyTycoon
         public List<Player> playerlist = new List<Player>(); // List of Player objects corresponding to board players
         public static bool purchaseDone = true;    //Global bool to stop turn from continuing without property decicion being made
 
+        public bool startAsTest = false; //Stops Update running by itself in test cases
+
         public DiceRoller droll;
         public DiceRoller droll2;
 
@@ -94,8 +96,8 @@ namespace PropertyTycoon
 
         public void Update()
         {
-            // Listen for SPACE key to roll dice
-            if (isWaitingForRoll &&playerlist[currentPlayerIndex].isAI==false)
+
+            if (isWaitingForRoll &&playerlist[currentPlayerIndex].isAI==false&&startAsTest==false)
             {
                 isWaitingForRoll = false; // Prevent multiple rolls
                 StartCoroutine(PlayerMovePhase(players[currentPlayerIndex])); // Start the move phase

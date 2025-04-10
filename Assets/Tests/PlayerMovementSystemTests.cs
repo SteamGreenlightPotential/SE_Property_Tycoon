@@ -24,7 +24,10 @@ using System.Reflection;
 
             PlayerSelection.aiCount=0;
             PlayerSelection.numberOfPlayers=2;
+            PlayerSelection.startScreenUsed=true;
             turnManager = new GameObject().AddComponent<Turn_Script>();
+            //Stops Update running early 
+            turnManager.startAsTest=true;
             // Initialize players and dependencies
             turnManager.players = new boardPlayer[6];
             GameObject[] playerObj= new GameObject[6]; 

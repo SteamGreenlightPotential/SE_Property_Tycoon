@@ -43,9 +43,9 @@ public class PlayerMovementUnitTests
     [Test]
     public void Test_NextDir_ReturnsCorrectDirection()
     {
-        bplayer.TileCount = 11; // Edge of top-right corner
+        bplayer.TileCount = 11; // Edge of top-left corner
         Vector3 dir = bplayer.NextDir();
-        Assert.AreEqual(Vector3.down, dir);
+        Assert.AreEqual(Vector3.right, dir);
     }
 
     // Unit Test: Successful tile purchase

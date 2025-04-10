@@ -3105,7 +3105,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &520291268
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5211,7 +5211,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afe17a56379e07d42a171066af6e6318, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OwnedPropertyPanel: {fileID: 0}
+  OwnedPropertyPanel: {fileID: 1001904715}
   PropertyMessage: {fileID: 0}
   UpgradeHouseButton: {fileID: 1373460573}
   UpgradeHotelButton: {fileID: 1156847710}
@@ -7248,7 +7248,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1440843551
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8927,7 +8927,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1771972295
 RectTransform:
   m_ObjectHideFlags: 0

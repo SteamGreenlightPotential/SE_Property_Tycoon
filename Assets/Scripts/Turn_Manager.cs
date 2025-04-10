@@ -95,7 +95,7 @@ namespace PropertyTycoon
         public void Update()
         {
             // Listen for SPACE key to roll dice
-            if (isWaitingForRoll && Input.GetKeyDown(KeyCode.Space) &&playerlist[currentPlayerIndex].isAI==false)
+            if (isWaitingForRoll &&playerlist[currentPlayerIndex].isAI==false)
             {
                 isWaitingForRoll = false; // Prevent multiple rolls
                 StartCoroutine(PlayerMovePhase(players[currentPlayerIndex])); // Start the move phase

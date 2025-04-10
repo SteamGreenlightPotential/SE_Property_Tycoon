@@ -10,6 +10,9 @@ using System.Reflection;
     public class PlayerMovementSystemTests
     {
         private GameObject playerObj;
+        private GameObject buyScreenObj;
+        private GameObject AucScreenObj;
+        private GameObject upgradeScreenObj;
         private boardPlayer player;
         private PropertyManager propManager;
         private Turn_Script turnManager;
@@ -18,14 +21,36 @@ using System.Reflection;
         public IEnumerator SetUp()
         {
             //initialises the player, property manager and turn manager
-            playerObj = new GameObject();
-            playerObj.SetActive(true); //critical for coroutines apparently
+
+            PlayerSelection.aiCount=0;
+            PlayerSelection.numberOfPlayers=2;
             turnManager = new GameObject().AddComponent<Turn_Script>();
-            player = playerObj.AddComponent<boardPlayer>();
-            turnManager.players=new boardPlayer[1];
-            turnManager.players[0]=player; //adds player to turn manager
+            // Initialize players and dependencies
+            turnManager.players = new boardPlayer[6];
+            GameObject[] playerObj= new GameObject[6]; 
+             for (int i = 0; i < 6; i++)
+        {
+            playerObj[i] = new GameObject();
+            turnManager.players[i] = playerObj[i].AddComponent<boardPlayer>();
+            turnManager.players[i].name="player "+i.ToString();
+        }
+            player = turnManager.players[0];
             propManager = new GameObject().AddComponent<PropertyManager>();
             //propManager.initialiseProperties();
+
+            //Initialise auction,upgrade and property screens boilerplate
+            buyScreenObj = new GameObject();
+            PropertyPurchaseScrn buyScreen = buyScreenObj.AddComponent<PropertyPurchaseScrn>();
+            AucScreenObj = new GameObject();
+            AuctionScrn aucScreen = AucScreenObj.AddComponent<AuctionScrn>();
+            upgradeScreenObj = new GameObject();
+            UpgradeScrn upscrn = upgradeScreenObj.AddComponent<UpgradeScrn>();
+            upscrn.OwnedPropertyPanel= new GameObject();
+            turnManager.upgradeScrn = upscrn;
+            buyScreen.AuctionUI = aucScreen;
+            turnManager.propertyPurchaseScrn = buyScreen;
+            
+            
             turnManager.pmanager=propManager; //adds property manager to turn manager
             yield return null;
         }
@@ -35,6 +60,11 @@ using System.Reflection;
         {
             Object.DestroyImmediate(playerObj);
             Object.DestroyImmediate(propManager.gameObject);
+            Object.DestroyImmediate(turnManager.gameObject);
+            foreach (var player in turnManager.players) Object.DestroyImmediate(player.gameObject);
+            Object.DestroyImmediate(buyScreenObj);
+            Object.DestroyImmediate(AucScreenObj);
+            Object.DestroyImmediate(upgradeScreenObj);
         }
 
         [UnityTest]
@@ -106,13 +136,10 @@ using System.Reflection;
         // Setup
         player.TileCount = 30;
         int initialTile = player.TileCount;
-        //this badness is still the most consistent way to get movements to work
-        float originalTimeScale = Time.timeScale;
-        Time.timeScale = 100f; 
         
         // Execute jail turn
         
-        yield return turnManager.PlayerMovePhase(player,true,1,0);
+        yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(player,true,1,0));
         
         // Verify
         Assert.AreEqual(11, player.TileCount);
@@ -125,35 +152,18 @@ using System.Reflection;
     {
         turnManager.freeParkingBalance = 500;
         player.TileCount = 20;
-        //this badness is still the most consistent way to get movements to work
-        float originalTimeScale = Time.timeScale;
-        Time.timeScale = 100f; 
+        player.balance=1500;
 
 
         // Start the coroutine and wait for it to finish
-        yield return turnManager.PlayerMovePhase(player, true, 1, 0);
+        yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(player, true, 1, 0));
 
-        // Add a timeout to prevent infinite waiting
-        float timeout = 5f; // Adjust based on expected duration
-        float startTime = Time.realtimeSinceStartup;
-
-        // Poll for the expected state or timeout
-        while (player.balance != 2000 || turnManager.freeParkingBalance != 0)
-        {
-            if (Time.realtimeSinceStartup - startTime > timeout)
-            {
-                Assert.Fail("Test timed out. Balance: " + player.balance + ", Free Parking: " + turnManager.freeParkingBalance);
-            }
-            yield return null; // Wait one frame
-        }
-
-
+        
         // Verify
         Assert.AreEqual(2000, player.balance);
         Assert.AreEqual(0, turnManager.freeParkingBalance);
 
-        //reset time
-        Time.timeScale = originalTimeScale;
+       
     }
             
     }

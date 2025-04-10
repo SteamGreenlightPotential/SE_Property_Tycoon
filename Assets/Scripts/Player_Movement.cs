@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
-using PropertyTycoon;
 
 namespace PropertyTycoon
 {
@@ -16,9 +15,9 @@ namespace PropertyTycoon
         public bool inJail = false; //Player is in jail
         public int jailTurns = 0; //Number of turns player has been in jail
 
-        public void Move(int steps)  // Called from Turn_Script to trigger movement for 1 turn
+        public IEnumerator Move(int steps)  // Called from Turn_Script to trigger movement for 1 turn
         {
-            StartCoroutine(ProcessMovements(steps));
+            yield return StartCoroutine(ProcessMovements(steps));
         }
 
         IEnumerator ProcessMovements(int steps)
@@ -31,7 +30,7 @@ namespace PropertyTycoon
         }
 
         //like moving but FASTER. Assumes the timescale has been set to 100 before being initiated
-        IEnumerator ProcessTeleport(int steps,float originalTimeScale)
+        public IEnumerator ProcessTeleport(int steps,float originalTimeScale)
         {
             for (int i = 0; i < steps; i++) // For each tile crossed check direction and move player
             {
@@ -68,7 +67,7 @@ namespace PropertyTycoon
             }
             else
             {
-                TileCount = 0; // Reset TileCount to loop board
+                TileCount = 1; // Reset TileCount to loop board
                 direction = Vector3.right; // Reset direction to right
                 goPassed = true; // Player has passed Go
             }
@@ -114,7 +113,7 @@ namespace PropertyTycoon
 
         
 
-        // temporary wallet example
+
 
         public int balance = 1500;
         //private int amount = 0;
@@ -213,6 +212,4 @@ namespace PropertyTycoon
         Time.timeScale = originalTimeScale; //reset timescale
         }
     }
-
-
 }

@@ -20,7 +20,9 @@ public class PlayerUnitTests{
     [Test]
     public void Test_Credit_IncreasesBalance()
     {
-        Player player = new Player("Test", null);
+        var playerObj = new GameObject();
+        var mockBoardPlayer = playerObj.AddComponent<boardPlayer>();
+        Player player = new Player("Test", mockBoardPlayer);
         player.Credit(200);
         Assert.AreEqual(1700, player.Balance);
     }
@@ -29,7 +31,9 @@ public class PlayerUnitTests{
     [Test]
     public void Test_Debit_DecreasesBalance()
     {
-        Player player = new Player("Test", null);
+        var playerObj = new GameObject();
+        var mockBoardPlayer = playerObj.AddComponent<boardPlayer>();
+        Player player = new Player("Test", mockBoardPlayer);
         player.Debit(300);
         Assert.AreEqual(1200, player.Balance);
     }

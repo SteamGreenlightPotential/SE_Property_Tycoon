@@ -1,7 +1,10 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using PropertyTycoon;
+
+using System.Linq;
+using UnityEditor;
+
 
 namespace PropertyTycoon
 {
@@ -11,6 +14,12 @@ namespace PropertyTycoon
         public boardPlayer[] players; // Array of board players (assigned in the Unity Inspector)
         public PropertyManager pmanager; // Reference to the PropertyManager (manages properties)
         public PropertyPurchaseScrn propertyPurchaseScrn; // UI for property purchase
+        //public UpgradeScrn upgradeScrn; // Reference to the OwnedPropertyUI script
+
+        public MortgageScreen mortgageScreen;
+        public UpgradeScrn upgradeScrn; // Reference to the OwnedPropertyUI script
+        public Bank bank = new Bank();
+
 
         // Game state variables
         public int currentPlayerIndex = 0; // Tracks the current player's turn
@@ -20,12 +29,37 @@ namespace PropertyTycoon
         public int bankBalance = 50000; // Total money in the bank
         public int freeParkingBalance = 0; // Funds available on Free Parking
         public List<Player> playerlist = new List<Player>(); // List of Player objects corresponding to board players
+        public static bool purchaseDone = true;    //Global bool to stop turn from continuing without property decicion being made
 
-        public bool testMode = true; // Enables test mode (for hard-coded dice rolls)
+        public DiceRoller droll;
+        public DiceRoller droll2;
 
+
+        [System.Obsolete]
         public void Start()
         {
             Debug.Log("Round " + round); // Announce round 1 has started
+            int playerCount = PlayerSelection.numberOfPlayers;
+            int AiCount = PlayerSelection.aiCount;
+            bool startScreenUsed = PlayerSelection.startScreenUsed;
+
+            if (!startScreenUsed){
+                playerCount = 6; 
+                AiCount=0;
+            }
+
+
+            //Make player array match number of players
+            boardPlayer[] temparray = new boardPlayer[playerCount];
+            for (int j = 0;j<playerCount;j++){
+                temparray[j] = players[j];
+                Debug.Log($"Added {players[j].name} to reduced player list");
+            }
+            //DESTROY unused players
+            for (int j = players.Length-(players.Length-playerCount);j<players.Length;j++){
+                GameObject.DestroyImmediate(players[j].gameObject);
+            }
+            players = temparray;
 
             // Initialize Player objects for each board player
             int i = 1;
@@ -36,29 +70,68 @@ namespace PropertyTycoon
                 Debug.Log($"Added {name} to player list.");
                 i++;
             }
+            upgradeScrn = FindObjectOfType<UpgradeScrn>(); // Find the UpgradeScrn in the scene
+            if (upgradeScrn == null)
+            {
+                Debug.Log("UpgradeScrn not found in the scene!");
+            }
+            //Avoid too many AI
+            if (players.Length<AiCount){
+                AiCount=players.Length;
+            }
 
-            StartTurn(); // Begin the first turn
+             //Logic to assign AI
+            
+            for (int j = playerlist.Count-1; j > playerlist.Count - AiCount-1; j--)
+            {
+                playerlist[j].isAI=true;
+                Debug.Log($"{players[j].name} assigned as AI");
+            }
+
+
+
         }
 
-        void Update()
+        public void Update()
         {
             // Listen for SPACE key to roll dice
-            if (isWaitingForRoll && Input.GetKeyDown(KeyCode.Space))
+            if (isWaitingForRoll && Input.GetKeyDown(KeyCode.Space) &&playerlist[currentPlayerIndex].isAI==false)
             {
                 isWaitingForRoll = false; // Prevent multiple rolls
                 StartCoroutine(PlayerMovePhase(players[currentPlayerIndex])); // Start the move phase
             }
+            else if (isWaitingForRoll&&playerlist[currentPlayerIndex].isAI){
+                isWaitingForRoll=false;
+                StartCoroutine(PlayerMovePhase(players[currentPlayerIndex]));
+                
+            }
         }
 
-        void StartTurn()
+        public void StartTurn()
         {
             turnEnded = false; // Reset end turn state
             Debug.Log($"Player {currentPlayerIndex + 1}'s Turn. Press SPACE to roll.");
             isWaitingForRoll = true; // Wait for player input to roll dice
         }
 
-        public IEnumerator PlayerMovePhase(boardPlayer player, bool testCase = false, int testRoll = 1, int testRoll2 = 1)
+        public IEnumerator PlayerMovePhase(boardPlayer player, bool testMode = false, int testRoll = 2, int testRoll2 = 0)
         {
+            bool isAi = getPlayerFromBoard(player).isAI;
+            //SORRY THIS IS STUPID BUT UPDATE WORKS WEIRD WITH AI AND TESTS IM SORRY
+
+            if(isAi &&isWaitingForRoll==true){
+                isWaitingForRoll=false;
+            }
+
+
+            bool repeatturn = true;
+            int loopcount = 1;
+            bool jailBound = false;
+
+            
+            //Allows for moving again on doubles 
+            while (repeatturn){
+            //testMode = true; // THIS IS TEST PLEASE PLEASE PLEASE GET RID OF AFTER
             int roll = 0;
             int roll2 = 0; // Second dice roll for handling doubles
 
@@ -70,10 +143,49 @@ namespace PropertyTycoon
             }
             else
             {
-                // Roll the dice for the player
-                roll = Random.Range(1, 7);
-                roll2 = Random.Range(1, 7);
-                Debug.Log($"Player {currentPlayerIndex + 1} rolled: {roll} and {roll2}");
+                // Show both dice and prepare them for rolling
+                droll.GetComponent<DiceRoller>().PrepareRoll();
+                droll2.GetComponent<DiceRoller>().PrepareRoll();
+
+                // Wait for player to press Space to roll
+                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+
+                // Roll both dice simultaneously
+                var dice1 = droll.GetComponent<DiceRoller>();
+                var dice2 = droll2.GetComponent<DiceRoller>();
+                
+                // Start both rolls at the same time
+                Coroutine roll1 = StartCoroutine(dice1.CompleteRoll());
+                Coroutine roll2Coroutine = StartCoroutine(dice2.CompleteRoll());
+                
+                // Wait for both rolls to complete
+                yield return roll1;
+                yield return roll2Coroutine;
+            
+
+                roll = droll.GetComponent<DiceRoller>().Result;
+                roll2 = droll2.GetComponent<DiceRoller>().Result; 
+            
+                Debug.Log("Player " + (currentPlayerIndex + 1) + " rolled: " + (roll + roll2));
+                //Only shuffle cards out of testmode
+                Cards.Shuffle(Cards.OpportunityKnocks);
+                Cards.Shuffle(Cards.PotLuck);
+            }
+
+            
+            if (loopcount>3){
+                jailBound=true;
+                repeatturn=false;
+            }
+            else if (roll!=roll2){
+                repeatturn=false;
+            }
+            else{
+                if(player.inJail==true){
+                    player.inJail=false;
+                    Debug.Log("Broke out of jail!");
+                }
+                loopcount++;
             }
 
             // Handle jail logic
@@ -92,16 +204,21 @@ namespace PropertyTycoon
                 else
                 {
                     Debug.Log("Player is in jail. Press 'End turn' to finish the turn.");
+                    if (isAi){
+                        StartCoroutine(EndTurn());
+                    }
+                    else{
                     yield break; // End the turn
+                    }
                 }
             }
-            else
+            else if (!jailBound)
             {
                 yield return player.Move(roll + roll2); // Move the player normally
             }
 
             // Post-movement logic
-            if (!player.inJail)
+            if (!player.inJail&&jailBound==false)
             {
                 int currentTile = player.TileCount; // Get the current tile of the player
                 bool tileOwned = false; // Flag to check if tile is owned
@@ -110,13 +227,13 @@ namespace PropertyTycoon
                 // Check if the tile is owned by another player
                 foreach (boardPlayer p in players)
                 {
-                    Player realPlayer = getPlayerFromBoard(p);
+                        Player realPlayer = getPlayerFromBoard(p);
                     Property property = pmanager.getTileProperty(currentTile);
 
                     if (property == null)
                         continue; // Skip null properties
 
-                    if (property.owner == realPlayer)
+                    if (property.owner == realPlayer && realPlayer != null)
                     {
                         Debug.Log($"Tile {currentTile} is owned by {p.name}");
                         tileOwned = true;
@@ -138,7 +255,11 @@ namespace PropertyTycoon
                 if (landedProperty == null)
                 {
                     // Handle special tiles like taxes, jail, or parking
-                    HandleSpecialTiles(currentTile, player);
+                    yield return HandleSpecialTiles(currentTile, player);
+                }
+                else if (landedProperty.owner == getPlayerFromBoard(player)) // Player owns the tile
+                {
+                    CheckOwnership(player, landedProperty); // Call CheckOwnership method
                 }
                 else if (tileOwned)
                 {
@@ -148,24 +269,78 @@ namespace PropertyTycoon
                 else
                 {
                     // Tile is unowned, trigger property purchase
+                    if (!isAi){
                     Debug.Log($"Tile {currentTile} is not owned by anyone and is available.");
                     ShowPropertyPurchaseScreen(player, landedProperty);
+                    }
+                    else if (landedProperty.price < player.balance){
+                    Player pObject = getPlayerFromBoard(player);
+                    pObject.Debit(landedProperty.price);
+                    pObject.AddProperty(landedProperty);
+                    landedProperty.SwitchOwner(pObject);
+                    }
+                    else{
+                    propertyPurchaseScrn.manualAuction(landedProperty);
+                    }
+                    //if (testMode==true){purchaseDone=true;}
+                    
                 }
-            }
+                if(testMode==true){purchaseDone=true;}
+                while (purchaseDone==false){
+                    yield return null; 
+                }
 
+
+
+
+            }
+            if (jailBound){
+                StartCoroutine(player.toJail());
+                player.TileCount = 11; // Jail tile index
+                player.inJail = true;
+                player.goPassed = false;
+                Debug.Log("Speeding, go to jail");
+            }   
+                            
+           
+
+        }
+            if (isAi&&testMode==false){
+                yield return StartCoroutine(EndTurn());
+            }
+                            
+            else{
             // Indicate that the turn can be ended
             Debug.Log("Press End Turn now for the next turn.");
             turnEnded = true;
+            }
         }
 
-        private void HandleSpecialTiles(int currentTile, boardPlayer player)
+        private IEnumerator HandleSpecialTiles(int currentTile, boardPlayer player)
         {
-            // Handle tax, parking, or jail tiles
+            // Handle tax, parking, chance or jail tiles
             if (currentTile == 5 || currentTile == 39) // Tax tiles
             {
                 player.taxCheck();
                 freeParkingBalance += 100;
                 Debug.Log("GET TAXED");
+            }
+            else if (currentTile==3||currentTile==18||currentTile==34){
+                Debug.Log("Pot luck");
+                Card currentCard = Cards.DrawTopCard(Cards.PotLuck);
+                yield return Cards.ExecuteCardAction(currentCard,getPlayerFromBoard(player),bank,playerlist);
+
+
+            }
+            else if (currentTile==8||currentTile==23){
+                Debug.Log("OPPORTUNITY KNOCKS");
+                
+                Card currentCard = Cards.DrawTopCard(Cards.OpportunityKnocks);
+                yield return Cards.ExecuteCardAction(currentCard,getPlayerFromBoard(player),bank,playerlist);
+                
+
+
+
             }
             else if (currentTile == 21) // Free parking
             {
@@ -186,18 +361,23 @@ namespace PropertyTycoon
         private void HandleOwnedTile(boardPlayer player, Property property, int ownerIndex)
         {
             // Handle rent payments or ownership checks
-            if (ownerIndex != currentPlayerIndex && !players[ownerIndex].inJail)
+            if (ownerIndex != currentPlayerIndex && !players[ownerIndex].inJail && property.mortgaged==false)
             {
                 int rent = property.baseRent; // Base rent value
                 Debug.Log($"Paying rent of £{rent} to Player {ownerIndex + 1}");
                 players[currentPlayerIndex].PayRent(rent, property);
             }
+            else if (property.mortgaged==true){
+                Debug.Log("Property mortgaged - no rent paid");
+            }
             else
             {
                 Debug.Log("You own this property. No rent required.");
             }
-        }
 
+
+        }
+        
         private void ShowPropertyPurchaseScreen(boardPlayer player, Property property)
         {
             if (propertyPurchaseScrn != null && property != null)
@@ -207,6 +387,7 @@ namespace PropertyTycoon
                 {
                     Debug.Log($"Triggering purchase screen for Property: {property.name}, Player: {currentPlayer.Name}");
                     propertyPurchaseScrn.Show(property, currentPlayer);
+                    
                 }
                 else
                 {
@@ -217,6 +398,8 @@ namespace PropertyTycoon
             {
                 Debug.LogError("PropertyPurchaseScrn or Property is null in ShowPropertyPurchaseScreen!");
             }
+
+            
         }
 
 
@@ -276,5 +459,26 @@ namespace PropertyTycoon
             }
         }
 
+        
+        public void CheckOwnership(boardPlayer player, Property property)
+        {
+            Player realPlayer = getPlayerFromBoard(player);
+
+            if (property.owner == realPlayer) // Player owns the property
+            {
+                Debug.Log($"Player {realPlayer.Name} landed on their property: {property.name}");
+
+                // Show the Owned Property Panel
+                if (upgradeScrn != null)
+                {
+                    upgradeScrn.ShowOwnedPropertyPanel(property, realPlayer);
+                }
+                else
+                {
+                    Debug.LogError("OwnedPropertyUI reference is missing!");
+                }
+            }
+        }
+        
     }
 }

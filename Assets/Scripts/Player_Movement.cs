@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
-using PropertyTycoon;
 
 namespace PropertyTycoon
 {
@@ -32,7 +31,7 @@ namespace PropertyTycoon
         }
 
         //like moving but FASTER. Assumes the timescale has been set to 100 before being initiated
-        IEnumerator ProcessTeleport(int steps,float originalTimeScale)
+        public IEnumerator ProcessTeleport(int steps,float originalTimeScale)
         {
             for (int i = 0; i < steps; i++) // For each tile crossed check direction and move player
             {
@@ -209,7 +208,7 @@ namespace PropertyTycoon
 
         
 
-        // temporary wallet example
+
 
         public int balance = 1500;
         //private int amount = 0;
@@ -308,6 +307,4 @@ namespace PropertyTycoon
         Time.timeScale = originalTimeScale; //reset timescale
         }
     }
-
-
 }

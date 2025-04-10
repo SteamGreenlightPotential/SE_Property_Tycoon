@@ -31,6 +31,10 @@ namespace PropertyTycoon
         public List<Player> playerlist = new List<Player>(); // List of Player objects corresponding to board players
         public static bool purchaseDone = true;    //Global bool to stop turn from continuing without property decicion being made
 
+        public DiceRoller droll;
+        public DiceRoller droll2;
+
+
         [System.Obsolete]
         public void Start()
         {
@@ -139,10 +143,30 @@ namespace PropertyTycoon
             }
             else
             {
-                // Roll the dice for the player
-                roll = Random.Range(1, 7);
-                roll2 = Random.Range(1, 7);
-                Debug.Log($"Player {currentPlayerIndex + 1} rolled: {roll} and {roll2}");
+                // Show both dice and prepare them for rolling
+                droll.GetComponent<DiceRoller>().PrepareRoll();
+                droll2.GetComponent<DiceRoller>().PrepareRoll();
+
+                // Wait for player to press Space to roll
+                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+
+                // Roll both dice simultaneously
+                var dice1 = droll.GetComponent<DiceRoller>();
+                var dice2 = droll2.GetComponent<DiceRoller>();
+                
+                // Start both rolls at the same time
+                Coroutine roll1 = StartCoroutine(dice1.CompleteRoll());
+                Coroutine roll2Coroutine = StartCoroutine(dice2.CompleteRoll());
+                
+                // Wait for both rolls to complete
+                yield return roll1;
+                yield return roll2Coroutine;
+            
+
+                roll = droll.GetComponent<DiceRoller>().Result;
+                roll2 = droll2.GetComponent<DiceRoller>().Result; 
+            
+                Debug.Log("Player " + (currentPlayerIndex + 1) + " rolled: " + (roll + roll2));
                 //Only shuffle cards out of testmode
                 Cards.Shuffle(Cards.OpportunityKnocks);
                 Cards.Shuffle(Cards.PotLuck);

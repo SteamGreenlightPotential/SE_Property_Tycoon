@@ -1030,7 +1030,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 163689069}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1001904720}
+        m_TargetAssemblyTypeName: PropertyTycoon.UpgradeScrn, GameCode
+        m_MethodName: OnMortgage
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &163689069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1610,6 +1622,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 309787994}
   m_CullTransparentMesh: 1
+--- !u!1 &319710506
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 319710508}
+  - component: {fileID: 319710507}
+  m_Layer: 0
+  m_Name: UpgradeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &319710507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 319710506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72b182205420b6544bbb63468ebb9139, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &319710508
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 319710506}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 497.5661, y: 283.5189, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &322862905
 GameObject:
   m_ObjectHideFlags: 0
@@ -3049,7 +3105,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &520291268
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4397,6 +4453,7 @@ MonoBehaviour:
   pmanager: {fileID: 1907366489}
   propertyPurchaseScrn: {fileID: 1440843555}
   mortgageScreen: {fileID: 1771972298}
+  upgradeScrn: {fileID: 0}
   currentPlayerIndex: 0
   isWaitingForRoll: 1
   round: 1
@@ -5057,13 +5114,14 @@ GameObject:
   - component: {fileID: 1001904718}
   - component: {fileID: 1001904717}
   - component: {fileID: 1001904719}
+  - component: {fileID: 1001904720}
   m_Layer: 5
   m_Name: OwnedPropertyPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1001904716
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5141,6 +5199,24 @@ MonoBehaviour:
   _data:
     _json: '{"declarations":{"Kind":"Object","collection":{"$content":[],"$version":"A"},"$version":"A"}}'
     _objectReferences: []
+--- !u!114 &1001904720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1001904715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afe17a56379e07d42a171066af6e6318, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OwnedPropertyPanel: {fileID: 1001904715}
+  PropertyMessage: {fileID: 0}
+  UpgradeHouseButton: {fileID: 1373460573}
+  UpgradeHotelButton: {fileID: 1156847710}
+  MortgageButton: {fileID: 163689068}
+  CloseButton: {fileID: 2127080742}
 --- !u!1 &1009944160
 GameObject:
   m_ObjectHideFlags: 0
@@ -5721,7 +5797,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1156847711}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1001904720}
+        m_TargetAssemblyTypeName: PropertyTycoon.UpgradeScrn, GameCode
+        m_MethodName: OnUpgradeHotel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1156847711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7012,7 +7100,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1373460574}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1001904720}
+        m_TargetAssemblyTypeName: PropertyTycoon.UpgradeScrn, GameCode
+        m_MethodName: OnUpgradeHouse
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1373460574
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10378,7 +10478,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2127080743}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1001904720}
+        m_TargetAssemblyTypeName: PropertyTycoon.UpgradeScrn, GameCode
+        m_MethodName: ClosePanel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2127080743
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10711,6 +10823,7 @@ SceneRoots:
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 1226163676}
+  - {fileID: 319710508}
   - {fileID: 1907366490}
   - {fileID: 7201635443072833559}
   - {fileID: 1257792897}

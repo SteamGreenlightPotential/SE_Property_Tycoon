@@ -22,6 +22,8 @@ namespace PropertyTycoon
         private Property CurrentProperty;
         private Player CurrentPlayer;
 
+        
+
         private void Start()
         {
 
@@ -40,6 +42,8 @@ namespace PropertyTycoon
 
         public void Show(Property property, Player player)
         {
+            Turn_Script.purchaseDone = false;
+
             if (property == null || player == null)
             {
                 Debug.LogError("Show() received a null Property or Player!");
@@ -80,6 +84,7 @@ namespace PropertyTycoon
                 Debug.Log($"{CurrentPlayer.Name} purchased {CurrentProperty.name} for £{CurrentProperty.price}.");
                 
                 Close(); // Hide the purchase screen
+                Turn_Script.purchaseDone=true;
             }
             else
             {
@@ -93,6 +98,26 @@ namespace PropertyTycoon
         public void OnAuctionButtonClicked()
         {
             if (AuctionUI == null)
+                Debug.LogError("AuctionUI is null!");
+            if (CurrentProperty == null)
+                Debug.LogError("CurrentProperty is null!");
+            if (Turn_Script.Instance == null)
+                Debug.LogError("Turn_Script.Instance is null!");
+
+            if (AuctionUI != null && CurrentProperty != null && Turn_Script.Instance != null)
+            {
+                List<Player> playerList = Turn_Script.Instance.playerlist; // Retrieve the player list
+
+                // Activate the Auction UI and start the auction
+                AuctionUI.gameObject.SetActive(true);
+                AuctionUI.StartAuction(CurrentProperty, playerList);
+                Debug.Log($"Auction started for {CurrentProperty.name} with {playerList.Count} players.");
+                Close();
+            }
+        }
+        public void manualAuction(Property CurrentProperty){
+            this.CurrentProperty = CurrentProperty;
+        if (AuctionUI == null)
                 Debug.LogError("AuctionUI is null!");
             if (CurrentProperty == null)
                 Debug.LogError("CurrentProperty is null!");

@@ -7,11 +7,14 @@ namespace PropertyTycoon
     public class Player
     {
         private string v; // added for test class
-
         public string Name { get; set; }
-
-
         public boardPlayer bPlayer; // Reference to Player on Board
+
+        public int HousesOwned { get; set; } = 0; // Default to 0 houses
+        public int HotelsOwned { get; set; } = 0; // Default to 0 hotels
+        public bool HasGetOutOfJailCard { get; set; } = false; // Default to false
+        public bool IsInJail { get; set; } = false; // Default to false ( found a same property in Player_Movement.cs... but it works so...)
+        public bool isAI;
 
 
      public int Balance
@@ -57,7 +60,6 @@ namespace PropertyTycoon
             return OwnedProperties.Exists(p => p.name.Equals(propertyName, StringComparison.OrdinalIgnoreCase)); // Checks if the player owns a property
         }
         
-        /*
         public bool OwnsAllPropertiesInColorGroup(string color)
         {
             if (GameManager.Instance != null)
@@ -91,7 +93,6 @@ namespace PropertyTycoon
             // Check if every property in the color set has 4 houses
             return colorSet.All(p => p.houses == 4);
         }
-        */
 
     }
 }

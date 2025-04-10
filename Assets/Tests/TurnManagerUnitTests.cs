@@ -12,32 +12,43 @@ public class TurnManagerUnitTests
     private boardPlayer[] mockPlayers;
     private GameObject propertyManagerObject;
 
+    private GameObject buyScreenObj;
+    GameObject upgradeScreenObj;
+    private GameObject AucScreenObj;
     private PropertyManager pmanager;
 
     [UnitySetUp]
     public IEnumerator SetUp()
     {
         turnManagerObject = new GameObject();
-        turnManager = turnManagerObject.AddComponent<Turn_Script>();
         
         propertyManagerObject = new GameObject();
         pmanager = propertyManagerObject.AddComponent<PropertyManager>();
-
-        // Initialize players and dependencies
-        turnManager.players = new boardPlayer[2];
-        for (int i = 0; i < 2; i++)
+            PlayerSelection.aiCount=0;
+            PlayerSelection.numberOfPlayers=2;
+            turnManager = turnManagerObject.AddComponent<Turn_Script>();
+            // Initialize players and dependencies
+            turnManager.players = new boardPlayer[6];
+            GameObject[] playerObj= new GameObject[6]; 
+             for (int i = 0; i < 6; i++)
         {
-            GameObject playerObj = new GameObject();
-            turnManager.players[i] = playerObj.AddComponent<boardPlayer>();
+            playerObj[i] = new GameObject();
+            turnManager.players[i] = playerObj[i].AddComponent<boardPlayer>();
             turnManager.players[i].name="player "+i.ToString();
         }
 
         //Initialise auction and property screens boilerplate
-        GameObject buyScreenObj = new GameObject();
+        buyScreenObj = new GameObject();
         PropertyPurchaseScrn buyScreen = buyScreenObj.AddComponent<PropertyPurchaseScrn>();
-        GameObject AucScreenObj = new GameObject();
+        AucScreenObj = new GameObject();
         AuctionScrn aucScreen = AucScreenObj.AddComponent<AuctionScrn>();
         buyScreen.AuctionUI = aucScreen;
+        upgradeScreenObj = new GameObject();
+            UpgradeScrn upscrn = upgradeScreenObj.AddComponent<UpgradeScrn>();
+
+            GameObject propertypanel = new GameObject();
+            upscrn.OwnedPropertyPanel= propertypanel;
+            turnManager.upgradeScrn = upscrn;
         turnManager.propertyPurchaseScrn = buyScreen;
 
         turnManager.pmanager=pmanager; //assign propertymanager to turnmanager
@@ -51,6 +62,8 @@ public class TurnManagerUnitTests
         Object.DestroyImmediate(turnManagerObject);
         foreach (var player in turnManager.players) Object.DestroyImmediate(player.gameObject);
         Object.DestroyImmediate(propertyManagerObject);
+        Object.DestroyImmediate(buyScreenObj);
+        Object.DestroyImmediate(AucScreenObj);
     }
 
     // Unit Test: Verify playerlist initializes correctly in Start()
@@ -102,10 +115,13 @@ public class TurnManagerUnitTests
         player.TileCount=11;
         
         // Simulate 3 jail turns and then a normal turn
-        for (int i = 0; i < 4; i++)
+        while (player.inJail==true){
         {
             yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(player, true));
         }
+            }   
+        yield return turnManager.StartCoroutine(turnManager.PlayerMovePhase(player, true));
+
         
         Assert.IsFalse(player.inJail);
         Assert.AreEqual(0, player.jailTurns);

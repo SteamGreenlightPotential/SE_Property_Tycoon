@@ -3853,6 +3853,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 180
       objectReference: {fileID: 0}
+    - target: {fileID: 5063103942901146509, guid: ff01e7db905e44943858cb6677735beb, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 6e1713af575398041b90ff6d76d750a0, type: 2}
     - target: {fileID: 5519854689055291469, guid: ff01e7db905e44943858cb6677735beb, type: 3}
       propertyPath: turnScript
       value: 
@@ -3877,7 +3881,7 @@ PrefabInstance:
     - target: {fileID: 3636289878140571213, guid: 0dedc0483afe7da4b87ff74acdb48dec, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: a6e2d71e8fe9c1c4b969bf62921c2eac, type: 2}
+      objectReference: {fileID: 2100000, guid: b4eb25b2d9e26444a90819ea4e6123fb, type: 2}
     - target: {fileID: 4447601272657483210, guid: 0dedc0483afe7da4b87ff74acdb48dec, type: 3}
       propertyPath: m_Name
       value: Board

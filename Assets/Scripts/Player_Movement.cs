@@ -53,124 +53,121 @@ namespace PropertyTycoon
             {
                 if (TileCount >= 1 && TileCount < 11)
                 {
-                    direction = Vector3.up; // Move piece up
-                    transform.eulerAngles = new Vector3(180, 0, 0); // Rotate to face up
+                    direction = Vector3.up;
+                    transform.eulerAngles = new Vector3(180, 0, 0);
                 }
                 else if (TileCount >= 11 && TileCount < 21)
                 {
-                    direction = Vector3.right; // Move piece right
-                    transform.eulerAngles = new Vector3(180, 0, 90); // Rotate to face right
+                    direction = Vector3.right;
+                    transform.eulerAngles = new Vector3(180, 0, 90);
                 }
                 else if (TileCount >= 21 && TileCount < 31)
                 {
-                    direction = Vector3.down; // Move piece down 
-                    transform.eulerAngles = new Vector3(180, 0, 180); // Rotate to face down
+                    direction = Vector3.down;
+                    transform.eulerAngles = new Vector3(180, 0, 180);
                 }
                 else if (TileCount >= 31 && TileCount < 41)
                 {
-                    direction = Vector3.left; // Move piece left
-                    transform.eulerAngles = new Vector3(180, 0, 270); // Rotate to face left
+                    direction = Vector3.left;
+                    transform.eulerAngles = new Vector3(180, 0, 270);
                 }
                 else
                 {
-                    TileCount = 1; // Reset TileCount to loop board
-                    direction = Vector3.up; // Reset direction to up
-                    goPassed = true; // Player has passed Go
+                    TileCount = 1;
+                    direction = Vector3.up;
+                    goPassed = true;
                 }
-            }  
-
-            if (nameOfObject == "iron")
+            }
+            else if (nameOfObject == "iron")
             {
                 if (TileCount >= 1 && TileCount < 11)
                 {
-                    direction = Vector3.up; // Move piece up
-                    transform.eulerAngles = new Vector3(90, -90, 0); // Rotate to face up
+                    direction = Vector3.up;
+                    transform.eulerAngles = new Vector3(0, -90, 90);
                 }
                 else if (TileCount >= 11 && TileCount < 21)
                 {
-                    direction = Vector3.right; // Move piece right
-                    transform.eulerAngles = new Vector3(0, -90, 90); // Rotate to face right
+                    direction = Vector3.right;
+                    transform.eulerAngles = new Vector3(90, -90, 90);
                 }
                 else if (TileCount >= 21 && TileCount < 31)
                 {
-                    direction = Vector3.down; // Move piece down 
-                    transform.eulerAngles = new Vector3(-90, -270, 180); // Rotate to face down
+                    direction = Vector3.down;
+                    transform.eulerAngles = new Vector3(0, -90, 90);
                 }
                 else if (TileCount >= 31 && TileCount < 41)
                 {
-                    direction = Vector3.left; // Move piece left
-                    transform.eulerAngles = new Vector3(0, -270, 270); // Rotate to face left
+                    direction = Vector3.left;
+                    transform.eulerAngles = new Vector3(90, -90, 90);
                 }
                 else
                 {
-                    TileCount = 1; // Reset TileCount to loop board
-                    direction = Vector3.up; // Reset direction to up
-                    goPassed = true; // Player has passed Go
+                    TileCount = 1;
+                    direction = Vector3.up;
+                    goPassed = true;
+                }
+            }
+            else if (nameOfObject == "smartphone")
+            {
+                if (TileCount >= 1 && TileCount < 11)
+                {
+                    direction = Vector3.up;
+                    transform.eulerAngles = new Vector3(90, 90, 0);
+                }
+                else if (TileCount >= 11 && TileCount < 21)
+                {
+                    direction = Vector3.right;
+                    transform.eulerAngles = new Vector3(180, 90, 0);
+                }
+                else if (TileCount >= 21 && TileCount < 31)
+                {
+                    direction = Vector3.down;
+                    transform.eulerAngles = new Vector3(90, 90, 0);
+                }
+                else if (TileCount >= 31 && TileCount < 41)
+                {
+                    direction = Vector3.left;
+                    transform.eulerAngles = new Vector3(180, 90, 0);
+                }
+                else
+                {
+                    TileCount = 1;
+                    direction = Vector3.up;
+                    goPassed = true;
+                }
+            }
+            else
+            {
+                // Default behavior for other objects
+                if (TileCount >= 1 && TileCount < 11)
+                {
+                    direction = Vector3.up;
+                    transform.eulerAngles = new Vector3(180, 0, 180);
+                }
+                else if (TileCount >= 11 && TileCount < 21)
+                {
+                    direction = Vector3.right;
+                    transform.eulerAngles = new Vector3(180, 0, 270);
+                }
+                else if (TileCount >= 21 && TileCount < 31)
+                {
+                    direction = Vector3.down;
+                    transform.eulerAngles = new Vector3(180, 0, 0);
+                }
+                else if (TileCount >= 31 && TileCount < 41)
+                {
+                    direction = Vector3.left;
+                    transform.eulerAngles = new Vector3(180, 0, 90);
+                }
+                else
+                {
+                    TileCount = 1;
+                    direction = Vector3.up;
+                    goPassed = true;
                 }
             }
 
-            if (nameOfObject == "smartphone")
-            {
-                if (TileCount >= 1 && TileCount < 11)
-                {
-                    direction = Vector3.up; // Move piece up
-                    transform.eulerAngles = new Vector3(270, 90, 0); // Rotate to face up
-                }
-                else if (TileCount >= 11 && TileCount < 21)
-                {
-                    direction = Vector3.right; // Move piece right
-                    transform.eulerAngles = new Vector3(180, 90, 0); // Rotate to face right
-                }
-                else if (TileCount >= 21 && TileCount < 31)
-                {
-                    direction = Vector3.down; // Move piece down 
-                    transform.eulerAngles = new Vector3(270, 90, 0); // Rotate to face down
-                }
-                else if (TileCount >= 31 && TileCount < 41)
-                {
-                    direction = Vector3.left; // Move piece left
-                    transform.eulerAngles = new Vector3(180, 90, 0); // Rotate to face left
-                }
-                else
-                {
-                    TileCount = 1; // Reset TileCount to loop board
-                    direction = Vector3.up; // Reset direction to up
-                    goPassed = true; // Player has passed Go
-                }
-            } 
-            else 
-            {
-                if (TileCount >= 1 && TileCount < 11)
-                {
-                    direction = Vector3.up; // Move piece up
-                    transform.eulerAngles = new Vector3(180, 0, 0); // Rotate to face up
-                }
-                else if (TileCount >= 11 && TileCount < 21)
-                {
-                    direction = Vector3.right; // Move piece right
-                    transform.eulerAngles = new Vector3(180, 0, 90); // Rotate to face right
-                }
-                else if (TileCount >= 21 && TileCount < 31)
-                {
-                    direction = Vector3.down; // Move piece down 
-                    transform.eulerAngles = new Vector3(180, 0, 180); // Rotate to face down
-                }
-                else if (TileCount >= 31 && TileCount < 41)
-                {
-                    direction = Vector3.left; // Move piece left
-                    transform.eulerAngles = new Vector3(180, 0, 270); // Rotate to face left
-                }
-                else
-                {
-                    TileCount = 1; // Reset TileCount to loop board
-                    direction = Vector3.up; // Reset direction to up
-                    goPassed = true; // Player has passed Go
-                }
-            }
-
-        
-
-            TileCount += 1; // Increment TileCount for each tile moved across
+            TileCount += 1;
             return direction;
         }
 

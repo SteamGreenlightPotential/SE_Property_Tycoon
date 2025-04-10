@@ -114,7 +114,7 @@ namespace PropertyTycoon
             isWaitingForRoll = true; // Wait for player input to roll dice
         }
 
-        public IEnumerator PlayerMovePhase(boardPlayer player, bool testMode = false, int testRoll = 2, int testRoll2 = 0)
+        public IEnumerator PlayerMovePhase(boardPlayer player, bool testMode = false, int testRoll = 10, int testRoll2 = 20)
         {
             bool isAi = getPlayerFromBoard(player).isAI;
             //SORRY THIS IS STUPID BUT UPDATE WORKS WEIRD WITH AI AND TESTS IM SORRY
@@ -131,178 +131,183 @@ namespace PropertyTycoon
             
             //Allows for moving again on doubles 
             while (repeatturn){
-            //testMode = true; // THIS IS TEST PLEASE PLEASE PLEASE GET RID OF AFTER
-            int roll = 0;
-            int roll2 = 0; // Second dice roll for handling doubles
+                //testMode = true; // THIS IS TEST PLEASE PLEASE PLEASE GET RID OF AFTER
+                int roll = 0;
+                int roll2 = 0; // Second dice roll for handling doubles
 
-            // Use test rolls in test mode
-            if (testMode)
-            {
-                roll = testRoll;
-                roll2 = testRoll2;
-            }
-            else
-            {
-                // Show both dice and prepare them for rolling
-                droll.GetComponent<DiceRoller>().PrepareRoll();
-                droll2.GetComponent<DiceRoller>().PrepareRoll();
-
-                // Wait for player to press Space to roll
-                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
-
-                // Roll both dice simultaneously
-                var dice1 = droll.GetComponent<DiceRoller>();
-                var dice2 = droll2.GetComponent<DiceRoller>();
-                
-                // Start both rolls at the same time
-                Coroutine roll1 = StartCoroutine(dice1.CompleteRoll());
-                Coroutine roll2Coroutine = StartCoroutine(dice2.CompleteRoll());
-                
-                // Wait for both rolls to complete
-                yield return roll1;
-                yield return roll2Coroutine;
-            
-
-                roll = droll.GetComponent<DiceRoller>().Result;
-                roll2 = droll2.GetComponent<DiceRoller>().Result; 
-            
-                Debug.Log("Player " + (currentPlayerIndex + 1) + " rolled: " + (roll + roll2));
-                //Only shuffle cards out of testmode
-                Cards.Shuffle(Cards.OpportunityKnocks);
-                Cards.Shuffle(Cards.PotLuck);
-            }
-
-            
-            if (loopcount>3){
-                jailBound=true;
-                repeatturn=false;
-            }
-            else if (roll!=roll2){
-                repeatturn=false;
-            }
-            else{
-                if(player.inJail==true){
-                    player.inJail=false;
-                    Debug.Log("Broke out of jail!");
-                }
-                loopcount++;
-            }
-
-            // Handle jail logic
-            if (player.inJail)
-            {
-                player.jailTurns += 1;
-
-                if (player.jailTurns == 3)
+                // Use test rolls in test mode
+                if (testMode)
                 {
-                    // Player leaves jail on the third turn
-                    player.jailTurns = 0;
-                    player.inJail = false;
-                    player.Move(roll + roll2); // Move the player
-                    yield return new WaitForSeconds(roll * 0.2f + 0.5f); // Simulate delay
+                    roll = testRoll;
+                    roll2 = testRoll2;
                 }
                 else
                 {
-                    Debug.Log("Player is in jail. Press 'End turn' to finish the turn.");
-                    if (isAi){
-                        StartCoroutine(EndTurn());
-                    }
-                    else{
-                    yield break; // End the turn
-                    }
-                }
-            }
-            else if (!jailBound)
-            {
-                yield return player.Move(roll + roll2); // Move the player normally
-            }
+                    // Show both dice and prepare them for rolling
+                    droll.GetComponent<DiceRoller>().PrepareRoll();
+                    droll2.GetComponent<DiceRoller>().PrepareRoll();
 
-            // Post-movement logic
-            if (!player.inJail&&jailBound==false)
-            {
-                int currentTile = player.TileCount; // Get the current tile of the player
-                bool tileOwned = false; // Flag to check if tile is owned
-                int ownerIndex = -1; // Index of the player who owns the tile
+                    // Wait for player to press Space to roll
+                    yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
 
-                // Check if the tile is owned by another player
-                foreach (boardPlayer p in players)
-                {
-                        Player realPlayer = getPlayerFromBoard(p);
-                    Property property = pmanager.getTileProperty(currentTile);
-
-                    if (property == null)
-                        continue; // Skip null properties
-
-                    if (property.owner == realPlayer && realPlayer != null)
-                    {
-                        Debug.Log($"Tile {currentTile} is owned by {p.name}");
-                        tileOwned = true;
-                        ownerIndex = System.Array.IndexOf(players, p);
-                        break;
-                    }
-                }
-
-                // Handle scenarios based on the type of tile
-                if (player.goPassed)
-                {
-                    // Player passed GO, reward them
-                    player.balance += 200;
-                    player.goPassed = false;
-                    Debug.Log("PASSED GO");
-                }
-
-                Property landedProperty = pmanager.getTileProperty(currentTile);
-                if (landedProperty == null)
-                {
-                    // Handle special tiles like taxes, jail, or parking
-                    yield return HandleSpecialTiles(currentTile, player);
-                }
-                else if (landedProperty.owner == getPlayerFromBoard(player)) // Player owns the tile
-                {
-                    CheckOwnership(player, landedProperty); // Call CheckOwnership method
-                }
-                else if (tileOwned)
-                {
-                    // Tile is owned, handle rent payment
-                    HandleOwnedTile(player, landedProperty, ownerIndex);
-                }
-                else
-                {
-                    // Tile is unowned, trigger property purchase
-                    if (!isAi){
-                    Debug.Log($"Tile {currentTile} is not owned by anyone and is available.");
-                    ShowPropertyPurchaseScreen(player, landedProperty);
-                    }
-                    else if (landedProperty.price < player.balance){
-                    Player pObject = getPlayerFromBoard(player);
-                    pObject.Debit(landedProperty.price);
-                    pObject.AddProperty(landedProperty);
-                    landedProperty.SwitchOwner(pObject);
-                    }
-                    else{
-                    propertyPurchaseScrn.manualAuction(landedProperty);
-                    }
-                    //if (testMode==true){purchaseDone=true;}
+                    // Roll both dice simultaneously
+                    var dice1 = droll.GetComponent<DiceRoller>();
+                    var dice2 = droll2.GetComponent<DiceRoller>();
                     
+                    // Start both rolls at the same time
+                    Coroutine roll1 = StartCoroutine(dice1.CompleteRoll());
+                    Coroutine roll2Coroutine = StartCoroutine(dice2.CompleteRoll());
+                    
+                    // Wait for both rolls to complete
+                    yield return roll1;
+                    yield return roll2Coroutine;
+                
+
+                    roll = droll.GetComponent<DiceRoller>().Result;
+                    roll2 = droll2.GetComponent<DiceRoller>().Result; 
+                
+                    Debug.Log("Player " + (currentPlayerIndex + 1) + " rolled: " + (roll + roll2));
+                    //Only shuffle cards out of testmode
+                    Cards.Shuffle(Cards.OpportunityKnocks);
+                    Cards.Shuffle(Cards.PotLuck);
                 }
-                if(testMode==true){purchaseDone=true;}
-                while (purchaseDone==false){
-                    yield return null; 
+
+                
+                if (loopcount>3){
+                    jailBound=true;
+                    repeatturn=false;
+                }
+                else if (roll!=roll2){
+                    repeatturn=false;
+                }
+                else{
+                    if(player.inJail==true){
+                        player.inJail=false;
+                        Debug.Log("Broke out of jail!");
+                    }
+                    loopcount++;
                 }
 
+                // Handle jail logic
+                if (player.inJail)
+                {
+                    player.jailTurns += 1;
+
+                    if (player.jailTurns == 3)
+                    {
+                        // Player leaves jail on the third turn
+                        player.jailTurns = 0;
+                        player.inJail = false;
+                        player.Move(roll + roll2); // Move the player
+                        yield return new WaitForSeconds(roll * 0.2f + 0.5f); // Simulate delay
+                    }
+                    else
+                    {
+                        Debug.Log("Player is in jail. Press 'End turn' to finish the turn.");
+                        if (isAi){
+                            StartCoroutine(EndTurn());
+                        }
+                        else{
+                        yield break; // End the turn
+                        }
+                    }
+                }
+                else if (!jailBound)
+                {
+                    yield return player.Move(roll + roll2); // Move the player normally
+                }
+
+                // Post-movement logic
+                if (!player.inJail&&jailBound==false)
+                {
+                    int currentTile = player.TileCount; // Get the current tile of the player
+                    bool tileOwned = false; // Flag to check if tile is owned
+                    int ownerIndex = -1; // Index of the player who owns the tile
+
+                    // Check if the tile is owned by another player
+                    foreach (boardPlayer p in players)
+                    {
+                            Player realPlayer = getPlayerFromBoard(p);
+                        Property property = pmanager.getTileProperty(currentTile);
+
+                        if (property == null)
+                            continue; // Skip null properties
+
+                        if (property.owner == realPlayer && realPlayer != null)
+                        {
+                            Debug.Log($"Tile {currentTile} is owned by {p.name}");
+                            tileOwned = true;
+                            ownerIndex = System.Array.IndexOf(players, p);
+                            break;
+                        }
+                    }
+
+                    // Handle scenarios based on the type of tile
+                    if (player.goPassed)
+                    {
+                        // Player passed GO, reward them
+                        player.balance += 200;
+                        player.goPassed = false;
+                        Debug.Log("PASSED GO");
+                    }
+
+                    Property landedProperty = pmanager.getTileProperty(currentTile);
+                    if (landedProperty == null)
+                    {
+                        // Handle special tiles like taxes, jail, or parking
+                        yield return HandleSpecialTiles(currentTile, player);
+                    }
+                    else if (landedProperty.owner == getPlayerFromBoard(player)) // Player owns the tile
+                    {
+                        CheckOwnership(player, landedProperty); // Call CheckOwnership method
+                    }
+                    else if (tileOwned)
+                    {
+                        // Tile is owned, handle rent payment
+                        HandleOwnedTile(player, landedProperty, ownerIndex);
+                    }
+                    else
+                    {
+                        // Tile is unowned, trigger property purchase
+                        if (!isAi){
+                        Debug.Log($"Tile {currentTile} is not owned by anyone and is available.");
+                        ShowPropertyPurchaseScreen(player, landedProperty);
+                        }
+                        else if (landedProperty.price < player.balance){
+                        Player pObject = getPlayerFromBoard(player);
+                        pObject.Debit(landedProperty.price);
+                        pObject.AddProperty(landedProperty);
+                        landedProperty.SwitchOwner(pObject);
+                        }
+                        else{
+                        propertyPurchaseScrn.manualAuction(landedProperty);
+                        }
+                        //if (testMode==true){purchaseDone=true;}
+                        
+                    }
+                    if(testMode==true){purchaseDone=true;}
+                    //Stop the turns advancing while purchase screen is open
+                    while (purchaseDone==false){
+                        yield return null; 
+                    }
 
 
 
-            }
-            if (jailBound){
-                StartCoroutine(player.toJail());
-                player.TileCount = 11; // Jail tile index
-                player.inJail = true;
-                player.goPassed = false;
-                Debug.Log("Speeding, go to jail");
-            }   
-                            
-           
+
+                }
+                //Sends player to jail for speeding
+                if (jailBound){
+                    yield return StartCoroutine(player.toJail());
+                    player.TileCount = 11; // Jail tile index
+                    player.inJail = true;
+                    player.goPassed = false;
+                    Debug.Log("Speeding, go to jail");
+                }   
+                
+                //Stops player continuing out of jail if they double on go to jail
+                if(player.inJail==true){
+                    repeatturn=false;
+                }
 
         }
             if (isAi&&testMode==false){
@@ -314,6 +319,8 @@ namespace PropertyTycoon
             Debug.Log("Press End Turn now for the next turn.");
             turnEnded = true;
             }
+
+            //Make sure you don't continue if you landed on
         }
 
         private IEnumerator HandleSpecialTiles(int currentTile, boardPlayer player)
@@ -350,7 +357,7 @@ namespace PropertyTycoon
             }
             else if (currentTile == 31) // Go to jail
             {
-                StartCoroutine(player.toJail());
+                yield return StartCoroutine(player.toJail());
                 player.TileCount = 11; // Jail tile index
                 player.inJail = true;
                 player.goPassed = false;

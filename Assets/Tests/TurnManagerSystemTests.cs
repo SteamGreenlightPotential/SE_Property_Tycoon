@@ -282,7 +282,7 @@ public class TurnManagerDoublesTests
     /// </summary>
     
     // it doesnt work i dont know why i give up
-    /*
+    
     [UnityTest]
     public IEnumerator Test_PlayerMovePhase_TripleDoubles_GoesToJail()
     {
@@ -301,7 +301,7 @@ public class TurnManagerDoublesTests
         Assert.IsTrue(player.inJail, "Player should be marked as in jail after rolling three consecutive doubles.");
         Assert.AreEqual(11, player.TileCount, "Player's TileCount should be set to the jail tile (11) after excessive doubles.");
     }
-    */
+    
 }
 
 

@@ -211,7 +211,6 @@ namespace PropertyTycoon
 
 
         public int balance = 1500;
-        //private int amount = 0;
 
         public void taxCheck()
         {

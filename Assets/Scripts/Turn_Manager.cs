@@ -38,8 +38,8 @@ namespace PropertyTycoon
             bool startScreenUsed = PlayerSelection.startScreenUsed;
 
             if (!startScreenUsed){
-                playerCount = 6;
-                AiCount=0;
+                playerCount = 2;
+                AiCount=1;
             }
 
 
@@ -108,11 +108,11 @@ namespace PropertyTycoon
             isWaitingForRoll = true; // Wait for player input to roll dice
         }
 
-        public IEnumerator PlayerMovePhase(boardPlayer player, bool testMode = false, int testRoll = 4, int testRoll2 = 5)
+        public IEnumerator PlayerMovePhase(boardPlayer player, bool testMode = false, int testRoll = 10, int testRoll2 = 1)
         {
             bool isAi = getPlayerFromBoard(player).isAI;
             //SORRY THIS IS STUPID BUT UPDATE WORKS WEIRD WITH AI AND TESTS IM SORRY
-
+            testMode = true; // THIS IS TEST PLEASE PLEASE PLEASE GET RID OF AFTER
             if(isAi &&isWaitingForRoll==true){
                 isWaitingForRoll=false;
             }
@@ -124,7 +124,7 @@ namespace PropertyTycoon
 
             //Allows for moving again on doubles 
             while (repeatturn){
-            //testMode = true; // THIS IS TEST PLEASE PLEASE PLEASE GET RID OF AFTER
+           
             int roll = 0;
             int roll2 = 0; // Second dice roll for handling doubles
 

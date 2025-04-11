@@ -484,7 +484,7 @@ namespace PropertyTycoon
                 Debug.Log($"Player {realPlayer.Name} landed on their property: {property.name}");
 
                 // Show the Owned Property Panel
-                if (upgradeScrn != null)
+                if (upgradeScrn != null && realPlayer.isAI==false)
                 {
                     upgradeScrn.ShowOwnedPropertyPanel(property, realPlayer);
                 }

@@ -7,7 +7,7 @@ using System.Collections;
 
 public class ZzzLog : MonoBehaviour
 {
-    uint qsize = 15;  // number of messages to keep
+    uint qsize = 12;  // number of messages to keep
     Queue myLogQueue = new Queue();
 
     void Start() {
@@ -35,7 +35,7 @@ public class ZzzLog : MonoBehaviour
     }
 
     void OnGUI() {
-        GUILayout.BeginArea(new Rect(0, Screen.height - 200, 400, 200));
+        GUILayout.BeginArea(new Rect(17, Screen.height-225 , 400, 400));
         GUILayout.Label("\n" + string.Join("\n", myLogQueue.ToArray()));
         GUILayout.EndArea();
     }

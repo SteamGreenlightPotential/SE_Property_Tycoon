@@ -98,11 +98,11 @@ namespace PropertyTycoon
         public void OnAuctionButtonClicked()
         {
             if (AuctionUI == null)
-                //Debug.LogError("AuctionUI is null!");
+                Debug.LogError("AuctionUI is null!");
             if (CurrentProperty == null)
-                //Debug.LogError("CurrentProperty is null!");
+                Debug.LogError("CurrentProperty is null!");
             if (Turn_Script.Instance == null)
-                //Debug.LogError("Turn_Script.Instance is null!");
+                Debug.LogError("Turn_Script.Instance is null!");
 
             if (AuctionUI != null && CurrentProperty != null && Turn_Script.Instance != null)
             {

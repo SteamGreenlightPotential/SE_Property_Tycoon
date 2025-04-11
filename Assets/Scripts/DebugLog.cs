@@ -25,7 +25,9 @@ public class ZzzLog : MonoBehaviour
     }
 
     void HandleLog(string logString, string stackTrace, LogType type) {
-        myLogQueue.Enqueue(logString);
+        if (type==LogType.Log){
+            myLogQueue.Enqueue(logString);
+            }
         if (type == LogType.Exception)
             myLogQueue.Enqueue(stackTrace);
         while (myLogQueue.Count > qsize)

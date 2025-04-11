@@ -5,8 +5,8 @@ public class DiceRoller : MonoBehaviour
 {
     public float spinSpeed = 720f;          // Spin speed (degrees per second)
     public float rotationDuration = 0.5f;   // Duration for smooth rotation correction
-    private bool isSpinning = true;         // Flag to indicate if dice is spinning
-    private bool hide = true;
+    public bool isSpinning = true;         // Flag to indicate if dice is spinning
+    public bool hide = true;
     public bool IsWaitingForDiceRoll = false; // Detect if dice is currently rolling
     private string nameOfObject;
 
@@ -16,7 +16,7 @@ public class DiceRoller : MonoBehaviour
     // Flag to check if the dice has been rolled
     public bool HasRolled { get; private set; }
 
-    private Quaternion[] faceRotations = new Quaternion[6]
+    public Quaternion[] faceRotations = new Quaternion[6]
     {
         Quaternion.Euler(0f, 0f, 0f),      // Face 1
         Quaternion.Euler(0f, 90f, 0f),     // Face 2

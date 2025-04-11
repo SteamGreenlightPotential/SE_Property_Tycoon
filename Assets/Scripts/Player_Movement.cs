@@ -217,13 +217,13 @@ namespace PropertyTycoon
             if (TileCount == 5)
             {
                 balance -= 100;
-                Debug.Log("Tax tile. New balance is " + balance);
+                Debug.Log("Taxed. New balance is " + balance);
             }
 
             if (TileCount == 39)
             {
                 balance -= 100;
-                Debug.Log("Tax tile. New balance is " + balance);
+                Debug.Log("Taxed. New balance is " + balance);
             }
         }
 
@@ -293,7 +293,7 @@ namespace PropertyTycoon
         public void ReceiveRent(int rent)
         {
             balance += rent;
-            Debug.Log("Received £" + rent + " of rent. New balance is " + balance);
+            //Debug.Log("Received £" + rent + " of rent. New balance is " + balance);
         }
     
         public IEnumerator toJail(){

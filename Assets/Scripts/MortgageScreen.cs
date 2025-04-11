@@ -28,7 +28,7 @@ namespace PropertyTycoon
                 b.gameObject.SetActive(false);
             }
 
-            Debug.Log("Mortgage screen started");
+            //Debug.Log("Mortgage screen started");
             
         }
 
@@ -39,7 +39,7 @@ namespace PropertyTycoon
             int counter = 0;
             
             foreach(Property p in bplayer.OwnedProperties){
-                Debug.Log(buttonList[counter].GetComponentInChildren<TextMeshProUGUI>().text);
+                //Debug.Log(buttonList[counter].GetComponentInChildren<TextMeshProUGUI>().text);
                 buttonList[counter].GetComponentInChildren<TextMeshProUGUI>().text=p.name;
                 counter++;
             }

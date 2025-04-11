@@ -37,7 +37,7 @@ public class gModeManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log("[gModeManager] OnSceneLoaded: " + scene.name);
+        //Debug.Log("[gModeManager] OnSceneLoaded: " + scene.name);
         ReassignTimerText();
         InitializeGameMode();
     }
@@ -45,12 +45,12 @@ public class gModeManager : MonoBehaviour
     public void SetGameMode(string gameMode)
     {
         currentGameMode = gameMode.Trim();
-        Debug.Log("[gModeManager] Game Mode Set to: '" + currentGameMode + "'");
+        //Debug.Log("[gModeManager] Game Mode Set to: '" + currentGameMode + "'");
     }
 
     public void InitializeGameMode()
     {
-        Debug.Log("[gModeManager] Initializing game mode: '" + currentGameMode + "'");
+       // Debug.Log("[gModeManager] Initializing game mode: '" + currentGameMode + "'");
         if (currentGameMode == "Quick Game")
         {
             if (timerText != null)
@@ -82,7 +82,7 @@ public class gModeManager : MonoBehaviour
 
     private IEnumerator QuickGameTimer()
     {
-        Debug.Log("[gModeManager] QuickGameTimer coroutine started.");
+        //Debug.Log("[gModeManager] QuickGameTimer coroutine started.");
         float quickGameDuration = 15 * 60f; // 15 minutes in seconds
         float timeRemaining = quickGameDuration;
 
@@ -141,7 +141,7 @@ public class gModeManager : MonoBehaviour
 
     public void ReassignTimerText()
     {
-        Debug.Log("[gModeManager] Attempting to reassign TimerText...");
+        //Debug.Log("[gModeManager] Attempting to reassign TimerText...");
         GameObject timerObject = GameObject.Find("TimerText");
         if (timerObject == null)
         {
@@ -156,7 +156,7 @@ public class gModeManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("[gModeManager] TimerText successfully reassigned: '" + timerText.text + "'");
+            //Debug.Log("[gModeManager] TimerText successfully reassigned: '" + timerText.text + "'");
         }
     }
 }

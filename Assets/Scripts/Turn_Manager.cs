@@ -55,7 +55,7 @@ namespace PropertyTycoon
             boardPlayer[] temparray = new boardPlayer[playerCount];
             for (int j = 0;j<playerCount;j++){
                 temparray[j] = players[j];
-                Debug.Log($"Added {players[j].name} to reduced player list");
+                //Debug.Log($"Added {players[j].name} to reduced player list");
             }
             //DESTROY unused players
             for (int j = players.Length-(players.Length-playerCount);j<players.Length;j++){
@@ -69,13 +69,13 @@ namespace PropertyTycoon
             {
                 string name = "Player " + i;
                 playerlist.Add(new Player(name, bplayer)); // Link board player to player logic
-                Debug.Log($"Added {name} to player list.");
+                //Debug.Log($"Added {name} to player list.");
                 i++;
             }
             upgradeScrn = FindObjectOfType<UpgradeScrn>(); // Find the UpgradeScrn in the scene
             if (upgradeScrn == null)
             {
-                Debug.Log("UpgradeScrn not found in the scene!");
+                //Debug.Log("UpgradeScrn not found in the scene!");
             }
             //Avoid too many AI
             if (players.Length<AiCount){
@@ -87,7 +87,7 @@ namespace PropertyTycoon
             for (int j = playerlist.Count-1; j > playerlist.Count - AiCount-1; j--)
             {
                 playerlist[j].isAI=true;
-                Debug.Log($"{players[j].name} assigned as AI");
+                //Debug.Log($"{players[j].name} assigned as AI");
             }
 
 
@@ -256,7 +256,7 @@ namespace PropertyTycoon
                         // Player passed GO, reward them
                         player.balance += 200;
                         player.goPassed = false;
-                        Debug.Log("PASSED GO");
+                        Debug.Log("PASSED GO! Get 200");
                     }
 
                     Property landedProperty = pmanager.getTileProperty(currentTile);
@@ -387,7 +387,7 @@ namespace PropertyTycoon
             }
             else
             {
-                Debug.Log("You own this property. No rent required.");
+                //Debug.Log("You own this property. No rent required.");
             }
 
 
@@ -400,18 +400,18 @@ namespace PropertyTycoon
                 Player currentPlayer = getPlayerFromBoard(player);
                 if (currentPlayer != null)
                 {
-                    Debug.Log($"Triggering purchase screen for Property: {property.name}, Player: {currentPlayer.Name}");
+                    //Debug.Log($"Triggering purchase screen for Property: {property.name}, Player: {currentPlayer.Name}");
                     propertyPurchaseScrn.Show(property, currentPlayer);
                     
                 }
                 else
                 {
-                    Debug.LogError("CurrentPlayer is null in ShowPropertyPurchaseScreen!");
+                    //Debug.LogError("CurrentPlayer is null in ShowPropertyPurchaseScreen!");
                 }
             }
             else
             {
-                Debug.LogError("PropertyPurchaseScrn or Property is null in ShowPropertyPurchaseScreen!");
+                //Debug.LogError("PropertyPurchaseScrn or Property is null in ShowPropertyPurchaseScreen!");
             }
 
             
@@ -429,7 +429,7 @@ namespace PropertyTycoon
         public IEnumerator EndTurn()
         {
             // End the current player's turn
-            Debug.Log($"Ending Player {currentPlayerIndex + 1}'s Turn...");
+            //Debug.Log($"Ending Player {currentPlayerIndex + 1}'s Turn...");
             yield return new WaitForSeconds(0.5f); // Simulate a delay
 
             // Move to the next player
@@ -440,6 +440,8 @@ namespace PropertyTycoon
             {
                 round++;
                 Debug.Log($"Round {round}");
+                GameManager.Instance.DisplayBalances(); //Show everyones balance after a round
+
             }
 
             StartTurn(); // Start the next player's turn
@@ -452,7 +454,7 @@ namespace PropertyTycoon
             {
                 if (p.bPlayer == player)
                 {
-                    Debug.Log($"Fetched player {p.Name}");
+                    //Debug.Log($"Fetched player {p.Name}");
                     return p;
                 }
             }
@@ -469,7 +471,7 @@ namespace PropertyTycoon
             }
             else
             {
-                Debug.LogError("Multiple Turn_Script instances detected!");
+                //Debug.LogError("Multiple Turn_Script instances detected!");
                 Destroy(gameObject);
             }
         }
@@ -490,7 +492,7 @@ namespace PropertyTycoon
                 }
                 else
                 {
-                    Debug.LogError("OwnedPropertyUI reference is missing!");
+                    //Debug.LogError("OwnedPropertyUI reference is missing!");
                 }
             }
         }

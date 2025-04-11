@@ -27,13 +27,13 @@ namespace PropertyTycoon
             upgradeManager = FindObjectOfType<UpgradeManager>();
             if (upgradeManager == null)
             {
-                Debug.Log("UpgradeManager is missing! Please add it to the scene.");
+                //Debug.Log("UpgradeManager is missing! Please add it to the scene.");
             }
 
             MortgageScreen mortgageScreen = FindObjectOfType<MortgageScreen>();
             if (mortgageScreen == null)
             {
-                Debug.Log("MortgageScreen is missing! Please add it to the scene.");
+                //Debug.Log("MortgageScreen is missing! Please add it to the scene.");
             }
 
             // Setup Close button functionality

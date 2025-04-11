@@ -32,11 +32,11 @@ namespace PropertyTycoon
 
             if (AuctionUI != null)
             {
-                Debug.Log("AuctionUI is correctly assigned in the Inspector.");
+                //Debug.Log("AuctionUI is correctly assigned in the Inspector.");
             }
             else
             {
-                Debug.LogError("AuctionUI is not assigned! Check the Inspector.");
+                //Debug.LogError("AuctionUI is not assigned! Check the Inspector.");
             }
         }
 
@@ -46,7 +46,7 @@ namespace PropertyTycoon
 
             if (property == null || player == null)
             {
-                Debug.LogError("Show() received a null Property or Player!");
+                //Debug.LogError("Show() received a null Property or Player!");
                 return;
             }
 
@@ -98,11 +98,11 @@ namespace PropertyTycoon
         public void OnAuctionButtonClicked()
         {
             if (AuctionUI == null)
-                Debug.LogError("AuctionUI is null!");
+                //Debug.LogError("AuctionUI is null!");
             if (CurrentProperty == null)
-                Debug.LogError("CurrentProperty is null!");
+                //Debug.LogError("CurrentProperty is null!");
             if (Turn_Script.Instance == null)
-                Debug.LogError("Turn_Script.Instance is null!");
+                //Debug.LogError("Turn_Script.Instance is null!");
 
             if (AuctionUI != null && CurrentProperty != null && Turn_Script.Instance != null)
             {
@@ -118,11 +118,11 @@ namespace PropertyTycoon
         public void manualAuction(Property CurrentProperty){
             this.CurrentProperty = CurrentProperty;
         if (AuctionUI == null)
-                Debug.LogError("AuctionUI is null!");
+                //Debug.LogError("AuctionUI is null!");
             if (CurrentProperty == null)
-                Debug.LogError("CurrentProperty is null!");
+                //Debug.LogError("CurrentProperty is null!");
             if (Turn_Script.Instance == null)
-                Debug.LogError("Turn_Script.Instance is null!");
+                //Debug.LogError("Turn_Script.Instance is null!");
 
             if (AuctionUI != null && CurrentProperty != null && Turn_Script.Instance != null)
             {

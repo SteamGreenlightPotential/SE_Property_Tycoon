@@ -19,11 +19,11 @@ namespace PropertyTycoon
             {
                 Instance = this;
                 DontDestroyOnLoad(gameObject); // Makes GameManager persistent between scenes
-                Debug.Log("GameManager instance created successfully.");
+                //Debug.Log("GameManager instance created successfully.");
             }
             else
             {
-                Debug.LogError("Multiple GameManager instances detected!");
+                //Debug.LogError("Multiple GameManager instances detected!");
                 Destroy(gameObject); // Ensures there's only one GameManager instance
             }
 
@@ -34,7 +34,7 @@ namespace PropertyTycoon
             }
             else
             {
-                Debug.LogError("PropertyManager is not assigned in GameManager!");
+                //Debug.LogError("PropertyManager is not assigned in GameManager!");
                 propertyManager = new PropertyManager(); // Initialize PropertyManager
 
             }
@@ -43,12 +43,12 @@ namespace PropertyTycoon
             bank = new Bank();                       // Initialize the bank
             players = new List<Player>();            // Initialize the players list
             propertyManager = new PropertyManager(); // Initialize PropertyManager
-            Debug.Log("GameManager Online");         // Debug message for confirmation
+            //Debug.Log("GameManager Online");         // Debug message for confirmation
         }
 
         private void Start()
         {
-            Debug.Log("Game Started");  // Debug message for confirmation
+            //Debug.Log("Game Started");  // Debug message for confirmation
             DisplayBalances();          // Show initial balances in the debug console
         }
 
@@ -63,7 +63,7 @@ namespace PropertyTycoon
         public void AddPlayer(string name, boardPlayer playerBoard)
         {
             players.Add(new Player(name, playerBoard));
-            Debug.Log($"Player {name} has been added to the game.");
+            //Debug.Log($"Player {name} has been added to the game.");
         }
 
         // Player to Player transaction
@@ -104,8 +104,8 @@ namespace PropertyTycoon
             {
                 Debug.Log($"Player {player.Name}: £{player.Balance}");
             }
-            Debug.Log($"Bank Funds: £{bank.TotalFunds}");
-            Debug.Log($"Free Parking: £{bank.FreeParking}");
+            //Debug.Log($"Bank Funds: £{bank.TotalFunds}");
+            //Debug.Log($"Free Parking: £{bank.FreeParking}");
         }
 
         // Method to draw and execute Pot Luck card

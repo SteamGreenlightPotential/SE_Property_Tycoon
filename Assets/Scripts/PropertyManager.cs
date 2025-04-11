@@ -45,9 +45,9 @@ namespace PropertyTycoon
 
         //Check all imported properly
         Property item = properties[5];
-                Debug.Log(item.name);
-                Debug.Log(item.price);
-                Debug.Log(item.tileno);
+                //Debug.Log(item.name);
+                //Debug.Log(item.price);
+                //Debug.Log(item.tileno);
         
         }
 
@@ -57,7 +57,7 @@ namespace PropertyTycoon
             {
                 if (p.tileno == tileno)
                 {
-                    Debug.Log("Returned property "+ p.name);
+                    //Debug.Log("Returned property "+ p.name);
                     return p;
                 }
             }
@@ -70,7 +70,7 @@ namespace PropertyTycoon
             //Persists between scenes
             DontDestroyOnLoad(gameObject);
             //make sure they woke up
-            Debug.Log("Game Manager Online");
+            //Debug.Log("Game Manager Online");
 
             //Initialises all properties
             initialiseProperties();

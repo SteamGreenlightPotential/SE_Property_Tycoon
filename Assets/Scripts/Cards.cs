@@ -228,7 +228,7 @@ namespace PropertyTycoon
             }
             else // DOUBLE ROLL METHOD GOES HERE 
             {
-                Debug.Log($"{player.Name} must roll for doubles to get out of jail.");
+                //Debug.Log($"{player.Name} must roll for doubles to get out of jail.");
             }
         }
 

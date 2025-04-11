@@ -11,6 +11,7 @@ namespace PropertyTycoon
                 if (player.Balance >= property.houseCost)
                 {
                     player.Debit(property.houseCost);
+                    Turn_Script.Instance.CheckBankruptcy(player);
                     property.addHouse();
                     Debug.Log($"House added to {property.name}. Total houses: {property.houses}");
                     return true;
@@ -34,6 +35,7 @@ namespace PropertyTycoon
                 if (player.Balance >= property.houseCost * 5) // Hotel = 5 house costs
                 {
                     player.Debit(property.houseCost * 5);
+                    Turn_Script.Instance.CheckBankruptcy(player);
                     property.addHotel();
                     Debug.Log($"Added a hotel to {property.name}");
                     return true;

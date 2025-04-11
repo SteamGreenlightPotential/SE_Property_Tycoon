@@ -10,40 +10,37 @@ public class StartPositionTests
     [Test]
     public void BootStart_SetsPositionCorrectly()
     {
-        //Idk why this one isn't working properly, too fiddely to fix and i can see its working visually so we're just gonna veto this one 
-        //Probably because Boot is the only piece properly modelled? This test should work later anyway
-        //Im just gonna ignore it 
-        Assert.AreEqual(1,1);
+        TestPosition<Boot_start>(new Vector3((float)-4.7, (float)-4.7, (float)-0.13));
     }
 
     [Test]
     public void CatStart_SetsPositionCorrectly()
     {
-        TestPosition<Cat_start>(new Vector3(-4.7f, 4.65f, 0.125f));
+        TestPosition<Cat_start>(new Vector3((float)-4.7, (float)-5.35, (float)-0.09));
     }
 
     [Test]
     public void HatstandStart_SetsPositionCorrectly()
     {
-        TestPosition<Hatstand_start>(new Vector3(-5.3f, 5.35f, 0.125f));
+        TestPosition<Hatstand_start>(new Vector3((float)-5.3, (float)-4.6, (float)-0.19));
     }
 
     [Test]
     public void IronStart_SetsPositionCorrectly()
     {
-        TestPosition<Iron_start>(new Vector3(-4.7f, 5f, 0.125f));
+        TestPosition<Iron_start>(new Vector3((float)-4.7, (float)-5, (float)-0.43));
     }
 
     [Test]
     public void ShipStart_SetsPositionCorrectly()
     {
-        TestPosition<Ship_start>(new Vector3(-5.3f, 5f, 0.125f));
+        TestPosition<Ship_start>(new Vector3((float)-5.3, (float)-5, (float)-0.12));
     }
 
     [Test]
     public void SmartphoneStart_SetsPositionCorrectly()
     {
-        TestPosition<Smartphone_start>(new Vector3(-5.3f, 4.65f, 0.125f));
+        TestPosition<Smartphone_start>(new Vector3((float)-5.3, (float)-5.4, (float)-0.17));
     }
 
     // Generic helper method to avoid code duplication

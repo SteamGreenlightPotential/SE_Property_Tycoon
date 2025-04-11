@@ -4,7 +4,7 @@ namespace PropertyTycoon
 {
     public class UpgradeManager : MonoBehaviour
     {
-        public void TryAddHouse(Property property, Player player)
+        public bool TryAddHouse(Property property, Player player)
         {
             if (property.CanAddHouse(player) && player.CanAddHotelToSet(property))
             {
@@ -13,18 +13,21 @@ namespace PropertyTycoon
                     player.Debit(property.houseCost);
                     property.addHouse();
                     Debug.Log($"House added to {property.name}. Total houses: {property.houses}");
+                    return true;
                 }
                 else
                 {
                     Debug.Log("Not enough funds to add a house.");
+                    return false;
                 }
             }
             else
             {
-                Debug.Log("Cannot add house. Check ownership or property status.");
+                Debug.Log("Cannot add house. Must own all properties in the colour to add.");
+                return false;
             }
         }
-        public void TryAddHotel(Property property, Player player)
+        public bool TryAddHotel(Property property, Player player)
         {
             if (property.CanAddHotel(player) && player.CanAddHotelToSet(property))
             {
@@ -33,15 +36,18 @@ namespace PropertyTycoon
                     player.Debit(property.houseCost * 5);
                     property.addHotel();
                     Debug.Log($"Added a hotel to {property.name}");
+                    return true;
                 }
                 else
                 {
                     Debug.Log("Not enough money to buy a hotel.");
+                    return false;
                 }
             }
             else
             {
-                Debug.Log("Cannot add a hotel to this property.");
+                Debug.Log("Cannot add a hotel to this property. Must have 4 houses");
+                return false;
             }
         }
     }

@@ -85,7 +85,7 @@ namespace PropertyTycoon
             {
                 Debug.LogError("UpgradeManager is not assigned.");
             }
-            ClosePanel();
+
         } 
         public void OnUpgradeHotel()
         {
@@ -97,16 +97,17 @@ namespace PropertyTycoon
             {
                 Debug.LogError("UpgradeManager is not assigned.");
             }
-            ClosePanel();
+
         }
 
         public void OnMortgage()
         {
-            //TEST REASONS
+
 
             
             mortgageScreen.mortgageCall(testPlayer);
             ClosePanel();
+
 
         }
 

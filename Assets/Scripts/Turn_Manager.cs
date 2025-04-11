@@ -215,9 +215,7 @@ namespace PropertyTycoon
                         if (isAi){
                             StartCoroutine(EndTurn());
                         }
-                        else{
-                        yield break; // End the turn
-                        }
+                        
                     }
                 }
                 else if (!jailBound)

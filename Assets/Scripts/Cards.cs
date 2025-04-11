@@ -110,14 +110,17 @@ namespace PropertyTycoon
                 case "Player pays £150 to the bank":
                     player.Debit(150);
                     bank.ReceivePayment(150);
+                    Turn_Script.Instance.CheckBankruptcy(player); // Check for bankruptcy after payment
                     break;
                 case "Player pays £100 to the bank":
                     player.Debit(100);
                     bank.ReceivePayment(100);
+                    Turn_Script.Instance.CheckBankruptcy(player); // Check for bankruptcy after payment
                     break;
                 case "Player pays £50 to the bank":
                     player.Debit(50);
                     bank.ReceivePayment(50);
+                    Turn_Script.Instance.CheckBankruptcy(player); // Check for bankruptcy after payment
                     break;
 
                 // Player to Player transactions
@@ -127,6 +130,7 @@ namespace PropertyTycoon
                         if (p != player)
                         {
                             p.Debit(10);
+                            Turn_Script.Instance.CheckBankruptcy(player); // Check for bankruptcy after payment
                             player.Credit(10);
                         }
                     }
@@ -136,18 +140,22 @@ namespace PropertyTycoon
                 case "If fine paid, player puts £10 on free parking":
                     player.Debit(10);
                     bank.AddToFreeParking(10);
+                    Turn_Script.Instance.CheckBankruptcy(player); // Check for bankruptcy after payment
                     break;
                 case "Player puts £50 on free parking":
                     player.Debit(50);
                     bank.AddToFreeParking(50);
+                    Turn_Script.Instance.CheckBankruptcy(player); // Check for bankruptcy after payment
                     break;
                 case "Player puts £15 on free parking":
                     player.Debit(15);
                     bank.AddToFreeParking(15);
+                    Turn_Script.Instance.CheckBankruptcy(player); // Check for bankruptcy after payment
                     break;
                 case "Player puts £30 on free parking":
                     player.Debit(30);
                     bank.AddToFreeParking(30);
+                    Turn_Script.Instance.CheckBankruptcy(player); // Check for bankruptcy after payment
                     break;
 
                 // Player movement related cards
@@ -197,10 +205,12 @@ namespace PropertyTycoon
                     int totalRepairCost = (player.HousesOwned * repairCostHouse) + (player.HotelsOwned * repairCostHotel);
                     player.Debit(totalRepairCost);
                     bank.ReceivePayment(totalRepairCost);
+                    Turn_Script.Instance.CheckBankruptcy(player); // Check for bankruptcy after payment
                     break;
 
                 case "Get out of jail free":
                     GetOutOfJail(player, bank); // Useing the method
+                    Turn_Script.Instance.CheckBankruptcy(player); // Check for bankruptcy after payment
                     break;
 
                 default:

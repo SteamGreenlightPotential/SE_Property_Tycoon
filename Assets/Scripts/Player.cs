@@ -15,6 +15,7 @@ namespace PropertyTycoon
         public bool HasGetOutOfJailCard { get; set; } = false; // Default to false
         public bool IsInJail { get; set; } = false; // Default to false ( found a same property in Player_Movement.cs... but it works so...)
         public bool isAI;
+        public bool IsBankrupt { get; set; } // Flag to indicate bankruptcy
 
 
      public int Balance

@@ -494,6 +494,37 @@ namespace PropertyTycoon
                 }
             }
         }
-        
+
+        public void CheckBankruptcy(Player player)
+        {
+            // Check if the player is already flagged as bankrupt
+            if (player.IsBankrupt)
+            {
+                if (player.Balance < 0) // Still bankrupt after one turn
+                {
+                    Debug.Log($"{player.Name} is eliminated due to bankruptcy!");
+
+                    // Step 1: Transfer assets to the bank or creditors
+                    foreach (var property in player.OwnedProperties)
+                    {
+                        property.owner = null; // Reset property ownership (or transfer to the bank)
+                        Debug.Log($"{player.Name}'s property {property.name} is now unowned.");
+                    }
+                    player.OwnedProperties.Clear(); // Clear the player's owned properties
+
+                    // Step 2: Remove the player from the game
+                    playerlist.Remove(player);
+                    Debug.Log($"{player.Name} has been removed from the game.");
+                }
+            }
+            else
+            {
+                if (player.Balance < 0) // Bankrupt for the first time
+                {
+                    Debug.Log($"{player.Name} is bankrupt! Flagging them for elimination next turn.");
+                    player.IsBankrupt = true; // Set the bankruptcy flag
+                }
+            }
+        }
     }
 }

@@ -79,6 +79,8 @@ namespace PropertyTycoon
             payee.Credit(amount);       // Adds amount to the payee
 
             Debug.Log($"{payer.Name} paid {payee.Name} £{amount}."); // Debug message for confirmation
+
+            Turn_Script.Instance.CheckBankruptcy(payer); // Checks for bankruptcy
         }
 
         // Bank to Player transaction
@@ -94,6 +96,7 @@ namespace PropertyTycoon
                 player.Debit(-amount); // Player pays the bank
                 bank.ReceivePayment(-amount);
                 Debug.Log($"{player.Name} paid Bank £{-amount}.");
+                Turn_Script.Instance.CheckBankruptcy(player); // Checks for bankruptcy
             }
         }
 

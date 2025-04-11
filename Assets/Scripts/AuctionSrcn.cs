@@ -33,7 +33,7 @@ namespace PropertyTycoon
             if (Instance == null)
             {
                 Instance = this;
-                DontDestroyOnLoad(gameObject); // Ensure persistence
+                DontDestroyOnLoad(gameObject); // Ensures persistence
             }
             else
             {
@@ -83,6 +83,9 @@ namespace PropertyTycoon
                     highestBidder = currentPlayer;
 
                     Debug.Log($"{currentPlayer.Name} placed a bid of £{currentBid}");
+                    
+                    Turn_Script.Instance.CheckBankruptcy(currentPlayer); // Checks for Bankruptcy
+                    
                     NextTurn(); // Move to the next player's turn
                 }
                 else
@@ -128,6 +131,8 @@ namespace PropertyTycoon
                 // Deduct the bid amount from the highest bidder
                 highestBidder.Debit(currentBid);
                 
+                Turn_Script.Instance.CheckBankruptcy(highestBidder); // Checks for Bankruptcy
+
                 // Transfer ownership of the property
                 propertyBeingAuctioned.SwitchOwner(highestBidder);
 

@@ -49,6 +49,7 @@ namespace PropertyTycoon
         public void Debit(int amount)
         {
             Balance -= amount; // Deducts funds from the player
+            Turn_Script.Instance.CheckBankruptcy(this); // Checks for bankruptcy
         }
 
         public void AddProperty(Property property)

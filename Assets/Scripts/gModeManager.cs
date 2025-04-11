@@ -157,7 +157,7 @@ public class gModeManager : MonoBehaviour
         GameObject timerObject = GameObject.Find("TimerText");
         if (timerObject == null)
         {
-            Debug.LogError("[gModeManager] TimerText GameObject not found in the current scene!");
+            //Debug.LogError("[gModeManager] TimerText GameObject not found in the current scene!");
             return;
         }
 
@@ -165,10 +165,6 @@ public class gModeManager : MonoBehaviour
         if (timerText == null)
         {
             Debug.LogError("[gModeManager] Text component not found on TimerText GameObject!");
-        }
-        else
-        {
-            //Debug.Log("[gModeManager] TimerText successfully reassigned: '" + timerText.text + "'");
         }
     }
 }

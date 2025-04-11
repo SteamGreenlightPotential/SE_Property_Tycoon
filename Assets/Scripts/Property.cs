@@ -93,10 +93,12 @@ namespace PropertyTycoon
         public bool toggleMortgage(){
             if (mortgaged){
                 mortgaged=false;
+                Turn_Script.Instance.CheckBankruptcy(owner);
                 return false;
             }
             else{
                 mortgaged=true;
+                Turn_Script.Instance.CheckBankruptcy(owner);
                 return true;
             }
         }

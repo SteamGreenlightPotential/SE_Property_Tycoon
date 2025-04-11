@@ -143,6 +143,12 @@ namespace PropertyTycoon
                     roll = testRoll;
                     roll2 = testRoll2;
                 }
+                else if (isAi){
+                    // Roll the dice for the player
+                    roll = Random.Range(1, 7);
+                    roll2 = Random.Range(1, 7);
+                    Debug.Log($"Player {currentPlayerIndex + 1} rolled: {roll} and {roll2}");
+                }
                 else
                 {
                     // Show both dice and prepare them for rolling

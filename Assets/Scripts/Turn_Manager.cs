@@ -113,6 +113,7 @@ namespace PropertyTycoon
         {
             turnEnded = false; // Reset end turn state
             Debug.Log($"Player {currentPlayerIndex + 1}'s Turn. Press SPACE to roll.");
+            Turn_Script.Instance.CheckBankruptcy(playerlist[currentPlayerIndex]);
             isWaitingForRoll = true; // Wait for player input to roll dice
         }
 
@@ -255,6 +256,7 @@ namespace PropertyTycoon
                         player.balance += 200;
                         player.goPassed = false;
                         Debug.Log("PASSED GO! Get 200");
+                        Turn_Script.Instance.CheckBankruptcy(getPlayerFromBoard(player)); // Check for bankruptcy
                     }
 
                     Property landedProperty = pmanager.getTileProperty(currentTile);
@@ -335,6 +337,7 @@ namespace PropertyTycoon
             if (currentTile == 5 || currentTile == 39) // Tax tiles
             {
                 player.taxCheck();
+                Turn_Script.Instance.CheckBankruptcy(getPlayerFromBoard(player)); // Check for bankruptcy
                 freeParkingBalance += 100;
                 Debug.Log("GET TAXED");
             }
@@ -360,6 +363,8 @@ namespace PropertyTycoon
                 player.balance += freeParkingBalance;
                 freeParkingBalance = 0;
                 Debug.Log("FREE PARKING :D");
+
+                Turn_Script.Instance.CheckBankruptcy(getPlayerFromBoard(player)); // Check for bankruptcy
             }
             else if (currentTile == 31) // Go to jail
             {
@@ -379,6 +384,7 @@ namespace PropertyTycoon
                 int rent = property.baseRent; // Base rent value
                 Debug.Log($"Paying rent of £{rent} to Player {ownerIndex + 1}");
                 players[currentPlayerIndex].PayRent(rent, property);
+                Turn_Script.Instance.CheckBankruptcy(getPlayerFromBoard(player)); // Check for bankruptcy
             }
             else if (property.mortgaged==true){
                 Debug.Log("Property mortgaged - no rent paid");

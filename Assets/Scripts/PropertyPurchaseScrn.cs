@@ -78,6 +78,7 @@ namespace PropertyTycoon
             if (CurrentPlayer.Balance >= CurrentProperty.price)
             {
                 CurrentPlayer.Debit(CurrentProperty.price);
+                Turn_Script.Instance.CheckBankruptcy(CurrentPlayer); // Check for bankruptcy after purchase
                 CurrentPlayer.AddProperty(CurrentProperty);
                 CurrentProperty.SwitchOwner(CurrentPlayer);
 

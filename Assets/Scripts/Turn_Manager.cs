@@ -440,7 +440,7 @@ namespace PropertyTycoon
             {
                 round++;
                 Debug.Log($"Round {round}");
-                GameManager.Instance.DisplayBalances(); //Show everyones balance after a round
+                //GameManager.Instance.DisplayBalances(); //Show everyones balance after a round
 
             }
 

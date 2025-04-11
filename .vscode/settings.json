@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "SE_Monopoly_Project.sln"
+    "dotnet.defaultSolution": "SE_Property_Tycoon.sln"
 }

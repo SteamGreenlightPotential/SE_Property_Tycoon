@@ -121,6 +121,8 @@ public class gModeManager : MonoBehaviour
 
     private Player FindWinner()
     {
+        int assetsum =0;
+        int richestassetsum = 0;
         List<Player> players = GameManager.Instance.players; // Fetch players from GameManager
         if (players == null || players.Count == 0)
         {
@@ -129,12 +131,22 @@ public class gModeManager : MonoBehaviour
         }
 
         Player richestPlayer = players[0];
-        foreach (Player player in players)
-        {
-            if (player.Balance > richestPlayer.Balance)
+        foreach (Player player in players){
+
+            //Sum up actual asset price
+            foreach (Property p in player.OwnedProperties){
+                assetsum += p.price;
+            }
+            foreach (Property p in richestPlayer.OwnedProperties){
+                richestassetsum += p.price;
+            }
+        
+            if (player.Balance+assetsum > richestPlayer.Balance + richestassetsum)
             {
                 richestPlayer = player;
             }
+            assetsum = 0;
+            richestassetsum = 0;
         }
         return richestPlayer;
     }
